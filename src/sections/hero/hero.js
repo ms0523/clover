@@ -1,13 +1,17 @@
 import "./hero.css";
+import heroHtml from "./hero.html?raw";
 import logoUrl from "../../assets/images/clover-logo.png";
 import { lerp, wait, easeFastMiddle } from "../../utils/animate.js";
 
 // Renders the hero section into `mountEl` and wires up the tear animation.
+// The markup itself lives in ./hero.html — this file only injects it and
+// handles behaviour. Edit hero.html for structure/copy, hero.css for style,
+// and this file for interaction logic.
 // Usage (see src/main.js):
 //   import { mountHero } from "./sections/hero/hero.js";
 //   mountHero(document.querySelector("#app"));
 export function mountHero(mountEl) {
-  mountEl.insertAdjacentHTML("beforeend", template());
+  mountEl.insertAdjacentHTML("beforeend", heroHtml.replace("__LOGO_URL__", logoUrl));
 
   const stage = mountEl.querySelector(".hero-stage");
   const paper = stage.querySelector(".paper");
@@ -81,63 +85,4 @@ export function mountHero(mountEl) {
   autoPlay();
 
   return { replay: () => glideTo(0, 900).then(() => wait(250)).then(autoPlay) };
-}
-
-function template() {
-  return `
-    <section class="hero-stage">
-      <div class="reveal" aria-label="Clover hero">
-        <div class="hero-line-top"></div>
-        <div class="hero-line-bottom"></div>
-
-        <nav class="hero-nav">
-          <div class="brand">
-            <span>Celebrate</span>
-            <span class="plus">+</span>
-            <span>Lovers</span>
-          </div>
-          <span>( Lucky )</span>
-        </nav>
-
-        <div class="hero-rule"></div>
-
-        <img class="hero-logo" src="${logoUrl}" alt="CLOVER">
-
-        <p class="hero-copy">
-          소중한 사람에게, 더 잘 맞는 선물을 고를 수 있도록<br>
-          <span class="accent">기억해둔 단서</span>를 바탕으로
-          <span class="accent">선물의 방향성</span>을 함께 찾아드려요
-        </p>
-
-        <button class="hero-cta" type="button">클로버와 함께 선물하기</button>
-
-        <div class="hero-dots" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-      </div>
-
-      <div class="paper"></div>
-
-      <div class="track">
-        <div class="cut-line"></div>
-        <div class="ahead-line"></div>
-      </div>
-
-      <span class="open-label">open</span>
-
-      <div class="scissors">
-        <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
-          <line x1="14" y1="14" x2="40" y2="30" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-          <line x1="14" y1="46" x2="40" y2="30" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-          <polygon points="40,30 92,20 78,30" fill="#fff"/>
-          <polygon points="40,30 92,40 78,30" fill="#fff"/>
-          <circle cx="14" cy="14" r="9" fill="#fff"/>
-          <circle cx="14" cy="46" r="9" fill="#fff"/>
-          <circle cx="40" cy="30" r="4" fill="#fff"/>
-        </svg>
-      </div>
-
-      <button class="replay hide" type="button">다시 찢기</button>
-    </section>
-  `;
 }
