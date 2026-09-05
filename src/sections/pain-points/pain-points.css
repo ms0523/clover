@@ -1,0 +1,81 @@
+.pain-points{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #f5f5f4; /* stone-100, continues from the why-hard section above */
+  padding: 64px 0;
+}
+
+.pain-points-inner{
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.featured-card{
+  width: 320px;
+  padding: 28px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 6px 10.5px 28.65px 0 rgba(183,182,182,0.25);
+  flex-shrink: 0;
+}
+.featured-card-img{
+  width: 100%;
+  height: 220px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  background: #f4f4f4;
+  border: 1.5px dashed #d9d9d7;
+}
+.featured-card-name{ color: var(--red); font-size: 24px; }
+.featured-card-price{ color: #27272a; font-size: 30px; font-weight: 700; margin-top: 4px; }
+.featured-card-reason{
+  display: flex; gap: 20px;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1.5px solid #a1a1aa;
+  font-size: 20px; color: #78716c;
+}
+
+.featured-divider{
+  width: 1px;
+  align-self: stretch;
+  background: var(--red);
+  opacity: .15;
+}
+
+.featured-points{
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 260px;
+}
+.featured-points .point{
+  position: relative;
+  margin: 0;
+  padding-left: 24px;
+  font-size: 20px;
+  color: #a1a1aa;
+}
+.featured-points .point::before{
+  content: "";
+  position: absolute; left: 0; top: 0.55em;
+  width: 12px; height: 2px;
+  background: currentColor;
+}
+.featured-points .point.active{
+  color: var(--red);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+@media (max-width: 720px){
+  .pain-points-inner{ flex-direction: column; gap: 32px; }
+  .featured-divider{ width: 60%; height: 1px; align-self: center; }
+}
