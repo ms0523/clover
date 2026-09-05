@@ -1,7 +1,10 @@
 import "./intro.css";
 import introHtml from "./intro.html?raw";
 import dotsUrl from "../../assets/images/intro-dots.png";
-import photosUrl from "../../assets/images/intro-photos.png";
+import blueUrl from "../../assets/images/blue-sticky.png";
+import flowerUrl from "../../assets/images/intro-image-1.png";
+import picnicUrl from "../../assets/images/intro-image-2.png";
+import pinkUrl from "../../assets/images/pink-sticky.png";
 
 const MAIN_SEGMENTS = [
   { text: "먼저, ", cls: "ink" },
@@ -11,7 +14,10 @@ const MAIN_SEGMENTS = [
   { text: "떠올리는 것부터 시작합니다.", cls: "ink" },
 ];
 
-
+// Renders `segments` into `el` as one <span class="type-ch"> per character
+// (all in their pale "ghost" color from the start, full sentence already
+// laid out) plus a single blinking cursor node. Returns the char spans and
+// the cursor so typeChars() can reveal them in order.
 function buildGhostText(el, segments) {
   el.innerHTML = "";
   segments.forEach(({ text, cls }) => {
@@ -55,24 +61,31 @@ function typeChars({ chars, cursor }, speedMs) {
   });
 }
 
+function landPhotos(els, staggerMs = 200) {
+  els.forEach((el, i) => {
+    setTimeout(() => el.classList.add("landed"), i * staggerMs);
+  });
+}
+
 export function mountIntro(mountEl) {
   const html = introHtml
     .replaceAll("__DOTS_URL__", dotsUrl)
-    .replaceAll("__PHOTOS_URL__", photosUrl);
+    .replaceAll("__BLUE_URL__", blueUrl)
+    .replaceAll("__FLOWER_URL__", flowerUrl)
+    .replaceAll("__PICNIC_URL__", picnicUrl)
+    .replaceAll("__PINK_URL__", pinkUrl);
 
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".intro");
   const main = buildGhostText(section.querySelector('[data-type="main"]'), MAIN_SEGMENTS);
+  const photos = [...section.querySelectorAll("[data-photo]")];
 
   async function playTyping() {
     await typeChars(main, 30);
+    landPhotos(photos);
   }
 
-  // photos are picked up by the single global observeReveals() call in
-  // main.js, once every section has been mounted.
-
-  // typing only plays once, the moment the section actually enters view
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
