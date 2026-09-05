@@ -1,63 +1,80 @@
+/* This whole section is deliberately taller than one screen (see
+   .intro-inner height below). There is no auto-play "phase switch" —
+   scrolling IS the animation: copy scrolls away at the top, the photo
+   cluster sits in the middle, and the phone + STEP 01 copy scroll up
+   into view from below, all at the same natural scroll speed. */
 .intro{
   position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
   overflow: hidden;
   background: #fff;
-  padding: 64px 0;
+  padding: 64px 0 64px;
+  /* this section spans both the "intro" and "clue board" scenes as one
+     continuous scroll — scroll-snap (set globally in base.css) would try
+     to pull the page back to the top of this section while scrolling
+     between the two scenes, which feels like an unwanted snap-back. */
+  scroll-snap-align: none;
 }
 
-.intro-dots{
+/* two independent background zones — edit each one separately.
+   bg-zone--intro covers the copy+photos area (top 100vh); bg-zone--board
+   covers everything from the phone downward. Swap in whatever background
+   (color, gradient, image) you want for either, independently. */
+.bg-zone{
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  width: 100%; height: 48%;
-  object-fit: cover;
+  left: 0; width: 100%;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
+}
+.bg-zone--intro{
+  top: 0; height: 100vh;
+  background: #fff;
+}
+.bg-zone--board{
+  top: 100vh; height: calc(100% - 100vh);
+}
+.bg-zone img{
+  width: 100%; height: 100%;
+  object-fit: cover;
 }
 
 .intro-inner{
   position: relative;
   z-index: 1;
-  max-width: 1240px;
+  max-width: 1440px;
+  height: 200vh;
   margin: 0 auto;
-  width: 100%;
-  padding: 0 40px;
-  display: flex;
-  align-items: center;
-  gap: 56px;
-  flex-wrap: wrap;
 }
 
 /* ---------------------------------------------------------
-   Left: typewriter copy
+   Copy — sits near the top, scrolls away naturally
 --------------------------------------------------------- */
 .intro-copy{
-  flex: 1 1 380px;
+  position: absolute;
+  left: 5%; top: 2vh;
+  width: 36%;
   min-width: 280px;
-  margin-top: -400px; /* 원하는 만큼 음수/양수 조절 */
+  margin-top: 30px;
 }
 
 .intro-sub{
   margin: 0 0 18px;
   font-size: clamp(15px, 1.6vw, 24px);
   font-weight: 700;
-  color: #27272a; /* zinc-800 — static, not part of the typewriter */
+  color: #27272a;
 }
 
 .intro-heading{
   margin: 0;
-  font-size: clamp(28px, 4.2vw, 56px);
+  font-size: clamp(28px, 4.4vw, 64px);
   font-weight: 800;
   line-height: 1.4;
-  white-space: nowrap; /* only the manual <br> we insert should break lines */
+  white-space: nowrap;
 }
 
-/* typewriter characters: start pale, flip to real color once .typed lands */
 .type-ch{ transition: color .05s linear; }
-.type-ch.ink{ color: #e4e4e7; } /* zinc-200 ghost */
-.type-ch.ink.typed{ color: #27272a; } /* zinc-800 */
+.type-ch.ink{ color: #e4e4e7; }
+.type-ch.ink.typed{ color: #27272a; }
 .type-ch.accent{ color: #e4e4e7; }
 .type-ch.accent.typed{ color: var(--red); }
 
@@ -72,21 +89,10 @@
 }
 @keyframes type-blink{ 50%{ opacity: 0; } }
 
-/* ---------------------------------------------------------
-   Right: photo cluster (4 separate elements, each lands on its
-   own once the typewriter finishes — see intro.js)
---------------------------------------------------------- */
-.intro-right{
-  flex: 2 1 380px;
-  min-width: 280px;
-  max-width: 560px;    /* 크기 ↑ */
-  margin-top: 200px;    /* 아래로 ↓ */
-  margin-right: 100px;   /* 오른쪽 정렬 */
-}
-
-.intro-photos-wrap{
-  position: relative;
-  width: 100%;
+.photo-cluster{
+  position: absolute;
+  right: 8%; top: 28vh;
+  width: 46%;
   aspect-ratio: 561 / 442;
 }
 
@@ -99,6 +105,11 @@
 .photo-el.landed{
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+.photo-el.flying{
+  opacity: 0;
+  transform: translate(var(--fx), var(--fy)) scale(0.12);
+  transition: opacity .55s cubic-bezier(.55,0,1,.45), transform .55s cubic-bezier(.55,0,1,.45);
 }
 
 .tag-blue,
@@ -114,33 +125,247 @@
   font-size: clamp(11px, 1vw, 14px);
   color: #52525b;
 }
-.tag-blue{
-  left: 65.3%; top: 0%;
-  width: 34.7%; height: 24.5%;
-}
-.tag-pink{
-  left: 0%; top: 71.2%;
-  width: 26%; height: 21%;
-}
+.tag-blue{ left: 65.3%; top: 0%; width: 34.7%; height: 24.5%; }
+.tag-pink{ left: 0%; top: 71.2%; width: 26%; height: 21%; }
 
 .polaroid{
-  left: 23.1%; top: 11.1%;
-  width: 44.7%; height: 72.4%;
+  left: 26.1%; top: 12.1%;
+  width: 33.7%; height: 56.4%;
   margin: 0;
-  background: #ffffff00;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4.5% 4.5% 8%;
 }
-.polaroid img{
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
+.polaroid img{ width: 100%; height: 100%; object-fit: cover; }
 
 .picnic-photo{
   left: 53.7%; top: 36.5%;
-  width: 37.6%; height: 62.9%;
+  width: 40.6%; height: 72.9%;
   object-fit: cover;
+}
+
+/* ---------------------------------------------------------
+   Phone + STEP 01 copy — further down, scrolls up into view
+   naturally as the person keeps scrolling. No fade-in trickery.
+--------------------------------------------------------- */
+.phone{
+  position: absolute;
+  left: 5%; top: 114vh;
+  width: 340px;
+  aspect-ratio: 285 / 593; /* matches the mockup image's own proportions */
+  z-index: 2;
+}
+.phone-bg{
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* the usable screen area within the frame image — measured directly off
+   the mockup (bezel excluded). Adjust these 4 numbers if you swap in a
+   differently-cropped phone image. */
+.phone-screen{
+  position: absolute;
+  left: 3.5%; top: 1.5%;
+  width: 93%; height: 97%;
+  border-radius: 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-statusbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 16px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #18181b;
+  background: #fff;
+  position: relative;
+  margin-bottom: 10px;
   z-index: -1;
+}
+.phone-icons{ display: flex; align-items: center; gap: 4px; }
+.phone-icons svg{ display: block; fill: #18181b; }
+.icon-signal{ width: 14px; height: 9px; }
+.icon-wifi{ width: 13px; height: 9px; }
+.icon-battery{ width: 19px; height: 9px; color: #18181b; }
+
+.phone-header{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 16px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #18181b;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+  position: relative;
+  z-index: -1;
+}
+.phone-header .back{ color: #a1a1aa; font-size: 16px; }
+
+.phone-board{
+  position: relative;
+  flex: 1;
+  padding: 12px;
+  overflow: hidden;
+}
+.phone-board-dots{
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: .5;
+  pointer-events: none;
+}
+
+.note{
+  position: absolute;
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity .3s cubic-bezier(.16,1,.3,1), transform .3s cubic-bezier(.16,1,.3,1);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: clamp(9px, 2.6vw, 11px);
+  line-height: 1.35;
+  color: #52525b;
+}
+.note.landed{ opacity: 1; transform: scale(1); }
+
+.note-blue{
+  left: 4.2%; top: 5.7%;
+ width: 41.1%; height: 17.8%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+  font-size: clamp(8px, 2.2vw, 10.5px);
+}
+
+
+.note-photo2{
+  left: 45.2%; top: 18.7%;
+  width: 49%; height: 33.4%;
+  margin: 0;
+  transform: scale(.5) rotate(4deg);
+}
+.note-photo2.landed{ transform: scale(1) rotate(4deg); }
+.note-photo2 img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.note-photo1{
+  left: 2.7%; top: 46%;
+  width: 45.6%; height: 30.3%;
+  margin: 0;
+  transform: scale(.5) rotate(-5deg);
+}
+.note-photo1.landed{ transform: scale(1) rotate(-5deg); }
+.note-photo1 img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.note-pink{
+  left: 51.7%; top: 68%;
+  width: 41.1%; height: 17.8%;
+  background: #fecdd3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+  font-size: clamp(8px, 2.2vw, 10.5px);
+}
+
+.phone-input{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 10px 30px;
+  background: #fff;
+  position: relative;
+  z-index: -1;
+  
+}
+.phone-input-pill{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 7px 6px 7px 14px;
+  border: 1.5px solid var(--red);
+  border-radius: 999px;
+  min-width: 0;
+}
+.phone-input-text{
+  font-size: 11px;
+  color: #a1a1aa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.phone-send-btn{
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-input-btn{
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.step1-copy{
+  position: absolute;
+  left: 42%; top: 155vh;
+  width: 44%;
+  min-width: 260px;
+}
+.step1-label{
+  margin: 0 0 8px;
+  color: var(--red);
+  font-weight: 700;
+  font-size: clamp(40px, 2.4vw, 32px);
+}
+.step1-copy h3{
+  margin: 0 0 12px;
+  font-size: clamp(38px, 2.2vw, 32px);
+  font-weight: 800;
+  color: #0c0a09;
+  white-space: nowrap;
+}
+.step1-desc{
+  margin: 0;
+  color: #78716c;
+  font-size: clamp(24px, 1.1vw, 20px);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px){
+  .intro-inner{ height: auto; min-height: 0; }
+  .intro-copy, .photo-cluster, .phone, .step1-copy{
+    position: static; width: auto; margin: 0 24px 32px; left: auto; top: auto; right: auto;
+  }
+  .photo-cluster{ width: 90%; margin: 0 auto 32px; }
+  .phone{ margin: 0 auto 32px; }
 }

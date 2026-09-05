@@ -14,7 +14,7 @@ mountHero(app);
 mountWhyHard(app);
 mountPainPoints(app);
 mountInsight(app);
-mountIntro(app);
+mountIntro(app); // now includes the clue-board phone sequence too
 
 // scroll-in reveal for every [data-reveal] element across all sections —
 // call this again with a specific root if a section is added dynamically
