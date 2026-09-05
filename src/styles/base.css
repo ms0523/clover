@@ -14,11 +14,13 @@ html, body{
   font-family: "NanumSquareOTF","Nanum Gothic","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 }
 
-/* section-by-section scroll snapping. mandatory = always snaps to the
-   nearest section edge; use "proximity" instead if you want it to feel
-   optional/looser rather than locking on every scroll. */
+/* section-by-section scroll snapping. "proximity" only snaps when you're
+   already close to a section edge, so it doesn't fight your scroll
+   momentum the way "mandatory" does — feels much smoother, especially on
+   a trackpad. scroll-behavior: smooth eases the final settle into place. */
 html{
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
 }
 
 img, svg{ max-width: 100%; display: block; }
@@ -31,5 +33,18 @@ section{
   position: relative;
   width: 100%;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+}
+
+/* scroll-in reveal: hidden until observe.js adds .in-view (see
+   utils/reveal.js). --reveal-delay lets a section stagger multiple
+   elements by setting it inline, e.g. style="--reveal-delay: .15s" */
+[data-reveal]{
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s ease;
+  transition-delay: var(--reveal-delay, 0s);
+}
+[data-reveal].in-view{
+  opacity: 1;
+  transform: translateY(0);
 }
