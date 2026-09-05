@@ -1,0 +1,29 @@
+/* NanumSquareOTF, mapped to a single family so font-weight:300/400/700/800
+   picks the right file automatically. Currently loaded from Naver's CDN —
+   swap the url()s for local files in src/assets/fonts/ if you'd rather
+   self-host (recommended for production, avoids an external CDN dependency). */
+
+@font-face{
+  font-family: "NanumSquareOTF";
+  font-weight: 400;
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareR.woff) format("woff"),
+       url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareR.ttf) format("truetype");
+}
+@font-face{
+  font-family: "NanumSquareOTF";
+  font-weight: 300;
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareL.woff) format("woff"),
+       url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareL.ttf) format("truetype");
+}
+@font-face{
+  font-family: "NanumSquareOTF";
+  font-weight: 700;
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareB.woff) format("woff"),
+       url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareB.ttf) format("truetype");
+}
+@font-face{
+  font-family: "NanumSquareOTF";
+  font-weight: 800;
+  src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareEB.woff) format("woff"),
+       url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareEB.ttf) format("truetype");
+}
