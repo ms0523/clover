@@ -1,6 +1,7 @@
 import "./intro.css";
 import introHtml from "./intro.html?raw";
-import dotsUrl from "../../assets/images/intro-dots.png";
+import clueBoardDotsUrl from "../../assets/images/clue-board-dots.png";
+import phoneUrl from "../../assets/images/phone-mockup.png";
 import blueUrl from "../../assets/images/blue-sticky.png";
 import flowerUrl from "../../assets/images/intro-image-1.png";
 import picnicUrl from "../../assets/images/intro-image-2.png";
@@ -14,10 +15,6 @@ const MAIN_SEGMENTS = [
   { text: "떠올리는 것부터 시작합니다.", cls: "ink" },
 ];
 
-// Renders `segments` into `el` as one <span class="type-ch"> per character
-// (all in their pale "ghost" color from the start, full sentence already
-// laid out) plus a single blinking cursor node. Returns the char spans and
-// the cursor so typeChars() can reveal them in order.
 function buildGhostText(el, segments) {
   el.innerHTML = "";
   segments.forEach(({ text, cls }) => {
@@ -39,10 +36,6 @@ function buildGhostText(el, segments) {
   return { chars: [...el.querySelectorAll(".type-ch")], cursor };
 }
 
-// Reveals `chars` one at a time (adds .typed, which flips ghost -> real
-// color via CSS), moving the cursor to sit right after whichever character
-// was just typed — this stays correct across the manual line break since
-// it's real DOM position, not a geometric clip.
 function typeChars({ chars, cursor }, speedMs) {
   return new Promise((resolve) => {
     cursor.style.visibility = "visible";
@@ -61,15 +54,38 @@ function typeChars({ chars, cursor }, speedMs) {
   });
 }
 
-function landPhotos(els, staggerMs = 200) {
+function landPhotos(els, staggerMs = 130) {
   els.forEach((el, i) => {
     setTimeout(() => el.classList.add("landed"), i * staggerMs);
   });
 }
 
+// Measures where each photo ACTUALLY is on screen right now (wherever the
+// person has scrolled to) and where the phone board actually is, then
+// flies it there. Same element the whole time — nothing is swapped in or
+// out — so there's no "jump", just this element moving.
+function flyIntoPhone(pairs, targetEl, { flightMs = 550, noteDelayRatio = 0.82, staggerMs = 220 } = {}) {
+  const targetRect = targetEl.getBoundingClientRect();
+  const targetCenterX = targetRect.left + targetRect.width / 2;
+  const targetCenterY = targetRect.top + targetRect.height / 2;
+
+  pairs.forEach(({ photo, note }, i) => {
+    setTimeout(() => {
+      const r = photo.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      photo.style.setProperty("--fx", `${targetCenterX - cx}px`);
+      photo.style.setProperty("--fy", `${targetCenterY - cy}px`);
+      photo.classList.add("flying");
+      setTimeout(() => note.classList.add("landed"), flightMs * noteDelayRatio);
+    }, i * staggerMs);
+  });
+}
+
 export function mountIntro(mountEl) {
   const html = introHtml
-    .replaceAll("__DOTS_URL__", dotsUrl)
+    .replaceAll("__CLUEBOARD_DOTS_URL__", clueBoardDotsUrl)
+    .replaceAll("__PHONE_URL__", phoneUrl)
     .replaceAll("__BLUE_URL__", blueUrl)
     .replaceAll("__FLOWER_URL__", flowerUrl)
     .replaceAll("__PICNIC_URL__", picnicUrl)
@@ -78,24 +94,43 @@ export function mountIntro(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".intro");
+  const copy = section.querySelector("[data-copy]");
+  const phoneBoard = section.querySelector("[data-phone-board]");
   const main = buildGhostText(section.querySelector('[data-type="main"]'), MAIN_SEGMENTS);
+
   const photos = [...section.querySelectorAll("[data-photo]")];
+  const pairs = photos.map((photo) => ({
+    photo,
+    note: section.querySelector(`[data-note="${photo.dataset.photoKey}"]`),
+  }));
 
-  async function playTyping() {
-    await typeChars(main, 30);
-    landPhotos(photos);
-  }
-
-  const io = new IntersectionObserver(
+  // 1) typing plays once, when the heading scrolls into view
+  const typeIO = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          playTyping();
-          io.unobserve(entry.target);
+          typeChars(main, 30).then(() => landPhotos(photos));
+          typeIO.unobserve(entry.target);
         }
       });
     },
-    { threshold: 0.35 }
+    { threshold: 0.5 }
   );
-  io.observe(section);
+  typeIO.observe(copy);
+
+  // 2) the fly-into-phone plays once, independently, whenever the phone
+  // itself scrolls into view — completely separate scroll trigger, not
+  // tied to a timer or to the typing sequence at all.
+  const flyIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          flyIntoPhone(pairs, phoneBoard);
+          flyIO.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.45 }
+  );
+  flyIO.observe(phoneBoard);
 }
