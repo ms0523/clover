@@ -18,7 +18,6 @@ export function mountHero(mountEl) {
   const track = stage.querySelector(".track");
   const scissors = stage.querySelector(".scissors");
   const openLabel = stage.querySelector(".open-label");
-  const replayBtn = stage.querySelector(".replay");
   const cta = stage.querySelector(".hero-cta");
 
   let progress = 0; // 0..1 — how far the wedge's TIP has travelled
@@ -47,8 +46,6 @@ export function mountHero(mountEl) {
     openLabel.style.setProperty("--label-op", progress > 0.88 ? 0 : 1);
     scissors.style.opacity = cutPct >= 100 ? 0 : 1;
     track.style.opacity = Math.max(0, 1 - progress / OPEN_TARGET);
-
-    replayBtn.classList.toggle("hide", progress < OPEN_TARGET - 0.005);
   }
 
   function glideTo(target, duration) {
@@ -76,13 +73,11 @@ export function mountHero(mountEl) {
     await glideTo(OPEN_TARGET, 2600);
   }
 
-  replayBtn.addEventListener("click", () => {
-    glideTo(0, 900).then(() => wait(250)).then(autoPlay);
-  });
-
   cta.addEventListener("click", (e) => e.stopPropagation());
 
   autoPlay();
 
+  // no visible "replay" button anymore, but the capability stays available
+  // programmatically if a future section wants to trigger it again.
   return { replay: () => glideTo(0, 900).then(() => wait(250)).then(autoPlay) };
 }

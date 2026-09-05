@@ -1,0 +1,44 @@
+.insight{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-message{
+  background: #f5f5f4; /* stone-100 */
+  padding: 64px 24px;
+  text-align: center;
+}
+.insight-message p{
+  margin: 0 0 10px;
+  font-size: clamp(16px, 1.6vw, 22px);
+  color: #71717a; /* zinc-500 */
+}
+.insight-message p:last-child{ margin-bottom: 0; }
+.insight-message p.strong{
+  color: #3f3f46; /* zinc-700 */
+  font-weight: 700;
+}
+
+.insight-cards{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  background: #fff;
+  padding: 48px 24px;
+}
+
+.insight-card{
+  width: 268px;
+  height: 380px;
+  border-radius: 24px;
+  background: #d9d9d9;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px){
+  .insight-card{ width: 42vw; height: 58vw; max-width: 268px; max-height: 380px; }
+}
