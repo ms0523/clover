@@ -1,0 +1,125 @@
+.intro{
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #fff;
+  padding: 64px 0;
+}
+
+.intro-dots{
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  width: 100%; height: 48%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.intro-inner{
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------
+   Left: typewriter copy
+--------------------------------------------------------- */
+.intro-copy{
+  flex: 1 1 380px;
+  min-width: 280px;
+  margin-top: -400px; /* 원하는 만큼 음수/양수 조절 */
+}
+
+.intro-sub{
+  margin: 0 0 18px;
+  font-size: clamp(15px, 1.6vw, 24px);
+  font-weight: 700;
+  color: #27272a; /* zinc-800 — static, not part of the typewriter */
+}
+
+.intro-heading{
+  margin: 0;
+  font-size: clamp(28px, 4.2vw, 56px);
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap; /* only the manual <br> we insert should break lines */
+}
+
+/* typewriter characters: start pale, flip to real color once .typed lands */
+.type-ch{ transition: color .05s linear; }
+.type-ch.ink{ color: #e4e4e7; } /* zinc-200 ghost */
+.type-ch.ink.typed{ color: #27272a; } /* zinc-800 */
+.type-ch.accent{ color: #e4e4e7; }
+.type-ch.accent.typed{ color: var(--red); }
+
+.type-cursor{
+  display: inline-block;
+  width: 4px;
+  height: 0.85em;
+  margin-left: 2px;
+  background: var(--red);
+  vertical-align: -0.12em;
+  animation: type-blink 0.9s steps(1) infinite;
+}
+@keyframes type-blink{ 50%{ opacity: 0; } }
+
+/* ---------------------------------------------------------
+   Right: photo cluster + supporting copy underneath
+--------------------------------------------------------- */
+.intro-right{
+  flex: 2 1 380px;
+  min-width: 280px;
+  max-width: 560px;    /* 크기 ↑ */
+  margin-top: 200px;    /* 아래로 ↓ */
+  margin-right: 100px;   /* 오른쪽 정렬 */
+}
+
+.intro-photos-wrap{
+  width: 100%;
+  aspect-ratio: 561 / 442;
+  overflow: hidden;
+}
+
+.intro-photos{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: .5;
+  transform: translateY(22px) scale(1.04);
+  transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+}
+.intro-photos.in-view{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.intro-footer{
+  margin-top: 32px;
+}
+.intro-label{
+  margin: 0 0 8px;
+  color: var(--red);
+  font-weight: 700;
+  font-size: clamp(20px, 2vw, 28px);
+}
+.intro-footer h3{
+  margin: 0 0 10px;
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 800;
+  color: #0c0a09;
+}
+.intro-desc{
+  margin: 0;
+  color: #78716c;
+  font-size: clamp(14px, 1.2vw, 20px);
+  line-height: 1.6;
+}
