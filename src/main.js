@@ -6,6 +6,7 @@ import { mountWhyHard } from "./sections/why-hard/why-hard.js";
 import { mountPainPoints } from "./sections/pain-points/pain-points.js";
 import { mountInsight } from "./sections/insight/insight.js";
 import { mountIntro } from "./sections/intro/intro.js";
+import { mountCloverAi } from "./sections/clover-ai/clover-ai.js";
 import { observeReveals } from "./utils/reveal.js";
 
 const app = document.querySelector("#app");
@@ -14,9 +15,7 @@ mountHero(app);
 mountWhyHard(app);
 mountPainPoints(app);
 mountInsight(app);
-mountIntro(app); // now includes the clue-board phone sequence too
+mountIntro(app); // includes the clue-board phone sequence
+mountCloverAi(app); // STEP 02
 
-// scroll-in reveal for every [data-reveal] element across all sections —
-// call this again with a specific root if a section is added dynamically
-// later (e.g. infinite-scroll content).
 observeReveals();
