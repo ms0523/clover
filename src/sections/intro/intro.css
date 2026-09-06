@@ -1,24 +1,13 @@
-/* This whole section is deliberately taller than one screen (see
-   .intro-inner height below). There is no auto-play "phase switch" —
-   scrolling IS the animation: copy scrolls away at the top, the photo
-   cluster sits in the middle, and the phone + STEP 01 copy scroll up
-   into view from below, all at the same natural scroll speed. */
 .intro{
   position: relative;
   overflow: hidden;
   background: #fff;
   padding: 64px 0 64px;
-  /* this section spans both the "intro" and "clue board" scenes as one
-     continuous scroll — scroll-snap (set globally in base.css) would try
-     to pull the page back to the top of this section while scrolling
-     between the two scenes, which feels like an unwanted snap-back. */
+
   scroll-snap-align: none;
 }
 
-/* two independent background zones — edit each one separately.
-   bg-zone--intro covers the copy+photos area (top 100vh); bg-zone--board
-   covers everything from the phone downward. Swap in whatever background
-   (color, gradient, image) you want for either, independently. */
+
 .bg-zone{
   position: absolute;
   left: 0; width: 100%;
@@ -180,7 +169,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 16px 2px;
+  padding: 40px 16px 2px;
   font-size: 11px;
   font-weight: 600;
   color: #18181b;
@@ -240,7 +229,7 @@
 
 .note-blue{
   left: 4.2%; top: 5.7%;
- width: 41.1%; height: 17.8%;
+  width: 41.1%; height: 17.8%;
   background: #e2e8f0;
   display: flex;
   align-items: center;
@@ -251,7 +240,6 @@
   overflow: visible;
   font-size: clamp(8px, 2.2vw, 10.5px);
 }
-
 
 .note-photo2{
   left: 45.2%; top: 18.7%;
@@ -290,8 +278,7 @@
   margin: 0 10px 30px;
   background: #fff;
   position: relative;
-  z-index: -1;
-  
+  z-index: 1;
 }
 .phone-input-pill{
   flex: 1;
@@ -344,11 +331,11 @@
   margin: 0 0 8px;
   color: var(--red);
   font-weight: 700;
-  font-size: clamp(40px, 2.4vw, 32px);
+  font-size: clamp(32px, 2.4vw, 40px);
 }
 .step1-copy h3{
   margin: 0 0 12px;
-  font-size: clamp(38px, 2.2vw, 32px);
+  font-size: clamp(32px, 2.2vw, 38px);
   font-weight: 800;
   color: #0c0a09;
   white-space: nowrap;
@@ -356,7 +343,7 @@
 .step1-desc{
   margin: 0;
   color: #78716c;
-  font-size: clamp(24px, 1.1vw, 20px);
+  font-size: clamp(20px, 1.1vw, 24px);
   line-height: 1.6;
   white-space: nowrap;
 }
@@ -368,4 +355,7 @@
   }
   .photo-cluster{ width: 90%; margin: 0 auto 32px; }
   .phone{ margin: 0 auto 32px; }
+  .step1-label{ font-size: 28px; line-height: 1.4; }
+  .step1-copy h3{ font-size: 22px; line-height: 1.4; white-space: normal; }
+  .step1-desc{ font-size: 16px; line-height: 1.6; white-space: normal; }
 }

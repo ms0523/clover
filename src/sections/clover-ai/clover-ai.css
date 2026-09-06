@@ -1,0 +1,222 @@
+.clover-ai{
+  position: relative;
+  overflow: hidden;
+  background: #fffefc;
+  padding: 48px 0;
+}
+
+.clover-ai-bg{
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.clover-ai-inner{
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  aspect-ratio: 1440 / 982;
+}
+
+/* ---------------------------------------------------------
+   Left copy
+--------------------------------------------------------- */
+.clover-ai-copy{
+  position: absolute;
+  left: 20%; top: 55%;
+  width: 42%;
+  min-width: 280px;
+}
+
+.step2-label{
+  margin: 0 0 6px;
+  color: var(--red);
+  font-weight: 700;
+  font-size: clamp(22px, 2.8vw, 40px);
+  line-height: 1.4;
+  text-align: right;
+}
+
+.step2-heading{
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: clamp(20px, 2.2vw, 32px);
+  font-weight: 800;
+  color: #0c0a09;
+  line-height: 1.4;
+  text-align: right;
+}
+.step2-heading .badge{
+  height: 2em; 
+  width: auto;
+  display: block;
+  transform: translateY(-12px); 
+}
+
+.step2-desc{
+  margin: 0;
+  text-align: right;
+  color: #6a6869;
+  font-size: clamp(13px, 1.4vw, 20px);
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------
+   Network: pin + connecting lines + scattered keywords
+--------------------------------------------------------- */
+.network{
+  position: absolute;
+  left: 34%; top: 4%;
+  width: 54%;
+  aspect-ratio: 548 / 253;
+}
+
+.pin{
+  position: absolute;
+  left: 13%; top: 6%;
+  width: 28px; height: 28px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* JS-generated connector lines land here, absolutely positioned thin
+   bars rotated to point from the pin to each keyword (or the phone) */
+.net-line{
+  position: absolute;
+  height: 2px;
+  background: var(--red);
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: .8;
+  z-index: 1;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+}
+.net-line.drawn{ transform: scaleX(1); }
+
+.kw{
+  position: absolute;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* gray ambient words - always softly blurred, never sharpen, just
+   decorative "loose clues" floating in the background */
+.kw-gray{
+  font-weight: 400;
+  font-size: clamp(13px, 1.3vw, 19px);
+  color: #b5b5b5;
+  filter: blur(1.5px);
+  z-index: 0;
+}
+
+/* the 4 real keywords (dokseo/vintage/yori/ivory) - same exact red,
+   start blurred/faded and sharpen into place when the section scrolls
+   into view, then (for the 3 with data-target) join the pin chain */
+.kw-red{
+  font-weight: 800;
+  color: #b21528;
+  font-size: clamp(18px, 1.9vw, 27px);
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(.16,1,.3,1), filter .5s ease;
+}
+.kw-red.kw-lg{ font-size: clamp(24px, 2.6vw, 36px); }
+.kw-red.revealed{
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+[data-target].kw-red::before{
+  content: "";
+  position: absolute;
+  left: -22px; top: 50%;
+  width: 16px; height: 16px;
+  background-image: url("../../assets/images/clover-ai-pin.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+[data-target].kw-red.revealed::before{ opacity: 1; }
+
+/* ---------------------------------------------------------
+   Phone — hidden until the last connector line reaches it, then
+   pops in with an overshoot bounce + a brief glow ring ("후킹")
+--------------------------------------------------------- */
+.ai-phone{
+  position: absolute;
+  right: 4%; top: 27%;
+  width: 18%;
+  min-width: 220px;
+  aspect-ratio: 285 / 593;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(.45) rotate(-10deg) translateY(24px);
+  transition: opacity .5s ease, transform .6s cubic-bezier(.2,1.4,.4,1);
+}
+.ai-phone.enter{
+  opacity: 1;
+  transform: scale(1) rotate(0) translateY(0);
+}
+.ai-phone.enter .ai-phone-glow{
+  animation: phone-glow-pulse .7s ease-out;
+}
+
+.ai-phone-bg{
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.ai-phone-screen{
+  position: absolute;
+  left: 4.5%; top: 2.6%;
+  width: 91%; height: 94.8%;
+  border-radius: 26px;
+  overflow: hidden;
+}
+.ai-phone-fill{
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ai-phone-glow{
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 60%; height: 60%;
+  transform: translate(-50%,-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178,21,40,.35) 0%, rgba(178,21,40,0) 70%);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+}
+@keyframes phone-glow-pulse{
+  0%{ opacity: 0; transform: translate(-50%,-50%) scale(.4); }
+  40%{ opacity: 1; transform: translate(-50%,-50%) scale(1.3); }
+  100%{ opacity: 0; transform: translate(-50%,-50%) scale(1.8); }
+}
+
+@media (max-width: 900px){
+  .clover-ai-inner{ aspect-ratio: auto; height: auto; min-height: 0; }
+  .clover-ai-copy, .network, .ai-phone{
+    position: static; width: auto; margin: 0 auto 32px; left: auto; top: auto; right: auto;
+  }
+  .clover-ai-copy{ padding: 0 24px; }
+  .step2-desc{ text-align: left; }
+  .network{ height: 220px; margin: 0 24px 32px; }
+  .ai-phone{ width: 220px; margin: 0 auto 32px; }
+}
