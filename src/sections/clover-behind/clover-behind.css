@@ -1,0 +1,129 @@
+.gb-band{
+  position: relative;
+}
+.gb-bg{
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  z-index: 0;
+}
+.gb-inner{
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 80px 24px 100px;
+  box-sizing: border-box;
+}
+
+.gb-ribbon{
+  display: block;
+  margin: 0 auto 14px;
+  height: 22px;
+  width: auto;
+}
+
+.gb-title{
+  margin: 0 0 24px;
+  color: #fffefc;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+}
+.gb-sub{
+  margin: 0 0 48px;
+  color: #f5f4f4;
+  font-size: clamp(15px, 1.5vw, 20px);
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   Cards — slide up from below, smoothly (no bounce), staggered
+--------------------------------------------------------- */
+.gb-cards{
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+.gb-card{
+  width: 235px;
+  border-radius: 14px;
+  padding: 28px 22px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity .6s ease-out, transform .6s ease-out;
+  transition-delay: calc(var(--i) * 180ms);
+}
+.gb-card.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+.gb-card--blue{ background: #c7d8ea; }
+.gb-card--yellow{ background: #f8dc83; }
+.gb-card--pink{ background: #ec8baf; }
+
+.gb-card h4{
+  margin: 0;
+  font-size: clamp(20px, 2vw, 25px);
+  font-weight: 700;
+  color: #0a0406;
+}
+.gb-card > p{
+  margin: 0;
+  font-size: 13px;
+  color: #312f30;
+  line-height: 1.4;
+}
+.gb-note{
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #312f30 !important;
+}
+
+.gb-art{
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gb-art img{
+  max-width: 100%;
+  max-height: 145px;
+  object-fit: contain;
+}
+
+/* ---------------------------------------------------------
+   Typing line — starts only after the cards have finished landing
+--------------------------------------------------------- */
+.gb-typing{
+  margin: 0;
+  min-height: 28px;
+  color: #b8b7b7;
+  font-size: clamp(14px, 1.4vw, 16px);
+}
+.gb-typing::after{
+  content: "";
+  display: inline-block;
+  width: 2px; height: 1em;
+  margin-left: 2px;
+  background: #b8b7b7;
+  vertical-align: -0.15em;
+  animation: gb-blink 0.9s steps(1) infinite;
+}
+.gb-typing.done::after{
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes gb-blink{ 50%{ opacity: 0; } }
+
+@media (max-width: 900px){
+  .gb-cards{ flex-direction: column; align-items: center; }
+}
