@@ -7,6 +7,7 @@ import { mountPainPoints } from "./sections/pain-points/pain-points.js";
 import { mountInsight } from "./sections/insight/insight.js";
 import { mountIntro } from "./sections/intro/intro.js";
 import { mountCloverAi } from "./sections/clover-ai/clover-ai.js";
+import { mountCloverGift } from "./sections/clover-gift/clover-gift.js";
 import { observeReveals } from "./utils/reveal.js";
 
 const app = document.querySelector("#app");
@@ -17,5 +18,6 @@ mountPainPoints(app);
 mountInsight(app);
 mountIntro(app); // includes the clue-board phone sequence
 mountCloverAi(app); // STEP 02
+mountCloverGift(app); // STEP 03
 
 observeReveals();
