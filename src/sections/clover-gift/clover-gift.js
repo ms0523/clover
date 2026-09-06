@@ -1,6 +1,6 @@
 import "./clover-gift.css";
 import cloverGiftHtml from "./clover-gift.html?raw";
-import phoneFrameUrl from "../../assets/images/phone-mockup.png";
+import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
 import phoneScreenUrl from "../../assets/images/clover-gift-screen.svg";
 import productUrl from "../../assets/images/clover-gift-product.png";
 

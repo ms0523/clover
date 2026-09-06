@@ -19,7 +19,7 @@ html, body{
    momentum the way "mandatory" does — feels much smoother, especially on
    a trackpad. scroll-behavior: smooth eases the final settle into place. */
 html{
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
