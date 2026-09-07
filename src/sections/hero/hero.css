@@ -13,52 +13,92 @@
   overflow: hidden;
 }
 
-.hero-nav{
+.hero-cta-group{
   position: absolute;
-  left: 7.0833%; top: 10.68%; width: 46.7%;
-  display: flex; align-items: center; justify-content: space-between;
-  color: var(--red);
-  font-size: 20px; line-height: 32px; font-weight: 700;
-  white-space: nowrap;
-  z-index: 2;
+  left: 50%; top: 68%;
+  transform: translateX(-50%);
+  transition: transform .18s ease;
 }
-.hero-nav .brand{ display: flex; align-items: center; gap: 26px; }
-.hero-nav .plus{ font-weight: 400; }
+.hero-cta-group:hover{ transform: translateX(-50%) translateY(-2px); }
 
-.hero-rule{
-  position: absolute;
-  left: 0; top: 16.99%; width: 88.33%; height: 3px;
-  background: linear-gradient(to right, rgba(185,28,28,0) 0%, var(--red) 42%, var(--red) 100%);
+.hero-cta-ribbon{
+  display: block;
+  margin: 0 auto 6px;
+  width: 118px; height: auto;
 }
-.hero-rule::after{
+
+/* dashed above the dot, solid fading-out gradient below it. Both segments
+   and the horizontal ticks use repeating-linear-gradient instead of
+   border-style:dashed, so the dash length (10px) and gap (7px) are both
+   explicit and consistent — a native dashed border's auto-sized dashes
+   were too small and didn't line up cleanly with the solid segment. */
+.hero-side-line{
+  position: absolute;
+  top: 23.4%; /* anchored at the dot itself, not the very top */
+  width: 0;
+  z-index: 1;
+}
+.hero-side-line--left{ left: 5.5%; }
+.hero-side-line--right{ left: 94.4%; }
+
+.hero-side-line::before{
+  /* dashed segment, dot up toward the very top of the frame */
   content: "";
-  position: absolute; left: 100%; top: 0; width: 168px;
-  border-top: 3px dashed var(--red);
-  opacity: .95;
+  position: absolute;
+  left: -1px; bottom: 100%;
+  width: 2px;
+  height: 220px; /* stretches up close to the top edge */
+  background-image: repeating-linear-gradient(
+    to top, var(--red) 0 10px, transparent 10px 17px
+  );
+}
+.hero-side-line::after{
+  /* solid segment, dot down toward the very bottom, fading out. Same 2px
+     width and left:-1px as the dashed segment above, so both halves sit
+     on the exact same vertical axis instead of drifting by a pixel. */
+  content: "";
+  position: absolute;
+  left: -1px; top: 0;
+  width: 2px;
+  height: 680px; /* stretches down close to the bottom edge */
+  background: linear-gradient(to bottom, var(--red) 0%, var(--red) 75%, rgba(178,21,40,0) 100%);
 }
 
-.hero-line-top{
+/* the square marker sits exactly at (0,0) of .hero-side-line — the same
+   point both segments above are centered on — so it reads as sitting
+   right where the lines actually meet, not offset to one side. */
+.hero-side-line .dot{
   position: absolute;
-  left: 88.25%; top: 0; height: 16.99%;
-  width: 0; border-left: 3px dashed var(--red);
+  left: -4px; top: -4px;
+  width: 8px; height: 8px;
+  background: var(--red);
 }
-.hero-line-bottom{
+
+/* horizontal tick reaching all the way out to the frame's actual edge —
+   left side ticks from x=5.5% to x=0 (so its length is exactly 5.5% of
+   the viewport width), right side mirrors from x=94.4% to x=100%. */
+.hero-side-line .tick{
   position: absolute;
-  left: 88.25%; top: 16.99%; height: 71.01%;
-  width: 3px;
-  background: linear-gradient(to bottom, var(--red) 0%, var(--red) 77%, rgba(185,28,28,.12) 100%);
+  top: -1px;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    to right, var(--red) 0 10px, transparent 10px 17px
+  );
 }
+.hero-side-line--left .tick--out{ right: 0; width: 5.5vw; }
+.hero-side-line--right .tick--out{ left: 0; width: 5.6vw; }
 
 .hero-logo{
   position: absolute;
-  left: 34.03%; top: 27.39%; width: 47.29%; height: auto;
+  left: 9.86%; top: 7.23%; width: 80.3%; height: auto;
   display: block;
 }
 
 .hero-copy{
   position: absolute;
-  left: 33.0%; top: 47.82%; width: 46.2%; margin: 0;
-  text-align: right;
+  left: 50%; top: 83.2%; margin: 0;
+  transform: translateX(-50%);
+  text-align: center;
   font-size: 30px; line-height: 1.42; font-weight: 400; letter-spacing: -0.045em;
   color: var(--text);
   white-space: nowrap;
@@ -66,16 +106,16 @@
 .hero-copy .accent{ color: var(--red); font-weight: 700; }
 
 .hero-cta{
-  position: absolute;
-  left: 65.56%; top: 60.39%; width: 228px; height: 61px;
+  display: block;
+  width: 250px; height: 67px;
   border: 0; border-radius: 10px;
   background: var(--red);
   color: #fff;
   font-size: 20px; line-height: 32px; font-weight: 700;
   cursor: pointer;
-  transition: transform .18s ease, background .18s ease;
+  transition: background .18s ease;
 }
-.hero-cta:hover{ transform: translateY(-2px); background: #a91616; }
+.hero-cta-group:hover .hero-cta{ background: #a91616; }
 
 .hero-dots{
   position: absolute; left: 7.08%; bottom: 7.85%;
@@ -93,6 +133,16 @@
   background: var(--red);
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 0% 0%);
 }
+/* white logo sitting on the closed paper, positioned identically to
+   .hero-logo underneath — since it's a child of .paper, it gets the exact
+   same clip-path wedge cut as the tear animation progresses, so it tears
+   away in perfect sync and hands off to the red logo beneath it at
+   exactly the same spot rather than a mismatched crossfade. */
+.paper-logo{
+  position: absolute;
+  left: 9.86%; top: 7.23%; width: 80.3%; height: auto;
+  display: block;
+}
 
 /* guide line: fades out together with the tear progress */
 .track{
@@ -102,16 +152,18 @@
   z-index: 5;
 }
 .track .cut-line{
-  position: absolute; top: 0; height: 1px;
+  position: absolute; top: 0; height: 2px;
   background: #fff;
   left: 0;
   width: var(--cut-pct, 0%);
 }
 .track .ahead-line{
-  position: absolute; top: 0; height: 0;
+  position: absolute; top: 0; height: 2px;
   left: var(--cut-pct, 0%);
   right: 0;
-  border-top: 1px dashed rgba(255,255,255,0.85);
+  background-image: repeating-linear-gradient(
+    to right, #fff 0 12px, transparent 12px 22px
+  );
 }
 
 .open-label{
@@ -139,17 +191,13 @@
 .scissors svg{ width: 100%; height: 100%; display: block; }
 
 @media (max-width: 900px){
-  .hero-nav{ font-size: 14px; top: 8%; }
-  .hero-nav .brand{ gap: 14px; }
   .hero-copy{
     left: 10%; top: 48%; width: 80%;
     font-size: clamp(16px, 3vw, 24px);
     white-space: normal; text-align: right;
+    transform: none;
   }
   .hero-logo{ left: 15%; top: 29%; width: 70%; }
-  .hero-cta{
-    left: 50%; top: 63%; transform: translateX(-50%);
-    width: 210px; height: 56px; font-size: 17px;
-  }
-  .hero-cta:hover{ transform: translateX(-50%) translateY(-2px); }
+  .hero-cta-group{ top: 63%; }
+  .hero-cta{ width: 210px; height: 56px; font-size: 17px; }
 }

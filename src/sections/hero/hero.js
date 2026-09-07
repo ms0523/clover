@@ -1,6 +1,8 @@
 import "./hero.css";
 import heroHtml from "./hero.html?raw";
-import logoUrl from "../../assets/images/clover-logo.png";
+import logoUrl from "../../assets/images/hero-wordmark.svg";
+import whiteLogoUrl from "../../assets/images/hero-wordmark-white.svg";
+import ribbonUrl from "../../assets/images/hero-ribbon.svg";
 import { lerp, wait, easeFastMiddle } from "../../utils/animate.js";
 
 // Renders the hero section into `mountEl` and wires up the tear animation.
@@ -11,7 +13,13 @@ import { lerp, wait, easeFastMiddle } from "../../utils/animate.js";
 //   import { mountHero } from "./sections/hero/hero.js";
 //   mountHero(document.querySelector("#app"));
 export function mountHero(mountEl) {
-  mountEl.insertAdjacentHTML("beforeend", heroHtml.replace("__LOGO_URL__", logoUrl));
+  mountEl.insertAdjacentHTML(
+    "beforeend",
+    heroHtml
+      .replace("__LOGO_URL__", logoUrl)
+      .replace("__WHITE_LOGO_URL__", whiteLogoUrl)
+      .replace("__RIBBON_URL__", ribbonUrl)
+  );
 
   const stage = mountEl.querySelector(".hero-stage");
   const paper = stage.querySelector(".paper");
