@@ -1,7 +1,7 @@
 import "./intro.css";
 import introHtml from "./intro.html?raw";
 import clueBoardDotsUrl from "../../assets/images/clue-board-dots.png";
-import phoneUrl from "../../assets/images/phone-mockup.png";
+import phoneUrl from "../../assets/images/phone-mockup.svg";
 import blueUrl from "../../assets/images/blue-sticky.png";
 import flowerUrl from "../../assets/images/intro-image-1.png";
 import picnicUrl from "../../assets/images/intro-image-2.png";
