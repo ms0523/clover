@@ -2,7 +2,7 @@ import "./clover-ai.css";
 import cloverAiHtml from "./clover-ai.html?raw";
 import bgUrl from "../../assets/images/clover-ai-bg.png";
 import badgeUrl from "../../assets/images/clobunny-badge.png";
-import phoneFrameUrl from "../../assets/images/phone-mockup.png";
+import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
 import phoneScreenUrl from "../../assets/images/clover-ai-phone-screen.svg";
 
 const GAP = 10; // px kept clear at both ends so the line never touches the pin/dot

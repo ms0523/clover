@@ -1,6 +1,6 @@
 import "./clover-coupon.css";
 import cloverCouponHtml from "./clover-coupon.html?raw";
-import phoneFrameUrl from "../../assets/images/phone-mockup.png";
+import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
 import screenUrl from "../../assets/images/coupon-screen.svg";
 import barcodeUrl from "../../assets/images/coupon-barcode.svg";
 
