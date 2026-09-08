@@ -1,6 +1,7 @@
 import "./why-hard.css";
 import whyHardHtml from "./why-hard.html?raw";
 
+
 const WHY_HARD_CARDS = [
   { name: "겨울 장갑", price: "₩29,500", reason: "겨울에는 손이 시리니까" },
   { name: "핸드크림", price: "₩18,000", reason: "매일 손을 씻으니까" },
