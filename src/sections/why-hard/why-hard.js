@@ -10,24 +10,84 @@ const CARD_DATA = [
   { name: "손난로", price: "₩15,500", reason: "출퇴근길이 춥다고 했으니까" },
 ];
 
-// The static shell (heading, featured panel) lives in ./why-hard.html.
-// The wave of cards is data-driven, so it's generated here and dropped
-// into the empty [data-slot="cards"] element the HTML file reserves for it.
+const clamp01 = (value) => Math.max(0, Math.min(1, value));
+
+const applyReveal = (element, progress) => {
+  if (!element) return;
+
+  const p = clamp01(progress);
+  element.style.opacity = p.toFixed(3);
+  element.style.transform = `translateY(${(-26 * (1 - p)).toFixed(1)}px)`;
+};
+
 export function mountWhyHard(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", whyHardHtml);
 
-  const track = mountEl.querySelector('[data-slot="cards"]');
-  const cards = [...CARD_DATA, ...CARD_DATA]; // duplicated once for a seamless loop
+  const section = mountEl.querySelector(".why-hard:last-of-type");
+  if (!section) return;
 
-  track.innerHTML = cards
-    .map(
-      (c, i) => `
-        <div class="gift-card" style="--i:${i % CARD_DATA.length}">
-          <div class="gift-card-img"></div>
-          <div class="gift-card-name">${c.name}</div>
-          <div class="gift-card-price">${c.price}</div>
-          <div class="gift-card-reason"><span>이유</span><span>${c.reason}</span></div>
-        </div>`
-    )
-    .join("");
+  const track = section.querySelector('[data-slot="cards"]');
+  const thoughtLeft = section.querySelector('[data-thought="left"]');
+  const thoughtRight = section.querySelector('[data-thought="right"]');
+
+  if (track) {
+    const cards = [...CARD_DATA, ...CARD_DATA];
+
+    track.innerHTML = cards
+      .map(
+        (card, index) => `
+          <div class="gift-card" style="--i:${index % CARD_DATA.length}">
+            <div class="gift-card-img"></div>
+            <div class="gift-card-name">${card.name}</div>
+            <div class="gift-card-price">${card.price}</div>
+            <div class="gift-card-reason">
+              <span>이유</span>
+              <span>${card.reason}</span>
+            </div>
+          </div>
+        `
+      )
+      .join("");
+  }
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  );
+
+  const updateThoughts = () => {
+    if (prefersReducedMotion.matches) {
+      applyReveal(thoughtLeft, 1);
+      applyReveal(thoughtRight, 1);
+      return;
+    }
+
+    const rect = section.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || 1;
+    const entered = viewportHeight - rect.top;
+
+    const leftProgress =
+      (entered - viewportHeight * 0.1) / (viewportHeight * 0.42);
+    const rightProgress =
+      (entered - viewportHeight * 0.3) / (viewportHeight * 0.48);
+
+    applyReveal(thoughtLeft, leftProgress);
+    applyReveal(thoughtRight, rightProgress);
+  };
+
+  let rafId = 0;
+
+  const requestThoughtUpdate = () => {
+    if (rafId) return;
+
+    rafId = window.requestAnimationFrame(() => {
+      rafId = 0;
+      updateThoughts();
+    });
+  };
+
+  window.addEventListener("scroll", requestThoughtUpdate, { passive: true });
+  window.addEventListener("resize", requestThoughtUpdate);
+  prefersReducedMotion.addEventListener?.("change", requestThoughtUpdate);
+
+  updateThoughts();
 }
