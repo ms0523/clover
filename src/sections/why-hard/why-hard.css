@@ -1,86 +1,211 @@
 .why-hard{
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: #f5f5f4; /* stone-100 */
-  padding: 64px 0;
-  overflow: hidden;
+  position:relative;
+  min-height:118vh;
+  max-height:none !important;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  background:linear-gradient(to top,#F5F4F4 0%,#FFFEFC 100%);
+  padding:72px 0 84px;
+  overflow:hidden;
 }
 
-.why-hard-intro{
-  text-align: center;
-  padding: 0 24px 72px;
-}
-.why-hard-intro h2{
-  margin: 0 0 16px;
-  font-size: clamp(26px, 3.6vw, 48px);
-  font-weight: 800;
-  color: #0c0a09; /* stone-950 */
-}
-.why-hard-intro p{
-  margin: 0;
-  font-size: clamp(15px, 1.4vw, 24px);
-  color: #71717a; /* zinc-500 */
+.why-hard .why-hard-intro{
+  text-align:center;
+  padding:0 24px 120px;
 }
 
-/* ---------------------------------------------------------
-   The wave marquee: a flex row, duplicated once so it can
-   loop seamlessly, scrolling left forever. Each card also
-   bobs up and down with a delay offset by its index, so at
-   any instant the row reads as a travelling wave.
---------------------------------------------------------- */
-.wave-viewport{
-  overflow: hidden;
-  padding: 40px 0 64px;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+.why-hard .why-hard-intro h2{
+  margin:0 0 16px;
+  font-family:"NanumSquareOTF","Nanum Gothic","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:clamp(26px,3.6vw,48px);
+  font-weight:700;
+  color:#0c0a09;
 }
 
-.wave-track{
-  display: flex;
-  gap: 24px;
-  width: max-content;
-  animation: wave-scroll 26s linear infinite;
-}
-.wave-viewport:hover .wave-track{ animation-play-state: paused; }
-
-@keyframes wave-scroll{
-  from{ transform: translateX(0); }
-  to{ transform: translateX(-50%); } /* exactly half, since the list is duplicated */
+.why-hard .why-hard-intro p{
+  margin:0;
+  font-family:"NanumSquareOTF","Nanum Gothic","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:clamp(15px,1.4vw,24px);
+  font-weight:300;
+  color:#71717a;
 }
 
-.gift-card{
-  flex: 0 0 auto;
-  width: 224px;
-  padding: 20px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 4px 7px 19px 0 rgba(183,182,182,0.25);
-  animation: card-bob 2.6s ease-in-out infinite;
-  animation-delay: calc(var(--i, 0) * -0.28s);
+.why-hard .thought-row{
+  position:relative;
+  z-index:4;
+  width:100%;
+  display:flex;
+  pointer-events:none;
+  padding:0 clamp(28px,7.2vw,138px);
 }
 
-@keyframes card-bob{
-  0%, 100%{ transform: translateY(0); }
-  50%{ transform: translateY(-18px); }
+.why-hard .thought-row.left-row{
+  justify-content:flex-start;
+  min-height:84px;
+  align-items:flex-start;
 }
 
-.gift-card-img{
-  width: 100%;
-  height: 150px;
-  border-radius: 10px;
-  margin-bottom: 14px;
-  background: #f4f4f4;
-  border: 1.5px dashed #d9d9d7;
+.why-hard .thought-row.right-row{
+  justify-content:flex-end;
+  min-height:94px;
+  align-items:flex-start;
+  margin-top:4px;
+  padding-right:clamp(28px,10.5vw,202px);
 }
 
-.gift-card-name{ color: #78716c; font-size: 16px; } /* stone-500 */
-.gift-card-price{ color: #27272a; font-size: 20px; font-weight: 700; margin-top: 2px; }
-.gift-card-reason{
-  display: flex; gap: 14px;
-  margin-top: 10px; padding-top: 10px;
-  border-top: 1px solid #a1a1aa;
-  font-size: 14px; color: #78716c;
+.why-hard .thought-callout{
+  position:relative;
+  background:#B21528;
+  color:#FFFEFC;
+  font-family:"NanumSquareOTF","Nanum Gothic","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16px;
+  font-weight:400;
+  line-height:1.4;
+  padding:17px 28px;
+  white-space:nowrap;
+  box-shadow:0 8px 24px rgba(178,21,40,.08);
+  opacity:0;
+  transform:translateY(-26px);
+  will-change:opacity,transform;
+}
+
+.why-hard .thought-callout::before,
+.why-hard .thought-callout::after{
+  content:"";
+  position:absolute;
+  display:block;
+  background:#B21528;
+}
+
+.why-hard .thought-callout.left::before{
+  width:76px;
+  height:18px;
+  left:-14px;
+  bottom:-18px;
+}
+
+.why-hard .thought-callout.left::after{
+  width:34px;
+  height:13px;
+  left:-34px;
+  bottom:-37px;
+}
+
+.why-hard .thought-callout.right::before{
+  width:76px;
+  height:18px;
+  right:-14px;
+  bottom:-18px;
+}
+
+.why-hard .thought-callout.right::after{
+  width:34px;
+  height:13px;
+  right:-34px;
+  bottom:-37px;
+}
+
+.why-hard .wave-viewport{
+  position:relative;
+  z-index:2;
+  overflow:hidden;
+  padding:58px 0 66px;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+}
+
+.why-hard .wave-track{
+  display:flex;
+  gap:24px;
+  width:max-content;
+  animation:why-hard-wave-scroll 26s linear infinite;
+}
+
+.why-hard .wave-viewport:hover .wave-track{
+  animation-play-state:paused;
+}
+
+@keyframes why-hard-wave-scroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+
+.why-hard .gift-card{
+  flex:0 0 auto;
+  width:227px;
+  height:345px;
+  padding:20px;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:4px 7px 19px 0 rgba(183,182,182,.25);
+  animation:why-hard-card-bob 3.6s ease-in-out infinite;
+  animation-delay:calc(var(--i,0) * -0.38s);
+}
+
+@keyframes why-hard-card-bob{
+  0%,100%{transform:translateY(16px)}
+  50%{transform:translateY(-40px)}
+}
+
+.why-hard .gift-card-img{
+  width:100%;
+  height:150px;
+  border-radius:10px;
+  margin-bottom:14px;
+  background:#f4f4f4;
+  border:1.5px dashed #d9d9d7;
+}
+
+.why-hard .gift-card-name{
+  color:#78716c;
+  font-size:16px;
+  font-weight:300;
+}
+
+.why-hard .gift-card-price{
+  color:#27272a;
+  font-size:20px;
+  font-weight:700;
+  margin-top:2px;
+}
+
+.why-hard .gift-card-reason{
+  display:flex;
+  gap:12px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:.75px solid #B8B7B7;
+  font-size:14px;
+  font-weight:300;
+  color:#78716c;
+}
+
+.why-hard .gift-card-reason span:first-child{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+
+@media (max-width:900px){
+  .why-hard .thought-row{padding-left:24px;padding-right:24px}
+  .why-hard .thought-row.right-row{padding-right:24px}
+  .why-hard .thought-callout{font-size:16px;padding:14px 20px}
+}
+
+@media (max-width:560px){
+  .why-hard .thought-row{padding-left:16px;padding-right:16px}
+  .why-hard .thought-row.right-row{padding-right:16px}
+  .why-hard .thought-callout{font-size:16px;padding:12px 16px}
+  .why-hard .thought-callout::before{width:54px!important;height:14px!important;bottom:-14px!important}
+  .why-hard .thought-callout::after{width:24px!important;height:10px!important;bottom:-30px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .why-hard .wave-track,
+  .why-hard .gift-card{animation:none}
+
+  .why-hard .thought-callout{
+    opacity:1 !important;
+    transform:none !important;
+  }
 }
