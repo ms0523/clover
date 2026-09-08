@@ -1,9 +1,9 @@
 .intro{
   position: relative;
   overflow: hidden;
-  background: #fff;
+  background: #FFFEFC;
   padding: 64px 0 64px;
-
+  height: 200vh;
   scroll-snap-align: none;
 }
 
@@ -17,7 +17,7 @@
 }
 .bg-zone--intro{
   top: 0; height: 100vh;
-  background: #fff;
+  
 }
 .bg-zone--board{
   top: 100vh; height: calc(100% - 100vh);

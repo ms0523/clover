@@ -19,7 +19,6 @@ html, body{
    momentum the way "mandatory" does — feels much smoother, especially on
    a trackpad. scroll-behavior: smooth eases the final settle into place. */
 html{
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
@@ -34,7 +33,6 @@ section{
   width: 100%;
   scroll-snap-align: start;
   min-height: 100vh;
-  max-height: 100vh;
 }
 
 /* scroll-in reveal: hidden until observe.js adds .in-view (see
