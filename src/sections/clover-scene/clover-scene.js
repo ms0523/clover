@@ -3,7 +3,7 @@ import cloverSceneHtml from "./clover-scene.html?raw";
 import logoUrl from "../../assets/images/hero-wordmark-white.svg";
 import ribbonUrl from "../../assets/images/hero-ribbon.svg";
 import card1Url from "../../assets/images/scene-card1-gift.svg";
-import card2Url from "../../assets/images/scene-card2-photo.png";
+import card2Url from "../../assets/images/scene-card2-photo.svg";
 
 const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 const lerp = (a, b, t) => a + (b - a) * t;
