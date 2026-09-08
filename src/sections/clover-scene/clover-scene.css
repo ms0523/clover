@@ -8,6 +8,7 @@
   position: relative;
   height: 400vh; /* scroll-scrub distance — longer = slower/more gradual */
 }
+
 .scene-sticky{
   position: sticky;
   top: 0;
@@ -21,28 +22,37 @@
 }
 
 .scene-bg-glow{
-  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-  filter: blur(36px); /* a second, CSS-level blur stacked on top of the
-    SVG's own feGaussianBlur — one blur pass wasn't enough to fully melt
-    the edge away, especially early in the scroll when the rectangle is
-    still a thin sliver near the bottom */
-  transform: scale(1.08); /* slightly oversized so this extra blur
-    doesn't fade the color out right at the screen edges */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: blur(36px);
+  transform: scale(1.08);
 }
 
 .scene-headline{
-  position: relative; z-index: 2; text-align: center; padding: 0 40px;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 40px;
   bottom: 10%;
-  opacity: 0; transform: translateY(24px);
+  opacity: 0;
+  transform: translateY(24px);
   will-change: transform, opacity;
 }
+
 .scene-kicker{
-  display: block; font-size: clamp(40px, 3vw, 42px); font-weight: 300;
-  letter-spacing: 0.02em; color: rgba(255,255,255,0.92);
+  display: block;
+  font-size: clamp(40px, 3vw, 42px);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.92);
   line-height: 1.5;
   margin-bottom: 22px;
   transition: filter .1s linear;
 }
+
 .scene-logo{
   display: block;
   margin: 0 auto;
@@ -51,39 +61,64 @@
 }
 
 .scene-card-stage{
-  position: absolute; z-index: 3; inset: 0;
-  display: flex; align-items: center; justify-content: center; gap: 16px;
-  padding: 0 20px; pointer-events: none;
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  top: 60%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 20px;
+  pointer-events: none;
 }
+
 @media (max-width: 560px){
-  .scene-card-stage{ flex-direction: column; gap: 12px; }
+  .scene-card-stage{
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 
 .scene-flip-card{
   position: relative;
-  width: calc(291px * var(--s, 1.2 ));
-  height: calc(399px * var(--s, 1.2));
+  width: calc(291px * var(--s, 1.1));
+  height: calc(399px * var(--s, 1.1));
   transform-style: preserve-3d;
   will-change: transform;
   pointer-events: auto;
 }
+
 @media (max-width: 560px){
-  .scene-flip-card{ --s: 0.72; }
+  .scene-flip-card{
+    --s: 0.72;
+  }
 }
+
 .scene-card-inner{
-  position: absolute; top: 0; left: 0;
-  width: 291px; height: 399px;
-  transform: scale(var(--s, 1.2));
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 291px;
+  height: 399px;
+  transform: scale(var(--s, 1.0));
   transform-origin: top left;
   transform-style: preserve-3d;
 }
+
 .scene-card-face{
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   border-radius: 18px;
   box-shadow: 0 18px 40px -18px rgba(178,21,40,0.35);
   backface-visibility: hidden;
   overflow: hidden;
 }
+
+/* =========================
+   FRONT CARD
+========================= */
 
 .scene-card-face.scene-front{
   background: var(--red, #b91c1c);
@@ -91,84 +126,199 @@
   text-align: center;
   padding: 27px 24px 26px;
 }
+
 .scene-gift-title{
-  margin: 0 0 20px; color: #fff; font-weight: 800; font-size: 21px; letter-spacing: .01em;
-  font-family: "Termina", "NanumSquareOTF", sans-serif; /* Termina is a paid
-    Colophon Foundry font, not available via Google Fonts/CDN — this
-    declaration will use it automatically if it's installed locally or
-    self-hosted via @font-face later; otherwise it falls back cleanly */
+  margin: 0 0 20px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: .01em;
+  font-family: "Termina", "NanumSquareOTF", sans-serif;
 }
+
 .scene-gift-panel{
-  position: relative; background: var(--red-dark, #7f1414);
-  border-radius: 18px; padding: 6px;
+  position: relative;
+  background: var(--red-dark, #7f1414);
+  border-radius: 18px;
+  padding: 6px;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .scene-gift-grid{
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
-  gap: 4px; aspect-ratio: 1/1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  aspect-ratio: 1/1;
 }
-.scene-gift-tile{ background: #fff; border-radius: 14px; }
-.scene-gift-ribbon{ position: absolute; inset: 0; margin: auto; width: 46%; height: auto; display: block; pointer-events: none; }
+
+.scene-gift-tile{
+  background: #fff;
+  border-radius: 14px;
+}
+
+.scene-gift-ribbon{
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 46%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
 .scene-gift-caption{
-  margin: 18px 0 0; color: #fff; font-weight: 400; font-size: 12px; line-height: 1.65; opacity: .95;
+  margin: 18px 0 0;
+  color: #fff;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.65;
+  opacity: .95;
 }
+
+/* =========================
+   BACK CARD
+========================= */
 
 .scene-card-face.scene-back{
   background: #fffefc;
   transform: rotateY(180deg);
 }
+
+/* Title */
+
 .tf-title{
-  position: absolute; left: 24px; top: 43px;
-  color: var(--thoughtful-red); font-size: 32px; line-height: 44.8px;
-  font-family: 'Baskervville', serif; font-style: italic; font-weight: 400;
+  position: absolute;
+  left: 24px;
+  top: 43px;
+  color: var(--thoughtful-red);
+  font-size: 32px;
+  line-height: 44.8px;
+  font-family: 'Baskervville', serif;
+  font-style: italic;
+  font-weight: 400;
 }
+
+/* Description */
+
 .tf-desc{
-  position: absolute; left: 26px; top: 87px; width: 240px;
-  color: var(--thoughtful-red); font-size: 10px; line-height: 16px;
+  position: absolute;
+  left: 26px;
+  top: 98px;
+  width: 240px;
+  color: var(--thoughtful-red);
+  font-size: 10px;
+  line-height: 16px;
 }
+
+/* Keywords
+   - 카드 하단으로 이동
+   - 가로 중앙 정렬
+   - 키워드 간 세로 간격 확대
+*/
+
 .tf-keywords{
-  position: absolute; left: 22px; top: 129px;
-  color: var(--thoughtful-red); font-size: 10px; line-height: 16px;
+  position: absolute;
+  left: 0;
+  bottom: 128px;
+  width: 100%;
+  color: var(--thoughtful-red);
+  font-size: 10px;
+  line-height: 22px;
+  text-align: center;
 }
+
+/* Divider */
+
 .tf-divider{
-  position: absolute; left: 27px; width: 238px; height: 0;
+  position: absolute;
+  left: 27px;
+  width: 238px;
+  height: 0;
   border-top: 0.5px solid var(--thoughtful-red);
 }
-.tf-divider--top{ top: 313px; }
-.tf-divider--bottom{ top: 367px; }
-.tf-ribbon{ position: absolute; left: 118px; top: 300px; width: 56px; height: auto; }
+
+.tf-divider--top{
+  top: 313px;
+}
+
+.tf-divider--bottom{
+  top: 367px;
+}
+
+/* Ribbon */
+
+.tf-ribbon{
+  position: absolute;
+  left: 118px;
+  top: 300px;
+  width: 56px;
+  height: auto;
+}
+
+/* Tagline */
+
 .tf-tagline{
-  position: absolute; left: 49px; top: 332px;
-  color: var(--thoughtful-red); font-size: 13px; line-height: 15.6px;
-  font-family: 'Baskervville', serif; font-style: italic; font-weight: 500;
+  position: absolute;
+  left: 49px;
+  top: 332px;
+  color: var(--thoughtful-red);
+  font-size: 13px;
+  line-height: 15.6px;
+  font-family: 'Baskervville', serif;
+  font-style: italic;
+  font-weight: 500;
 }
 
-/* Card 0 — illustrated gift/envelope image (Frame_2085675640-style SVG) */
+/* =========================
+   Card 0 — illustrated gift
+========================= */
+
 .scene-gift-panel{
-  position: relative; background: var(--red-dark, #7f1414);
-  border-radius: 18px; padding: 6px;
+  position: relative;
+  background: var(--red-dark, #7f1414);
+  border-radius: 18px;
+  padding: 6px;
   aspect-ratio: 1/1;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.scene-gift-image{ width: 82%; height: auto; display: block; }
 
-/* Card 1 — real product photo, same panel shape, cover-fit */
-.scene-gift-panel--photo{ padding: 0; overflow: hidden; }
-.scene-gift-photo{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.scene-gift-image{
+  width: 82%;
+  height: auto;
+  display: block;
+}
 
-/* Card 2 — full text letter: a white inset panel sitting inside the red
-   card (red shows as a border/margin around it), holding the letter
-   paragraphs with dotted separators, replacing the image panel entirely */
+/* =========================
+   Card 1 — real product photo
+========================= */
+
+.scene-gift-panel--photo{
+  padding: 0;
+  overflow: hidden;
+}
+
+.scene-gift-photo{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =========================
+   Card 2 — full text letter
+========================= */
+
 .scene-card-face.scene-front.scene-front--letter{
   display: flex;
   flex-direction: column;
   padding: 22px 16px 20px;
-  /* horizontal light-blue stripes behind the white letter panel — only
-     visible in the red margin on the left/right sides, since the white
-     panel covers the middle. Explicit stops (not a repeating pattern)
-     so there's a solid-red margin at the very top (behind "Happy
-     Birthday") AND at the very bottom, with exactly 5 stripes in
-     between — measured directly off the reference image rather than
-     guessed. */
+
   background-image: linear-gradient(
     to bottom,
     var(--red) 0 37%,
@@ -184,7 +334,11 @@
     var(--red) 80.3% 100%
   );
 }
-.scene-front--letter .scene-gift-title{ margin-bottom: 14px; }
+
+.scene-front--letter .scene-gift-title{
+  margin-bottom: 14px;
+}
+
 .scene-letter{
   flex: 1;
   background: #fffefc;
@@ -196,6 +350,7 @@
   gap: 10px;
   color: #0c0a09;
 }
+
 .scene-letter p{
   margin: 0;
   padding-bottom: 8px;
@@ -204,7 +359,12 @@
   line-height: 1.6;
   text-align: center;
 }
-.scene-letter p:last-of-type{ border-bottom: none; padding-bottom: 0; }
+
+.scene-letter p:last-of-type{
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .scene-letter-from{
   display: block;
   margin-top: 6px;
@@ -213,6 +373,14 @@
   color: #a1a1aa;
 }
 
+/* =========================
+   Reduced Motion
+========================= */
+
 @media (prefers-reduced-motion: reduce){
-  .scene-bg-glow, .scene-headline, .scene-flip-card{ transition: none; }
+  .scene-bg-glow,
+  .scene-headline,
+  .scene-flip-card{
+    transition: none;
+  }
 }
