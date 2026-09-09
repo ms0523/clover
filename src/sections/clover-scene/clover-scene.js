@@ -1,7 +1,7 @@
 import "./clover-scene.css";
 import cloverSceneHtml from "./clover-scene.html?raw";
 import logoUrl from "../../assets/images/hero-wordmark-white.svg";
-import ribbonUrl from "../../assets/images/hero-ribbon.svg";
+import ribbonUrl from "../../assets/images/ribbon-red.svg";
 import card1Url from "../../assets/images/scene-card1-gift.svg";
 import card2Url from "../../assets/images/scene-card2-photo.svg";
 
