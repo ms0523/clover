@@ -1,4 +1,4 @@
-.clover-gift{
+.clover-gift {
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -8,7 +8,7 @@
   padding: 48px 0;
 }
 
-.gift-inner{
+.gift-inner {
   position: relative;
   width: 100%;
   max-width: 1440px;
@@ -16,201 +16,400 @@
   aspect-ratio: 1440 / 982;
 }
 
+
 /* ---------------------------------------------------------
-   Three dots — appear top-to-bottom, THEN the phone pops in
+   Three dots
 --------------------------------------------------------- */
-.gift-dots{
+
+.gift-dots {
   position: absolute;
-  left: 23%; top: 14%;
+  left: 20%;
+  top: 8%;
   display: flex;
   flex-direction: column;
   gap: 9px;
   z-index: 3;
 }
-.gift-dots .dot{
-  width: 12px; height: 12px;
+
+.gift-dots .dot {
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--red);
   opacity: 0;
   transform: scale(.3);
-  transition: opacity .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+  transition:
+    opacity .35s ease,
+    transform .35s cubic-bezier(.34, 1.56, .64, 1);
 }
-.gift-dots .dot:nth-child(1){ --final-opacity: .4; }
-.gift-dots .dot:nth-child(2){ --final-opacity: .8; }
-.gift-dots .dot:nth-child(3){ --final-opacity: 1; }
-.gift-dots .dot.show{
+
+.gift-dots .dot:nth-child(1) {
+  --final-opacity: .4;
+}
+
+.gift-dots .dot:nth-child(2) {
+  --final-opacity: .8;
+}
+
+.gift-dots .dot:nth-child(3) {
+  --final-opacity: 1;
+}
+
+.gift-dots .dot.show {
   opacity: var(--final-opacity);
   transform: scale(1);
 }
 
+
 /* ---------------------------------------------------------
-   Phone — hidden until the dots finish, then pops in with the
-   same "hooky" bounce + glow used in STEP 02
+   Phone
 --------------------------------------------------------- */
-.gift-phone{
-  position: absolute;
-  left: 13.8%; top: 25.9%;
-  width: 18.4%;
+
+.gift-phone {
+    position: absolute;
+
+  left: 10%;
+  top: 15%;
+
+  width: 21%;
   min-width: 220px;
+
   aspect-ratio: 265 / 575;
+
   z-index: 2;
+
   opacity: 0;
-  transform: scale(.45) rotate(-10deg) translateY(24px);
-  transition: opacity .5s ease, transform .6s cubic-bezier(.2,1.4,.4,1);
-}
-.gift-phone.enter{
-  opacity: 1;
-  transform: scale(1) rotate(0) translateY(0);
-}
-.gift-phone.enter .gift-phone-glow{
-  animation: gift-glow-pulse .7s ease-out;
+  transform: scale(0.82);
 }
 
-.gift-phone-bg{
+
+.gift-phone.enter {
+  animation: phone-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes phone-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  75% {
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+
+
+.gift-phone-bg {
   position: absolute;
   inset: 0;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   display: block;
   pointer-events: none;
 }
-.gift-phone-screen{
+
+.gift-phone-screen {
   position: absolute;
-  left: 4.9%; top: 8.6%;
-  width: 90%; height: 88.8%;
+  left: 4%;
+  top: 7%;
+  width: 92%;
+  height: 88.8%;
   border-radius: 26px;
   overflow: hidden;
   z-index: -1;
 }
-.gift-phone-fill{
-  width: 100%; height: 100%;
+
+.gift-phone-fill {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
-.gift-phone-glow{
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 60%; height: 60%;
-  transform: translate(-50%,-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(178,21,40,.35) 0%, rgba(178,21,40,0) 70%);
-  pointer-events: none;
-  opacity: 0;
-  z-index: 3;
-}
-@keyframes gift-glow-pulse{
-  0%{ opacity: 0; transform: translate(-50%,-50%) scale(.4); }
-  40%{ opacity: 1; transform: translate(-50%,-50%) scale(1.3); }
-  100%{ opacity: 0; transform: translate(-50%,-50%) scale(1.8); }
+
+@keyframes gift-glow-pulse {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.4);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.8);
+  }
 }
 
+
 /* ---------------------------------------------------------
-   Product cards — an endless row sliding to the RIGHT, spilling
-   out past the phone. Masked at both edges so it fades in/out
-   instead of hard-cutting.
+   Product cards
 --------------------------------------------------------- */
-.gift-cards-viewport{
+
+.gift-cards-viewport {
   position: absolute;
-  left: 30%; top: 59%;
-  width: 68%; height: 104px;
+
+  /* 휴대폰 오른쪽에서 시작 */
+  left: 25%;
+  top: 57.5%;
+
+  width: 80%;
+  height: 140px;
+
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 92%, transparent);
-          mask-image: linear-gradient(to right, transparent, #000 6%, #000 92%, transparent);
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 92%,
+    transparent
+  );
+
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 92%,
+    transparent
+  );
+
   opacity: 0;
   transition: opacity .4s ease;
 }
-.gift-cards-viewport.show{ opacity: 1; }
 
-.gift-cards-track{
-  position: absolute;
-  top: 0; left: 0;
-  height: 104px;
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  width: max-content;
-  will-change: transform;
-  /* movement is driven frame-by-frame from JS (translate3d(x,0,0) only —
-     never a Y value), not a CSS animation, so there is no keyframe/easing
-     of any kind that could introduce vertical drift */
+.gift-cards-viewport.show {
+  opacity: 1;
 }
 
-.gc-card{
-  flex: 0 0 auto;
-  width: 220px;
+.gift-cards-track {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
   height: 104px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 15px;
+
+  width: max-content;
+
+  /* JS에서만 움직임 */
+  will-change: transform;
+}
+
+.gc-card {
+  width: 264px;
+  height: 125px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
+  gap: 12px;
+  padding: 14px;
   background: #fffefc;
   border: 1px solid #e9e8e8;
   border-radius: 10px;
   box-sizing: border-box;
 }
-.gc-card img{
-  width: 80px; height: 80px;
+
+.gc-card img {
+  width: 94px;
+  height: 94px;
+
   border-radius: 4px;
+
   object-fit: cover;
   flex-shrink: 0;
 }
-.gc-card-info{
+
+.gc-card-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
+
   min-width: 0;
 }
-.gc-card-name{ font-weight: 700; font-size: 13px; color: #000; }
-.gc-card-desc{
-  font-size: 10px; color: #000;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+
+.gc-card-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: #000;
 }
-.gc-card-price{ font-weight: 700; font-size: 10px; color: var(--red); }
-.gc-card-btn{
+
+.gc-card-desc {
+  font-size: 10px;
+  color: #000;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gc-card-price {
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--red);
+}
+
+.gc-card-btn {
   align-self: flex-start;
+
   margin-top: 2px;
   padding: 5px 11px;
+
   background: var(--red);
   color: #fffefc;
+
   font-size: 10px;
+
   border-radius: 3px;
 }
+
+
 
 /* ---------------------------------------------------------
    Copy
 --------------------------------------------------------- */
-.gift-copy{
+
+.gift-copy {
   position: absolute;
-  left: 41.4%; top: 36.8%;
+
+  left: 40.8%;
+  top: 34.8%;
+
   width: 44%;
   min-width: 280px;
 }
-.gift-label{
+
+.gift-label {
   margin: 0 0 8px;
+
   color: var(--red);
+
   font-weight: 700;
   font-size: clamp(20px, 2.2vw, 32px);
 }
-.gift-heading{
+
+.gift-heading {
   margin: 0 0 14px;
+
   font-size: clamp(20px, 2.2vw, 32px);
   font-weight: 800;
+
   color: #0c0a09;
+
   line-height: 1.4;
 }
-.gift-desc{
+
+.gift-desc {
   margin: 0;
+
   color: #6a6869;
+
   font-size: clamp(14px, 1.4vw, 20px);
+
   line-height: 1.6;
 }
 
-@media (max-width: 900px){
-  .gift-inner{ aspect-ratio: auto; height: auto; }
-  .gift-dots, .gift-phone, .gift-cards-viewport, .gift-copy{
-    position: static; width: auto; margin: 0 auto 24px; left: auto; top: auto;
+
+/* ---------------------------------------------------------
+   Mobile
+--------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+  .gift-inner {
+    aspect-ratio: auto;
+    height: auto;
   }
-  .gift-dots{ flex-direction: row; justify-content: center; margin: 0 auto 16px; }
-  .gift-phone{ width: 220px; margin: 0 auto 24px; }
-  .gift-cards-viewport{ width: 100%; height: 140px; }
-  .gift-copy{ padding: 0 24px; text-align: center; }
+
+  .gift-dots,
+  .gift-phone,
+  .gift-cards-viewport,
+  .gift-copy {
+    position: static;
+
+    width: auto;
+
+    margin: 0 auto 24px;
+
+    left: auto;
+    top: auto;
+  }
+
+  .gift-dots {
+    flex-direction: row;
+    justify-content: center;
+
+    margin: 0 auto 16px;
+  }
+
+  .gift-phone {
+    width: 220px;
+
+    margin: 0 auto 24px;
+  }
+
+  .gift-cards-viewport {
+    width: 100%;
+    height: 160px;
+  }
+
+  .gift-copy {
+    padding: 0 24px;
+
+    text-align: center;
+  }
+}
+
+
+
+.gift-label,
+.gift-heading,
+.gift-desc {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* STEP 03 */
+.gift-label.show {
+  animation: gift-text-in 0.55s ease-out forwards;
+}
+
+/* 메인 타이틀 */
+.gift-heading.show {
+  animation: gift-text-in 0.6s ease-out forwards;
+}
+
+/* 설명 */
+.gift-desc.show {
+  animation: gift-text-in 0.6s ease-out forwards;
+}
+
+@keyframes gift-text-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
