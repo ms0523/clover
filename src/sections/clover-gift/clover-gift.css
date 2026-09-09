@@ -23,8 +23,8 @@
 
 .gift-dots {
   position: absolute;
-  left: 20.8%;
-  top: 11.8%;
+  left: 20%;
+  top: 8%;
   display: flex;
   flex-direction: column;
   gap: 9px;
@@ -66,37 +66,50 @@
 --------------------------------------------------------- */
 
 .gift-phone {
-  position: absolute;
-  left: 11.5%;
-  top: 21%;
-  width: 18.4%;
+    position: absolute;
+
+  left: 10%;
+  top: 15%;
+
+  width: 21%;
   min-width: 220px;
+
   aspect-ratio: 265 / 575;
+
   z-index: 2;
 
   opacity: 0;
-
-  transform:
-    scale(.45)
-    rotate(-10deg)
-    translateY(24px);
-
-  transition:
-    opacity .5s ease,
-    transform .6s cubic-bezier(.2, 1.4, .4, 1);
+  transform: scale(0.82);
 }
+
 
 .gift-phone.enter {
-  opacity: 1;
-  transform:
-    scale(1)
-    rotate(0)
-    translateY(0);
+  animation: phone-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.gift-phone.enter .gift-phone-glow {
-  animation: gift-glow-pulse .7s ease-out;
+@keyframes phone-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  75% {
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
+
+
+
 
 .gift-phone-bg {
   position: absolute;
@@ -109,9 +122,9 @@
 
 .gift-phone-screen {
   position: absolute;
-  left: 4.9%;
-  top: 8.6%;
-  width: 90%;
+  left: 4%;
+  top: 7%;
+  width: 92%;
   height: 88.8%;
   border-radius: 26px;
   overflow: hidden;
@@ -123,27 +136,6 @@
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.gift-phone-glow {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 60%;
-  height: 60%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(178, 21, 40, .35) 0%,
-      rgba(178, 21, 40, 0) 70%
-    );
-
-  pointer-events: none;
-  opacity: 0;
-  z-index: 3;
 }
 
 @keyframes gift-glow-pulse {
@@ -172,11 +164,11 @@
   position: absolute;
 
   /* 휴대폰 오른쪽에서 시작 */
-  left: 32%;
-  top: 59%;
+  left: 25%;
+  top: 57.5%;
 
-  width: 66%;
-  height: 104px;
+  width: 80%;
+  height: 140px;
 
   overflow: hidden;
 
@@ -215,7 +207,7 @@
   display: flex;
   align-items: flex-start;
 
-  gap: 20px;
+  gap: 15px;
 
   width: max-content;
 
@@ -224,27 +216,21 @@
 }
 
 .gc-card {
-  flex: 0 0 auto;
-
-  width: 220px;
-  height: 104px;
-
+  width: 264px;
+  height: 125px;
   display: flex;
   align-items: center;
-
-  gap: 10px;
-  padding: 12px;
-
+  gap: 12px;
+  padding: 14px;
   background: #fffefc;
   border: 1px solid #e9e8e8;
   border-radius: 10px;
-
   box-sizing: border-box;
 }
 
 .gc-card img {
-  width: 80px;
-  height: 80px;
+  width: 94px;
+  height: 94px;
 
   border-radius: 4px;
 
@@ -382,12 +368,48 @@
 
   .gift-cards-viewport {
     width: 100%;
-    height: 140px;
+    height: 160px;
   }
 
   .gift-copy {
     padding: 0 24px;
 
     text-align: center;
+  }
+}
+
+
+
+.gift-label,
+.gift-heading,
+.gift-desc {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* STEP 03 */
+.gift-label.show {
+  animation: gift-text-in 0.55s ease-out forwards;
+}
+
+/* 메인 타이틀 */
+.gift-heading.show {
+  animation: gift-text-in 0.6s ease-out forwards;
+}
+
+/* 설명 */
+.gift-desc.show {
+  animation: gift-text-in 0.6s ease-out forwards;
+}
+
+@keyframes gift-text-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

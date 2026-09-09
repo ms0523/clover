@@ -123,33 +123,71 @@ export function mountCloverGift(mountEl) {
   // ---------------------------------------------------------
   // 등장 애니메이션
   // ---------------------------------------------------------
+async function playSequence() {
+  // ---------------------------------------------------------
+  // 1. ... 점 3개 순서대로 등장
+  // ---------------------------------------------------------
 
-  async function playSequence() {
-
-    // 점 3개 순서대로 등장
-    for (const [i, dot] of dots.entries()) {
-      setTimeout(() => {
-        dot.classList.add("show");
-      }, i * 220);
-    }
-
-    await wait(dots.length * 220 + 250);
-
-    // 휴대폰 등장
-    phone.classList.add("enter");
-
-    // 휴대폰이 완전히 등장할 때까지 대기
-    await wait(650);
-
-    // 카드 영역 등장
-    cardsViewport.classList.add("show");
-
-    // 카드가 나타난 후 이동 시작
-    await wait(400);
-
-    running = true;
+  for (const [i, dot] of dots.entries()) {
+    setTimeout(() => {
+      dot.classList.add("show");
+    }, i * 220);
   }
 
+  // 점 3개가 모두 등장할 때까지 대기
+  await wait(dots.length * 220 + 250);
+
+
+  // ---------------------------------------------------------
+  // 2. 휴대폰 등장
+  // ---------------------------------------------------------
+
+  phone.classList.add("enter");
+
+  // 휴대폰 뿅 애니메이션이 끝날 때까지 대기
+  await wait(800);
+
+
+  // ---------------------------------------------------------
+  // 3. 타이포 등장
+  // STEP 03 → 제목 → 설명
+  // ---------------------------------------------------------
+
+  const label = section.querySelector(".gift-label");
+  const heading = section.querySelector(".gift-heading");
+  const desc = section.querySelector(".gift-desc");
+
+  // STEP 03
+  label.classList.add("show");
+
+  await wait(120);
+
+  // 메인 타이틀
+  heading.classList.add("show");
+
+  await wait(120);
+
+  // 설명
+  desc.classList.add("show");
+
+
+  // ---------------------------------------------------------
+  // 4. 타이포가 충분히 보인 후 카드 viewport 등장
+  // ---------------------------------------------------------
+
+  await wait(1200);
+
+  cardsViewport.classList.add("show");
+
+
+  // ---------------------------------------------------------
+  // 5. 카드가 나타난 후 슬라이드 시작
+  // ---------------------------------------------------------
+
+  await wait(400);
+
+  running = true;
+}
 
   // ---------------------------------------------------------
   // Intersection Observer
