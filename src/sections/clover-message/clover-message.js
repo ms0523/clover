@@ -1,5 +1,5 @@
-import "./clover-receive.css";
-import cloverReceiveHtml from "./clover-receive.html?raw";
+import "./clover-message.css";
+import cloverReceiveHtml from "./clover-message.html?raw";
 import cardUrl from "../../assets/images/receive-card.svg";
 import logoUrl from "../../assets/images/receive-small-logo.svg";
 import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
@@ -14,13 +14,13 @@ function unitHtml(word) {
   `;
 }
 
-export function mountCloverReceive(mountEl) {
+export function mountCloverMessage(mountEl) {
   const html = cloverReceiveHtml
     .replaceAll("__CARD_URL__", cardUrl)
     .replaceAll("__PHONE_FRAME_URL__", phoneFrameUrl);
   mountEl.insertAdjacentHTML("beforeend", html);
 
-  const section = mountEl.querySelector(".receive-band");
+  const section = mountEl.querySelector(".message-band");
   const track = section.querySelector("[data-marquee-track]");
 
   // build the sequence once, then duplicate it so the animation (which
