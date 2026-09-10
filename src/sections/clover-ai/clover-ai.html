@@ -1,39 +1,44 @@
 <section class="clover-ai">
-  <img class="clover-ai-bg" src="__BG_URL__" alt="">
+  <img class="clover-ai-bg" src="__BG_URL__" alt="클로버 AI 배경">
 
   <div class="clover-ai-inner">
+    <!-- 왼쪽 카피 문구 영역 -->
     <div class="clover-ai-copy">
       <p class="step2-label">STEP 02</p>
-      <h3 class="step2-heading">
-        <img class="badge" src="__BADGE_URL__" alt="AI 클로버니">
-        로 흩어진 단서들을 연결해요
-      </h3>
+      <img class="step2-heading-badge" src="__BADGE_URL__" alt="AI 클로버니">
+      <h3 class="step2-heading-text">로 흩어진 단서들을 연결해요</h3>
       <p class="step2-desc">
         취향이나 관심사 뿐만 아니라 관계, 상황, 예산까지<br>
         AI 클로버니와 단서보드를 분석을 통해 키워드를 뽑아봐요
       </p>
     </div>
 
+    <!-- 키워드 및 핀 메쉬 영역 -->
     <div class="network" data-network>
-      <!-- gray, always-blurred ambient words — never sharpen -->
-      <span class="kw kw-gray" style="left:65.5%; top:0%;">휴대성</span>
-      <span class="kw kw-gray" style="left:5.7%; top:21.7%;">레트로</span>
-      <span class="kw kw-gray" style="left:90.8%; top:39.1%;">주방</span>
-      <span class="kw kw-gray" style="left:78.2%; top:67.2%;">실용성</span>
-      <span class="kw kw-gray" style="left:0.9%; top:89.5%;">차분한 컬러</span>
+      <!-- Pin 요소 -->
+      <div class="pin-node" id="pin-1" data-node="1"></div>
+      <div class="pin-node" id="pin-2" data-node="2"></div>
+      <div class="pin-node" id="pin-3" data-node="3"></div>
 
-      <!-- red keywords — start blurred/faded, sharpen when the section
-           comes into view, then join the pin chain -->
-      <span class="kw kw-red kw-lg" data-kw data-target data-node="1" style="left:45.8%; top:12.3%;">독서</span>
-      <span class="kw kw-red" data-kw data-target data-node="2" style="left:15.7%; top:45.1%;">빈티지</span>
-      <span class="kw kw-red" data-kw style="left:66.6%; top:39.1%;">요리</span>
-      <span class="kw kw-red kw-lg" data-kw data-target data-node="3" style="left:36.2%; top:71.5%;">아이보리</span>
+      <!-- 회색 키워드 -->
+      <span class="kw kw-gray kw-retro">레트로</span>
+      <span class="kw kw-gray kw-portability">휴대성</span>
+      <span class="kw kw-gray kw-kitchen">주방</span>
+      <span class="kw kw-gray kw-calmcolor">차분한 컬러</span>
+      <span class="kw kw-gray kw-practicality">실용성</span>
+
+      <!-- 빨간색 키워드 (애니메이션 대상) -->
+      <span class="kw kw-red kw-reading" data-kw>독서</span>
+      <span class="kw kw-red kw-vintage" data-kw>빈티지</span>
+      <span class="kw kw-red kw-cooking" data-kw>요리</span>
+      <span class="kw kw-red kw-ivory" data-kw>아이보리</span>
     </div>
 
+    <!-- 휴대폰 영역 -->
     <div class="ai-phone" data-phone>
-      <img class="ai-phone-bg" src="__PHONE_FRAME_URL__" alt="">
+      <img class="ai-phone-bg" src="__PHONE_FRAME_URL__" alt="휴대폰 프레임">
       <div class="ai-phone-screen">
-        <img class="ai-phone-fill" src="__PHONE_SCREEN_URL__" alt="">
+        <img class="ai-phone-fill" src="__PHONE_SCREEN_URL__" alt="휴대폰 화면">
       </div>
       <div class="ai-phone-glow"></div>
     </div>
