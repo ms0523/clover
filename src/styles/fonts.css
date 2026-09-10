@@ -27,3 +27,11 @@
   src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareEB.woff) format("woff"),
        url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquare/NanumSquareEB.ttf) format("truetype");
 }
+
+
+@font-face{
+  font-family: "KMU80SungkokSemiSerif";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../assets/fonts/KMU80SungkokSemiSerif.woff") format("woff");
+}

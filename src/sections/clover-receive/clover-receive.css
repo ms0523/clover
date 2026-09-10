@@ -1,207 +1,559 @@
-.receive-band{
+.receive-band {
   position: relative;
+  overflow: hidden;
+  margin-top: 100px;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+}
+
+/* ---------------------------------------------------------
+   Background
+--------------------------------------------------------- */
+
+.receive-bg {
+  position: absolute;
+  inset: 0;
+
+  background: #fffefc;
+
+  z-index: 0;
   overflow: hidden;
 }
 
-/* solid two-tone split background — white on top, blue on the bottom,
-   at a fixed proportion (not scroll-driven; only the card content
-   crossfades on scroll, per the reference) */
-.receive-bg{
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    to bottom,
-    #fffefc 0%, #fffefc 59%,
-    #77aaee 59%, #77aaee 100%
-  );
-  z-index: 0;
+.receive-bg::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 0%;
+
+  background: #77aaee;
+
+  transition:
+    height 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.receive-inner{
+.receive-bg.is-filled::after {
+  height: 100%;
+}
+
+/* ---------------------------------------------------------
+   Inner
+--------------------------------------------------------- */
+
+.receive-inner {
   position: relative;
+
   z-index: 1;
+
+  width: 100%;
   max-width: 1100px;
+
   margin: 0 auto;
-  padding: 100px 24px 80px;
+
+  padding: 60px 24px;
+
   text-align: center;
 }
 
-.receive-title{
+.receive-title {
   margin: 0 0 20px;
-  font-size: clamp(32px, 3.3vw, 48px);
+
+  font-size:
+    clamp(32px, 3.3vw, 48px);
+
   font-weight: 800;
-  color: #0a0406;
+
+  color: #ffffff;
 }
-.receive-desc{
-  margin: 0 0 56px;
-  font-size: clamp(15px, 1.6vw, 20px);
-  color: #1d1b1c;
+
+.receive-desc {
+  margin-top: 30px;
+
+  font-size:
+    clamp(18px, 1.6vw, 24px);
+
+  color: #ffffff;
+
   line-height: 1.6;
 }
 
 /* ---------------------------------------------------------
-   Stage — the card plus scattered decorative stickers around it
+   Stage
 --------------------------------------------------------- */
-.receive-stage{
+
+.receive-stage {
   position: relative;
+
   display: flex;
+
   justify-content: center;
+
   padding: 20px 0;
 }
 
-.receive-sticker{
-  position: absolute;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale(.4) rotate(var(--r, 0deg));
-  transition: opacity .35s cubic-bezier(.2,1.6,.4,1), transform .35s cubic-bezier(.2,1.6,.4,1);
-  transition-delay: calc(var(--i, 0) * 70ms); /* staggered "타다다닥" pop-in */
-}
-.receive-stage.stickers-in .receive-sticker{
-  opacity: 1;
-  transform: scale(1) rotate(var(--r, 0deg));
-}
-.receive-sticker--cloud{ left: 10%; top: 8%; width: 130px; --r: -6deg; }
-.receive-sticker--star-left{ left: 4%; top: 52%; width: 100px; --r: -12deg; }
-.receive-sticker--star-right{ right: 10%; top: 6%; width: 100px; --r: 10deg; }
-.receive-sticker--berry{ left: 14%; top: 70%; width: 130px; --r: 8deg; }
-.receive-sticker--apple{ right: 16%; top: 36%; width: 120px; --r: -10deg; }
-.receive-sticker--heart{ right: 5%; top: 72%; width: 130px; --r: 14deg; }
+/* ---------------------------------------------------------
+   Stickers
+--------------------------------------------------------- */
 
-@media (max-width: 900px){
-  .receive-sticker{ display: none; }
+.receive-sticker {
+  position: absolute;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform:
+    scale(0.4)
+    rotate(var(--r, 0deg));
+
+  transition:
+    opacity 0.35s cubic-bezier(0.2, 1.6, 0.4, 1),
+    transform 0.35s cubic-bezier(0.2, 1.6, 0.4, 1);
+
+  transition-delay:
+    calc(var(--i, 0) * 70ms);
 }
 
 /* ---------------------------------------------------------
-   Card — same "Happy Birthday" look as clover-scene's cards, sized up
-   since this is a standalone hero card, not one of three side by side
+   Stickers Auto Show
 --------------------------------------------------------- */
-.receive-card{
-  position: relative;
-  z-index: 2;
-  width: 360px;
-  border-radius: 18px;
-  background: var(--red);
-  color: #fff;
-  text-align: center;
-  padding: 27px 22px 26px;
-  box-shadow: 0 24px 50px -20px rgba(178,21,40,0.4);
-}
-.receive-card-title{
-  margin: 0 0 20px;
-  color: #fff;
-  font-weight: 800;
-  font-size: clamp(22px, 2.3vw, 28px);
-  letter-spacing: .01em;
-  font-family: "Termina", "NanumSquareOTF", sans-serif;
+
+.receive-stage.stickers-auto .receive-sticker {
+  opacity: 1;
+
+  transform:
+    scale(1)
+    rotate(var(--r, 0deg));
+
+  transform-origin: center;
+
+  animation:
+    receive-sticker-wiggle
+    var(--wiggle-speed, 3s)
+    var(--wiggle-delay, 0s)
+    ease-in-out
+    infinite;
 }
 
-/* the three faces stack directly on top of each other; only opacity
-   (crossfade) changes as scroll progress moves through 0→0.5→1 */
-.receive-card-faces{
-  position: relative;
-  aspect-ratio: 1/1;
+/* ---------------------------------------------------------
+   Natural Sticker Wiggle
+--------------------------------------------------------- */
+
+@keyframes receive-sticker-wiggle {
+  0%,
+  100% {
+    transform:
+      scale(1)
+      rotate(var(--r, 0deg));
+  }
+
+  35% {
+    transform:
+      scale(1)
+      rotate(
+        calc(
+          var(--r, 0deg) + var(--wiggle, 3deg)
+        )
+      );
+  }
+
+  65% {
+    transform:
+      scale(1)
+      rotate(
+        calc(
+          var(--r, 0deg) - var(--wiggle, 3deg)
+        )
+      );
+  }
 }
-.receive-face{
-  position: absolute; inset: 0;
+
+/* ---------------------------------------------------------
+   Sticker Position + Individual Motion
+--------------------------------------------------------- */
+
+.receive-sticker--cloud {
+  left: 0%;
+  top: 8%;
+
+  width: 180px;
+
+  --r: -6deg;
+  --wiggle: 3deg;
+  --wiggle-speed: 3.2s;
+  --wiggle-delay: 0s;
+}
+
+.receive-sticker--star-left {
+  left: -14%;
+  top: 52%;
+
+  width: 120px;
+
+  --r: -12deg;
+  --wiggle: 4deg;
+  --wiggle-speed: 2.6s;
+  --wiggle-delay: -0.8s;
+}
+
+.receive-sticker--star-right {
+  right: -2%;
+  top: 6%;
+
+  width: 120px;
+
+  --r: 10deg;
+  --wiggle: 3deg;
+  --wiggle-speed: 3s;
+  --wiggle-delay: -1.4s;
+}
+
+.receive-sticker--berry {
+  left: 10%;
+  top: 80%;
+
+  width: 160px;
+
+  --r: 8deg;
+  --wiggle: 4deg;
+  --wiggle-speed: 3.4s;
+  --wiggle-delay: -2s;
+}
+
+.receive-sticker--apple {
+  right: -16%;
+  top: 36%;
+
+  width: 140px;
+
+  --r: -10deg;
+  --wiggle: 3deg;
+  --wiggle-speed: 2.8s;
+  --wiggle-delay: -1s;
+}
+
+.receive-sticker--heart {
+  right: 0%;
+  top: 72%;
+
+  width: 180px;
+
+  --r: 14deg;
+  --wiggle: 4deg;
+  --wiggle-speed: 3.1s;
+  --wiggle-delay: -1.8s;
+}
+
+/* ---------------------------------------------------------
+   Reduced Motion
+--------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .receive-stage.stickers-auto .receive-sticker {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------
+   Sticker Responsive
+--------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .receive-sticker {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------
+   Card
+--------------------------------------------------------- */
+
+.receive-card {
+  position: relative;
+
+  z-index: 2;
+
+  width: 410px;
+  min-height: 560px;
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 18px;
+
+  background: var(--red);
+
+  color: #fff;
+
+  text-align: center;
+
+  padding: 27px 22px 26px;
+
+  box-shadow:
+    0 24px 50px -20px
+    rgba(178, 21, 40, 0.4);
+}
+
+.receive-card-title {
+  flex: none;
+
+  margin: 0 0 22px;
+
+  color: #fff;
+
+  font-weight: 800;
+
+  font-size:
+    clamp(22px, 2.3vw, 28px);
+
+  letter-spacing: 0.01em;
+
+  font-family:
+    "KMU80SungkokSemiSerif",
+    "Termina",
+    "NanumSquareOTF",
+    sans-serif;
+}
+
+/* ---------------------------------------------------------
+   Card Faces
+--------------------------------------------------------- */
+
+.receive-card-faces {
+  position: relative;
+
+  flex: none;
+
+  aspect-ratio: 1 / 1;
+}
+
+/* 편지 카드 */
+
+.receive-card.is-no-caption .receive-card-faces {
+  flex: 1 1 auto;
+
+  aspect-ratio: auto;
+}
+
+.receive-face {
+  position: absolute;
+
+  inset: 0;
+
   opacity: 0;
-  transition: opacity .4s ease;
+
+  transition:
+    opacity 0.4s ease;
+
   pointer-events: none;
 }
-.receive-face.is-active{
+
+.receive-face.is-active {
   opacity: 1;
+
   pointer-events: auto;
 }
 
-.receive-face-panel{
+/* ---------------------------------------------------------
+   Face Panel
+--------------------------------------------------------- */
+
+.receive-face-panel {
   position: relative;
-  width: 100%; height: 100%;
-  background: var(--red-dark, #7f1414);
+
+  width: 100%;
+  height: 100%;
+
+  background:
+    var(--red-dark, #7f1414);
+
   border-radius: 18px;
+
   padding: 6px;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   box-sizing: border-box;
+
   overflow: hidden;
 }
-.receive-face-panel img{
+
+.receive-face-panel img {
   width: 95%;
   height: auto;
+
   display: block;
 }
-.receive-face-panel--photo{ padding: 0; }
-.receive-face-panel--photo img{
-  width: 95%; height: 95%;
+
+.receive-face-panel--photo {
+  padding: 0;
+}
+
+.receive-face-panel--photo img {
+  width: 95%;
+  height: 95%;
+
   object-fit: cover;
 }
 
-/* letter face — white inset panel with the striped red margin, same
-   idea as clover-scene's letter card */
-.receive-face-panel--letter{
+/* ---------------------------------------------------------
+   Letter Face
+--------------------------------------------------------- */
+
+.receive-face-panel--letter {
   margin: 0 -22px;
+
   width: calc(100% + 44px);
-  background-image: linear-gradient(
-  to bottom,
-  var(--red) 0 12%,
-  #c7d8ea 12% 20%,
-  var(--red) 20% 28%,
-  #c7d8ea 28% 36%,
-  var(--red) 36% 44%,
-  #c7d8ea 44% 52%,
-  var(--red) 52% 60%,
-  #c7d8ea 60% 68%,
-  var(--red) 68% 76%,
-  #c7d8ea 76% 84%,
-  var(--red) 84% 100%
-);
-  padding: 16px;
-}
-.receive-letter{
-  width: 280px; height: 300px;
-  background: #fffefc;
-  border-radius: 12px;
-  padding: 16px 14px;
+
+  background-image:
+    linear-gradient(
+      to bottom,
+
+      var(--red) 0 12%,
+
+      #c7d8ea 12% 20%,
+
+      var(--red) 20% 28%,
+
+      #c7d8ea 28% 36%,
+
+      var(--red) 36% 44%,
+
+      #c7d8ea 44% 52%,
+
+      var(--red) 52% 60%,
+
+      #c7d8ea 60% 68%,
+
+      var(--red) 68% 76%,
+
+      #c7d8ea 76% 84%,
+
+      var(--red) 84% 100%
+    );
+
+  padding: 12px;
+
   box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------
+   Letter
+--------------------------------------------------------- */
+
+.receive-letter {
+  width: 90%;
+  height: 100%;
+
+  background: #fffefc;
+
+  border-radius: 12px;
+
+  padding: 24px 18px;
+
+  box-sizing: border-box;
+
   display: flex;
+
   flex-direction: column;
-  justify-content: center;
-  gap: 9px;
+
+  justify-content: space-evenly;
+
+  gap: 0;
+
   color: #0c0a09;
 }
-.receive-letter p{
+
+/* ---------------------------------------------------------
+   Letter Text
+--------------------------------------------------------- */
+
+.receive-letter p {
   margin: 0;
-  padding-bottom: 7px;
-  border-bottom: 1px dashed var(--red);
-  font-size: clamp(12px, 1.8vw, 14px);
+
+  padding-bottom: 10px;
+
+  border-bottom:
+    1px dashed var(--red);
+
+  font-size:
+    clamp(12px, 1.8vw, 16px);
+
   line-height: 1.5;
+
   text-align: center;
 }
-.receive-letter p:last-of-type{ border-bottom: none; padding-bottom: 0; }
-.receive-letter-from{
+
+.receive-letter p:last-of-type {
+  border-bottom: none;
+
+  padding-bottom: 0;
+}
+
+/* ---------------------------------------------------------
+   Letter From
+--------------------------------------------------------- */
+
+.receive-letter-from {
   display: block;
-  margin-top: 4px;
+
+  margin-top: 8px;
+
   text-align: center;
-  font-size: clamp(10px, 1.8vw, 12px);
+
+  font-size:
+    clamp(10px, 1.8vw, 15px);
+
   color: #a1a1aa;
 }
 
-.receive-caption{
+/* ---------------------------------------------------------
+   Caption
+--------------------------------------------------------- */
+
+.receive-caption {
+  flex: none;
+
   margin: 18px 0 0;
+
   color: #fff;
+
   font-weight: 400;
-  font-size: clamp(14px, 1.8vw, 16px);
+
+  font-size:
+    clamp(14px, 1.8vw, 20px);
+
   line-height: 1.6;
-  opacity: .95;
+
+  opacity: 0.95;
 }
 
-.receive-footer{
-  margin: 56px 0 0;
-  color: #fff;
-  font-size: clamp(15px, 1.6vw, 20px);
-  line-height: 1.6;
+/* 편지 카드에는 캡션 없음 */
+
+.receive-card.is-no-caption .receive-caption {
+  display: none;
 }
 
-@media (max-width: 560px){
-  .receive-card{ width: 260px; }
+/* ---------------------------------------------------------
+   Mobile
+--------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .receive-card {
+    width: 300px;
+
+    min-height: 430px;
+  }
 }
