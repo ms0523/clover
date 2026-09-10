@@ -18,15 +18,18 @@
 --------------------------------------------------------- */
 .coupon-copy{
   position: absolute;
-  left: 0%; top: 4.8%;
+  left: 5%;
+  top: 4.8%;
   width: 44%;
 }
+
 .coupon-heading{
   margin: 0 0 14px;
   font-size: clamp(40px, 2.2vw, 32px);
   font-weight: 800;
   color: #000;
 }
+
 .coupon-desc{
   margin: 0;
   font-size: clamp(22px, 1.4vw, 20px);
@@ -36,61 +39,112 @@
 
 .browse-copy{
   position: absolute;
-  left: 26%; bottom: 10%;
+  left: 26%;
+  bottom: 8%;
   width: 40%;
   text-align: right;
 }
+
 .browse-copy h3{
   margin: 0 0 10px;
   font-size: clamp(40px, 2.2vw, 32px);
   font-weight: 800;
   color: #000;
 }
+
 .browse-copy p{
   margin: 0;
   font-size: clamp(22px, 1.4vw, 20px);
   color: #6a6869;
   line-height: 1.6;
 }
+/* ---------------------------------------------------------
+   Phone
+--------------------------------------------------------- */
 
-/* phone: our usual frame + separate screen-content overlay, not one
-   flat baked-together image */
 .coupon-phone{
   position: absolute;
-  left: 69%; top: 33.6%;
-  width: 26%;
+
+  left: 72%;
+  top: 48%;
+
+  width: 21%;
   min-width: 220px;
+
   aspect-ratio: 285 / 593;
-  z-index: 1;
-}
-.coupon-phone-bg{
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  display: block;
+
+  z-index: 5;
+
+  /* 처음에는 아래에 숨어있음 */
+  opacity: 0;
+  transform: translateY(100px);
+
+  /* 아래 → 위 등장 */
+  transition:
+    opacity 0.5s ease,
+    transform 0.8s cubic-bezier(.22, 1, .36, 1);
+
   pointer-events: none;
 }
+
+
+/* ---------------------------------------------------------
+   휴대폰 등장
+--------------------------------------------------------- */
+
+.coupon-phone.enter{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.coupon-phone-bg{
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  pointer-events: none;
+}
+
+
 .coupon-phone-screen{
   position: absolute;
-  left: 4.9%; top: 7.5%;
-  width: 91%; height: 92.9%;
+
+  left: 4.9%;
+  top: 7.5%;
+
+  width: 91%;
+  height: 92.9%;
+
   border-radius: 26px;
+
   overflow: hidden;
+
   z-index: -1;
 }
+
+
 .coupon-phone-fill{
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
+
   object-fit: cover;
+
   display: block;
 }
 
 /* ---------------------------------------------------------
-   Coupon cards — proper ticket proportions (tall, not wide),
-   stacked on load, then deal out to the right ("사삭 사삭")
+   Coupon cards
 --------------------------------------------------------- */
 .coupon-cards{
   position: absolute;
-  left: 0%; top: 20%;
+  left: 5%;
+  top: 22%;
   width: 50%;
   height: auto;
 }
@@ -98,148 +152,402 @@
 .coupon-card{
   position: absolute;
   top: 0;
-  left: calc(var(--i) * 279px); /* card (255px max) + 24px visible gap */
+  left: calc(var(--i) * 279px);
+
   width: 60%;
   min-width: 235px;
   max-width: 255px;
+
   border-radius: 10px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+
+  /*
+    아래쪽이 뜯겨서 움직일 수 있도록
+    hidden이 아니라 visible
+  */
+  overflow: visible;
+
   z-index: calc(3 - var(--i));
-  transition: transform .5s cubic-bezier(.2,1.4,.4,1);
-  transition-delay: calc(var(--i) * 90ms);
-  /* no box-shadow on purpose — flat card, no drop shadow */
+
+  /* 처음에는 안 보임 */
+  opacity: 0;
+
+  /* 처음에는 아래쪽에 있음 */
+  transform: translateX(0) translateY(80px);
+
+  /*
+    카드 등장 + 스프레드용
+  */
+  transition:
+    transform 0.7s cubic-bezier(.22, 1, .36, 1),
+    opacity 0.4s ease;
 }
 
-/* top half — the card's own theme color. Extra bottom padding (vs.
-   before) is what stretches the card taller to match the reference's
-   205:296 (≈0.69) width:height proportions, without leaving a dead
-   unstyled gap — the added space is real padding, not empty margin. */
+
+/* ---------------------------------------------------------
+   Coupon top
+--------------------------------------------------------- */
 .coupon-top-section{
   padding: 28px 14px 28px;
 }
-/* bottom half — always a neutral gray, regardless of card color */
+
+
+/* ---------------------------------------------------------
+   Coupon bottom
+--------------------------------------------------------- */
 .coupon-bottom{
+  position: relative;
+
   background: #f5f4f4;
+
   padding: 24px 14px 28px;
   margin-top: 0;
+
+  border-radius: 0 0 16px 16px;
+
+  transform: translateY(0) rotate(0deg);
+  transform-origin: 50% 0;
+
+  transition:
+    transform 0.7s cubic-bezier(.22, 1, .36, 1),
+    opacity 0.5s ease;
+
+  opacity: 1;
+  overflow: visible;
 }
 
+
+/* 리버스 라운딩 */
+.coupon-bottom::before,
+.coupon-bottom::after{
+  content: "";
+
+  position: absolute;
+  top: 0;
+
+  width: 24px;
+  height: 24px;
+
+  background: #fffefc;
+  border-radius: 50%;
+
+  z-index: 5;
+  pointer-events: none;
+}
+
+
+/* 왼쪽 */
+.coupon-bottom::before{
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+
+/* 오른쪽 */
+.coupon-bottom::after{
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+
+/* 뜯길 때 */
+.coupon-card.torn .coupon-bottom{
+  transform:
+    translateY(35px)
+    rotate(5deg);
+
+  transform-origin: 50% 0;
+}
+/* ---------------------------------------------------------
+   쿠폰 뜯김
+   → 아래쪽 조각 + 리버스 라운딩이 같이 움직임
+--------------------------------------------------------- */
+
+.coupon-card.torn .coupon-bottom{
+  transform:
+    translateY(35px)
+    rotate(5deg);
+
+  transform-origin: 50% 0;
+}
+/* ---------------------------------------------------------
+   Coupon top content
+--------------------------------------------------------- */
 .coupon-card-top{
   text-align: center;
   font-size: clamp(14px, 1.4vw, 12px);
   font-weight: 700;
   color: #312f30;
+
   padding: 4px 0;
+
   border-top: 1px solid #312f30;
   border-bottom: 1px solid #312f30;
+
   margin-bottom: 14px;
 }
+
 .coupon-card h4{
   margin: 0 0 10px;
+
   text-align: center;
+
   font-size: clamp(22px, 1.4vw, 20px);
   font-weight: 800;
+
   color: #0a0406;
+
   word-break: keep-all;
 }
+
 .coupon-card p{
   margin: 0 0 18px;
+
   text-align: center;
+
   font-size: clamp(14px, 1.4vw, 14px);
+
   color: #6a6869;
+
   line-height: 1.5;
+
   word-break: keep-all;
 }
+
 .coupon-edit-btn{
   display: block;
+
   margin: 0 auto 16px;
+
   width: fit-content;
+
   background: #fffefc;
+
   border-radius: 4px;
+
   padding: 4px 10px;
+
   font-size: clamp(14px, 1.4vw, 12px);
+
   color: #4c4a4b;
 }
 
-/* the classic ticket-stub perforation: sits exactly on the seam between
-   the colored top and the gray bottom (zero-height anchor, positioned
-   children), so the dashed line and the two "bitten out" semicircles
-   read clearly against whatever color is behind them — instead of
-   floating in an empty white gap where they'd blend into nothing */
+
+/* ---------------------------------------------------------
+   Ticket notch / divider
+--------------------------------------------------------- */
 .coupon-notch-row{
   position: relative;
   height: 0;
   z-index: 3;
 }
+
 .coupon-notch{
   position: absolute;
-  top: 0; left: 50%;
-  width: 16px; height: 16px;
+
+  top: 0;
+
+  width: 24px;
+  height: 24px;
+
   background: #fffefc;
   border-radius: 50%;
-  transform: translate(0, -50%);
+
+  transform: translateY(-50%);
 }
-.coupon-notch--left{ left: -8px; transform: translate(0, -50%); }
-.coupon-notch--right{ right: -8px; left: auto; transform: translate(0, -50%); }
+
+.coupon-notch--left{
+  left: -12px;
+}
+
+.coupon-notch--right{
+  right: -12px;
+}
+
 .coupon-divider{
   position: absolute;
-  left: 8px; right: 8px; top: 0;
+
+  left: 8px;
+  right: 8px;
+  top: 0;
+
   height: 2px;
+
   transform: translateY(-50%);
+
   background-image: repeating-linear-gradient(
-    90deg, #fffefc 0 6px, transparent 6px 14px
+    90deg,
+    #fffefc 0 6px,
+    transparent 6px 14px
   );
 }
 
+/* ---------------------------------------------------------
+   Expiry
+--------------------------------------------------------- */
 .coupon-expiry{
   display: flex;
+
   justify-content: space-between;
+
   font-size: clamp(10px, 1.4vw, 10px);
+
   margin-bottom: 10px;
+
   gap: 6px;
 }
-.coupon-expiry span:first-child{ font-weight: 700; color: #312f30; white-space: nowrap; }
-.coupon-expiry span:last-child{ color: #6a6869; text-align: right; }
+
+.coupon-expiry span:first-child{
+  font-weight: 700;
+  color: #312f30;
+  white-space: nowrap;
+}
+
+.coupon-expiry span:last-child{
+  color: #6a6869;
+  text-align: right;
+}
+
+
+/* ---------------------------------------------------------
+   Barcode
+--------------------------------------------------------- */
 .coupon-barcode{
   display: block;
+
   width: 100%;
-  height: 34px;
+  height: 50px;
+
   margin-bottom: 10px;
+
   object-fit: contain;
 }
+
+
+/* ---------------------------------------------------------
+   Issuer
+--------------------------------------------------------- */
 .coupon-issuer{
   text-align: center;
-  font-size: 9px;
+  
+
+  font-size: 10px;
+
   color: #312f30;
 }
-.coupon-issuer span{ color: var(--red); }
 
-.coupon-card--blue .coupon-top-section{ background: #c7d8ea; }
-.coupon-card--yellow .coupon-top-section{ background: #ffeeb9; }
-.coupon-card--purple .coupon-top-section{ background: #c6b4de; }
+.coupon-issuer span{
+  color: var(--red);
+}
 
-/* a thin red strip peeking at the very bottom, hinting that the next
-   section (선물 비하인드, built separately) continues right below */
+
+/* ---------------------------------------------------------
+   Card colors
+--------------------------------------------------------- */
+.coupon-card--blue .coupon-top-section{
+  background: #c7d8ea;
+}
+
+.coupon-card--yellow .coupon-top-section{
+  background: #ffeeb9;
+}
+
+.coupon-card--purple .coupon-top-section{
+  background: #c6b4de;
+}
+
+
+/* ---------------------------------------------------------
+   Red teaser
+--------------------------------------------------------- */
 .coupon-red-teaser{
   position: relative;
   width: 100%;
   height: 130px;
+
   background: var(--red);
+
   margin-top: -10px;
-  z-index: 1;
+
+  /* 휴대폰보다 위 */
+  z-index: 10;
 }
 
-@media (max-width: 900px){
-  .coupon-inner{ aspect-ratio: auto; height: auto; }
-  .coupon-copy, .coupon-cards, .browse-copy, .coupon-phone{
-    position: static; width: auto; left: auto; top: auto; margin: 0 auto 32px;
+/* ---------------------------------------------------------
+   Text animation
+--------------------------------------------------------- */
+.coupon-heading,
+.coupon-desc,
+.browse-copy h3,
+.browse-copy p{
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.coupon-heading.show,
+.coupon-desc.show,
+.browse-copy h3.show,
+.browse-copy p.show{
+  animation: coupon-text-in 0.6s ease-out forwards;
+}
+
+@keyframes coupon-text-in{
+  from{
+    opacity: 0;
+    transform: translateY(12px);
   }
-  .coupon-copy, .browse-copy{ padding: 0 24px; text-align: left; }
-  .browse-copy{ text-align: left; }
-  .coupon-cards{ height: 320px; margin: 0 auto 32px; }
-  .coupon-phone{ width: 220px; }
-  .behind-cards{ flex-direction: column; align-items: center; }
+
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+--------------------------------------------------------- */
+@media (max-width: 900px){
+
+  .coupon-inner{
+    aspect-ratio: auto;
+    height: auto;
+  }
+
+  .coupon-copy,
+  .coupon-cards,
+  .browse-copy,
+  .coupon-phone{
+    position: static;
+    width: auto;
+    left: auto;
+    top: auto;
+    margin: 0 auto 32px;
+  }
+
+  .coupon-copy,
+  .browse-copy{
+    padding: 0 24px;
+    text-align: left;
+  }
+
+  .browse-copy{
+    text-align: left;
+  }
+
+  .coupon-cards{
+    height: 320px;
+    margin: 0 auto 32px;
+  }
+
+  .coupon-phone{
+    width: 220px;
+  }
+
+  .behind-cards{
+    flex-direction: column;
+    align-items: center;
+  }
 }
