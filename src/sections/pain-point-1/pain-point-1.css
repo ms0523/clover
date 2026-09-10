@@ -123,7 +123,7 @@
 
 
 .pain-point-1__product--glove img{
-  transform:rotate(180deg);
+  transform:rotate(140deg) scale(.92);
   transform-origin:center;
   object-position:center;
 }
