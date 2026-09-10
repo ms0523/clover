@@ -36,13 +36,13 @@
 }
 
 .pain-points-inner{
-  width:min(1040px, calc(100% - 48px));
+  width:min(1120px, calc(100% - 48px));
   margin:0 auto;
   display:grid;
-  grid-template-columns:340px 2px minmax(320px, 1fr);
-  column-gap:64px;
+  grid-template-columns:340px 2px 500px;
+  column-gap:84px;
   align-items:center;
-  gap:64px;
+  justify-content:center;
 }
 
 .featured-card{
@@ -237,6 +237,24 @@
   .featured-divider{ height:270px; }
 }
 
+
+@media (max-width:1100px) and (min-width:821px){
+  .pain-points-inner{
+    width:min(1000px, calc(100% - 48px));
+    grid-template-columns:320px 2px minmax(300px, 430px);
+    column-gap:56px;
+    justify-content:center;
+  }
+
+  .featured-card{
+    width:320px;
+  }
+
+  .featured-points{
+    width:100%;
+  }
+}
+
 @media (max-width:820px){
   .pain-points-stage{ min-height:100vh; overflow:visible; }
   .pain-points-stage-content{ gap:46px; padding:36px 0 28px; }
@@ -300,29 +318,3 @@
 }
 
 
-/* 카드 - 세로선 - 문장 간격 보정 */
-@media (min-width:1101px){
-  .pain-points-inner,
-  .pain-points-featured,
-  .featured-layout{
-    --featured-gap:64px;
-  }
-}
-
-@media (max-width:1100px) and (min-width:761px){
-  .pain-points-inner,
-  .pain-points-featured,
-  .featured-layout{
-    --featured-gap:42px;
-  }
-}
-
-.pain-points-inner{
-  column-gap:64px;
-}
-
-@media (max-width:1100px) and (min-width:761px){
-  .pain-points-inner{
-    column-gap:42px;
-  }
-}
