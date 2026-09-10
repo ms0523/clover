@@ -17,11 +17,6 @@ const CAPTIONS = [
   "",
 ];
 
-/*
-  타이틀("선물을 받을 때") 아래 설명 문구도 카드가 넘어갈 때마다
-  같이 바뀌도록 카드별 문구를 따로 둠. 문구 내용은 원하는 대로
-  바꿔서 쓰세요.
-*/
 const DESCS = [
   "상품을 보여주기전 블라인드 된 이미지로<br>더욱 더 선물에 대한 설렘과 기대감을 증폭시켜줍니다",
   "포장을 열어보면 진짜 선물이 짠!<br>기다렸던 순간이 눈앞에 펼쳐집니다",
@@ -42,7 +37,6 @@ export function mountCloverReceive(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".receive-band");
-
   const stage = section.querySelector(".receive-stage");
 
   const faces = [
@@ -50,17 +44,9 @@ export function mountCloverReceive(mountEl) {
   ];
 
   const captionEl = section.querySelector("[data-caption]");
-
   const descEl = section.querySelector("[data-desc]");
 
-  /*
-    캡션이 비는 카드(편지 카드)일 때 카드 전체 높이가
-    줄어들지 않도록, 캡션이 들어있는 .receive-card에도
-    같이 상태 클래스를 토글해줌 (receive-band.css의
-    .receive-card.is-no-caption 규칙과 짝을 이룸)
-  */
   const cardEl = section.querySelector(".receive-card");
-
   const bg = section.querySelector(".receive-bg");
 
   /* =========================================================
@@ -75,18 +61,38 @@ export function mountCloverReceive(mountEl) {
 
   let locked = false;
 
-  let interactionFinished = false;
+  let armedTop = true;
+  let armedBottom = true;
 
   let lockedScrollY = 0;
 
   let lastScrollY = window.scrollY;
 
   /* =========================================================
-     TRACKPAD
+     WHEEL
   ========================================================= */
 
-  const STEP_COOLDOWN_MS = 550;
+  /*
+    한 번의 스크롤 제스처에서 발생하는 여러 wheel 이벤트를
+    하나의 이벤트로 처리하기 위한 설정
 
+    wheel 이벤트가 멈춘 뒤 180ms가 지나야
+    다음 스크롤을 새로운 제스처로 인식함
+  */
+
+  const WHEEL_END_DELAY = 180;
+
+  /*
+    카드 전환 후 최소 대기 시간
+
+    트랙패드에서 스크롤을 빠르게 해도
+    카드가 연속으로 넘어가지 않도록 여유를 둠
+  */
+
+  const STEP_COOLDOWN_MS = 900;
+
+  let wheelEndTimer = null;
+  let wheelGestureLocked = false;
   let stepCooldownUntil = 0;
 
   /* =========================================================
@@ -101,32 +107,33 @@ export function mountCloverReceive(mountEl) {
      UI
   ========================================================= */
 
-function setActive(index) {
-  faces.forEach((face, i) => {
-    face.classList.toggle(
-      "is-active",
-      i === index
+  function setActive(index) {
+    faces.forEach((face, i) => {
+      face.classList.toggle(
+        "is-active",
+        i === index
+      );
+    });
+
+    captionEl.innerHTML = CAPTIONS[index];
+
+    const isEmpty = index === 2;
+
+    captionEl.classList.toggle(
+      "is-empty",
+      isEmpty
     );
-  });
 
-  captionEl.innerHTML = CAPTIONS[index];
+    cardEl?.classList.toggle(
+      "is-no-caption",
+      isEmpty
+    );
 
-  const isEmpty = index === 2;
-
-  captionEl.classList.toggle(
-    "is-empty",
-    isEmpty
-  );
-
-  cardEl?.classList.toggle(
-    "is-no-caption",
-    isEmpty
-  );
-
-  if (descEl) {
-    descEl.innerHTML = DESCS[index];
+    if (descEl) {
+      descEl.innerHTML = DESCS[index];
+    }
   }
-}
+
   /* =========================================================
      BACKGROUND
   ========================================================= */
@@ -153,11 +160,6 @@ function setActive(index) {
 
       return;
     }
-
-    /*
-      파란 배경이 차오르는 동안 기다렸다가
-      스티커 등장
-    */
 
     stickerTimer = setTimeout(() => {
       stickersShown = true;
@@ -198,50 +200,114 @@ function setActive(index) {
 
   /* =========================================================
      ENTRY
-
-     Receive 상단이 화면 최상단에 도착했을 때
-     인터랙션 시작
   ========================================================= */
 
   function checkEntry() {
     if (locked) return;
 
-    if (interactionFinished) return;
-
     const currentScrollY =
       window.scrollY;
 
     const scrollingDown =
-      currentScrollY >
-      lastScrollY;
+      currentScrollY > lastScrollY;
+
+    const scrollingUp =
+      currentScrollY < lastScrollY;
 
     const rect =
       section.getBoundingClientRect();
 
-    const reachedSectionTop =
+    const reachedTop =
       rect.top <= 0 &&
       rect.bottom > 0;
 
-    if (
-      scrollingDown &&
-      reachedSectionTop
-    ) {
-      engageLock();
+    const reachedBottom =
+      rect.bottom >= window.innerHeight &&
+      rect.top < 0;
 
-      /*
-        진입 즉시
-        파란 배경 차오르기 시작
-      */
+    if (
+      armedTop &&
+      scrollingDown &&
+      reachedTop
+    ) {
+      armedTop = false;
+
+      step = 0;
+
+      setActive(step);
+
+      engageLock();
 
       setBackgroundFilled(true);
 
       stepCooldownUntil =
         performance.now() +
         STEP_COOLDOWN_MS;
+
+      /*
+        진입 자체가 하나의 스크롤이므로
+        바로 다음 카드로 넘어가지 않도록
+        현재 wheel 제스처를 잠금
+      */
+
+      wheelGestureLocked = true;
+    } else if (
+      armedBottom &&
+      scrollingUp &&
+      reachedBottom
+    ) {
+      armedBottom = false;
+
+      step = 2;
+
+      setActive(step);
+
+      engageLock();
+
+      setBackgroundFilled(true);
+
+      stepCooldownUntil =
+        performance.now() +
+        STEP_COOLDOWN_MS;
+
+      wheelGestureLocked = true;
     }
 
-    lastScrollY =
-      currentScrollY;
+    if (
+      !armedTop &&
+      rect.top >= window.innerHeight
+    ) {
+      armedTop = true;
+    }
+
+    if (
+      !armedBottom &&
+      rect.bottom <= 0
+    ) {
+      armedBottom = true;
+    }
+
+    lastScrollY = currentScrollY;
+  }
+
+  /* =========================================================
+     WHEEL GESTURE
+  ========================================================= */
+
+  function startNewWheelGesture() {
+    wheelGestureLocked = false;
+  }
+
+  function markWheelGesture() {
+    wheelGestureLocked = true;
+
+    if (wheelEndTimer) {
+      clearTimeout(wheelEndTimer);
+    }
+
+    wheelEndTimer = setTimeout(() => {
+      startNewWheelGesture();
+    }, WHEEL_END_DELAY);
   }
 
   /* =========================================================
@@ -250,17 +316,8 @@ function setActive(index) {
 
   function onWheel(e) {
     /*
-      이미 모든 인터랙션이 끝났다면
-      브라우저 기본 스크롤 사용
-    */
-
-    if (interactionFinished) {
-      return;
-    }
-
-    /*
-      아직 Receive 인터랙션에
-      진입하지 않았다면 기본 스크롤
+      Receive 인터랙션에 진입하지 않았다면
+      기본 스크롤 허용
     */
 
     if (!locked) {
@@ -276,12 +333,20 @@ function setActive(index) {
 
     const deltaY = e.deltaY;
 
+    if (deltaY === 0) {
+      return;
+    }
+
     /* =======================================================
-       UP
+       CARD 1에서 위로 스크롤
     ======================================================= */
 
-    if (deltaY < 0) {
+    if (deltaY < 0 && step === 0) {
       releaseLock();
+
+      setBackgroundFilled(false);
+
+      wheelGestureLocked = true;
 
       window.scrollTo({
         top: Math.max(
@@ -291,26 +356,29 @@ function setActive(index) {
         behavior: "smooth",
       });
 
+      markWheelGesture();
+
       return;
     }
 
     /* =======================================================
-       DOWN
+       스티커가 전부 등장하기 전에는
+       카드 전환 금지
     ======================================================= */
 
-    if (deltaY <= 0) {
+    if (!stickersShown) {
+      markWheelGesture();
       return;
     }
 
-    /*
-      ⭐ 핵심
+    /* =======================================================
+       ⭐ 핵심
+       하나의 wheel 제스처에서는
+       카드 하나만 전환
+    ======================================================= */
 
-      스티커가 전부 등장하기 전에는
-      아래 스크롤을 아무리 해도
-      카드가 넘어가지 않음
-    */
-
-    if (!stickersShown) {
+    if (wheelGestureLocked) {
+      markWheelGesture();
       return;
     }
 
@@ -321,51 +389,76 @@ function setActive(index) {
     const now = performance.now();
 
     if (now < stepCooldownUntil) {
+      markWheelGesture();
       return;
     }
+
+    /* =======================================================
+       지금 들어온 스크롤을 하나의 제스처로 확정
+    ======================================================= */
+
+    markWheelGesture();
 
     stepCooldownUntil =
       now + STEP_COOLDOWN_MS;
 
     /* =======================================================
-       CARD 1 → CARD 2
+       DOWN
+       CARD 1 → 2 → 3 → 다음 섹션
     ======================================================= */
 
-    if (step === 0) {
-      step = 1;
+    if (deltaY > 0) {
+      if (step === 0) {
+        step = 1;
 
-      setActive(step);
+        setActive(step);
+
+        return;
+      }
+
+      if (step === 1) {
+        step = 2;
+
+        setActive(step);
+
+        return;
+      }
+
+      if (step === 2) {
+        releaseLock();
+
+        window.scrollTo({
+          top: lockedScrollY + 600,
+          behavior: "smooth",
+        });
+
+        return;
+      }
 
       return;
     }
 
     /* =======================================================
-       CARD 2 → CARD 3
+       UP
+       CARD 3 → 2 → 1
     ======================================================= */
 
-    if (step === 1) {
-      step = 2;
+    if (deltaY < 0) {
+      if (step === 2) {
+        step = 1;
 
-      setActive(step);
+        setActive(step);
 
-      return;
-    }
+        return;
+      }
 
-    /* =======================================================
-       CARD 3 → NEXT SECTION
-    ======================================================= */
+      if (step === 1) {
+        step = 0;
 
-    if (step === 2) {
-      interactionFinished = true;
+        setActive(step);
 
-      releaseLock();
-
-      window.scrollTo({
-        top: lockedScrollY + 600,
-        behavior: "smooth",
-      });
-
-      return;
+        return;
+      }
     }
   }
 
@@ -395,24 +488,7 @@ function setActive(index) {
       return;
     }
 
-    /*
-      아직 인터랙션이 시작되지 않았다면
-      진입 여부 확인
-    */
-
-    if (!interactionFinished) {
-      checkEntry();
-
-      return;
-    }
-
-    /*
-      인터랙션이 끝난 후에는
-      일반 스크롤
-    */
-
-    lastScrollY =
-      window.scrollY;
+    checkEntry();
   }
 
   /* =========================================================
