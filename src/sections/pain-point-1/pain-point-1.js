@@ -51,10 +51,10 @@ function initPainPoint1(section){
 
     section.classList.add("is-visible");
 
-    // v5보다 아주 조금 빠르게:
-    // 첫 세트 0.45초 후 / 이후 약 0.82초 간격
-    const firstDelay=450;
-    const pairGap=820;
+    // v6보다 아주 조금 더 빠르게:
+    // 첫 세트 0.36초 후 / 이후 약 0.72초 간격
+    const firstDelay=360;
+    const pairGap=720;
 
     pairs.forEach((_,index)=>{
       window.setTimeout(()=>{
