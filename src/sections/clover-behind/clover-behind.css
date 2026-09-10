@@ -1,114 +1,337 @@
-.gb-band{
+.gb-band {
   position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  background: #fffefc;
 }
-.gb-bg{
+
+.gb-bg {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 65%;
   background: var(--red);
   z-index: 0;
 }
-.gb-inner{
+
+
+/* ---------------------------------------------------------
+   CONTENT
+--------------------------------------------------------- */
+.gb-inner {
   position: relative;
   z-index: 1;
+
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   text-align: center;
-  padding: 80px 24px 100px;
+  padding: 155px 24px 100px;
   box-sizing: border-box;
 }
 
-.gb-ribbon{
+
+/* ---------------------------------------------------------
+   RIBBON
+--------------------------------------------------------- */
+.gb-ribbon {
   display: block;
-  margin: 0 auto 14px;
-  height: 22px;
+
+  height: 26px;
   width: auto;
+
+  margin: 0 auto 14px;
 }
 
-.gb-title{
-  margin: 0 0 24px;
+
+/* ---------------------------------------------------------
+   TITLE
+--------------------------------------------------------- */
+.gb-title {
+  margin: 0 0 32px;
+
   color: #fffefc;
-  font-size: clamp(28px, 3vw, 40px);
+
+  font-size: clamp(32px, 3vw, 40px);
+  line-height: 1.2;
   font-weight: 700;
 }
-.gb-sub{
+
+
+/* ---------------------------------------------------------
+   SUB TITLE
+--------------------------------------------------------- */
+.gb-sub {
   margin: 0 0 48px;
+
   color: #f5f4f4;
+
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.gb-cards {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  gap: 24px;
+  flex-wrap: nowrap;
+  margin-top: 100px;
+  margin-bottom: 66px;
+}
+
+
+.gb-flip-card {
+  position: relative;
+  width: 291px;
+  height: 394px;
+  flex: 0 0 291px;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+
+.gb-card-inner {
+  position: absolute;
+  inset: 0;
+
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+
+.gb-card-face {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 14px;
+  backface-visibility: hidden;
+
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FRONT
+========================================================= */
+
+.gb-front {
+  padding: 26px 20px 22px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+.gb-card--blue {
+  background: #c7d8ea;
+}
+
+.gb-card--yellow {
+  background: #f8dc83;
+}
+
+.gb-card--pink {
+  background: #ec8baf;
+}
+
+
+/* 카드 제목 */
+.gb-front h4 {
+  margin: 0;
+
+  font-size: 25px;
+  line-height: 1.25;
+
+  font-weight: 700;
+
+  color: #0a0406;
+
+  letter-spacing: -0.035em;
+}
+
+
+/* 제목 아래 설명 */
+.gb-front > p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.45;
+
+  color: #312f30;
+
+  letter-spacing: -0.025em;
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.gb-art {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+
+.gb-art img {
+  display: block;
+
+  /*
+    카드가 291px이므로 이미지도 충분히 크게
+  */
+  max-width: 90%;
+  max-height: 100%;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+/* 카드 하단 설명 */
+.gb-note {
+  margin: 0 !important;
+
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+
+  color: #312f30 !important;
+
+  letter-spacing: -0.025em;
+}
+
+
+/* =========================================================
+   BACK
+========================================================= */
+
+.gb-back {
+  background: #fffefc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transform: rotateY(180deg);
+}
+
+
+/* 뒷면 Thoughtful */
+.gb-back-title {
+  position: absolute;
+  left: 24px;
+  top: 43px;
+  color: var(--thoughtful-red);
+  font-size: 32px;
+  line-height: 44.8px;
+  font-family: 'Baskervville', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+
+/* 뒷면 설명 */
+.gb-back-desc {
+  position: absolute;
+  left: 26px;
+  top: 98px;
+  width: 240px;
+  color: var(--thoughtful-red);
+  font-size: 12px;
+  text-align: left;
+  line-height: 20px;
+  margin-top: 3px;
+}
+
+
+/* 키워드 */
+.gb-back-keywords {
+  position: absolute;
+  left: 0;
+  bottom: 128px;
+  width: 100%;
+  color: var(--thoughtful-red);
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+}
+
+
+/* 구분선 */
+.gb-back-divider {
+  position: absolute;
+  left: 27px;
+  width: 238px;
+  height: 0;
+  border-top: 0.5px solid var(--thoughtful-red);
+}
+
+.gb-back-divider--top {
+  top: 313px;
+}
+
+.gb-back-divider--bottom {
+  top: 367px;
+}
+
+
+/* 리본 */
+.gb-back-ribbon {
+  position: absolute;
+  left: 118px;
+  top: 300px;
+  width: 56px;
+  height: auto;
+}
+
+
+/* 뒷면 하단 문구 */
+.gb-back-tagline {
+  position: absolute;
+  left: 49px;
+  top: 332px;
+  color: var(--thoughtful-red);
+  font-size: 13px;
+  line-height: 15.6px;
+  font-family: 'Baskervville', serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+.gb-typing {
+  margin: 0;
+
+  min-height: 28px;
+
+  color: #8d8b8b;
+
   font-size: clamp(15px, 1.5vw, 20px);
   line-height: 1.5;
 }
 
-/* ---------------------------------------------------------
-   Cards — slide up from below, smoothly (no bounce), staggered
---------------------------------------------------------- */
-.gb-cards{
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-bottom: 56px;
-}
-.gb-card{
-  width: 235px;
-  border-radius: 14px;
-  padding: 28px 22px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  opacity: 0;
-  transform: translateY(36px);
-  transition: opacity .6s ease-out, transform .6s ease-out;
-  transition-delay: calc(var(--i) * 180ms);
-}
-.gb-card.show{
-  opacity: 1;
-  transform: translateY(0);
-}
-.gb-card--blue{ background: #c7d8ea; }
-.gb-card--yellow{ background: #f8dc83; }
-.gb-card--pink{ background: #ec8baf; }
-
-.gb-card h4{
-  margin: 0;
-  font-size: clamp(20px, 2vw, 25px);
-  font-weight: 700;
-  color: #0a0406;
-}
-.gb-card > p{
-  margin: 0;
-  font-size: 13px;
-  color: #312f30;
-  line-height: 1.4;
-}
-.gb-note{
-  margin: 0 !important;
-  font-size: 13px !important;
-  color: #312f30 !important;
-}
-
-.gb-art{
-  height: 145px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.gb-art img{
-  max-width: 100%;
-  max-height: 145px;
-  object-fit: contain;
-}
-
-/* ---------------------------------------------------------
-   Typing line — starts only after the cards have finished landing
---------------------------------------------------------- */
-.gb-typing{
-  margin: 0;
-  min-height: 28px;
-  color: #b8b7b7;
-  font-size: clamp(14px, 1.4vw, 16px);
-}
-.gb-typing::after{
+.gb-typing.typing::after{
   content: "";
   display: inline-block;
   width: 2px; height: 1em;
@@ -117,13 +340,97 @@
   vertical-align: -0.15em;
   animation: gb-blink 0.9s steps(1) infinite;
 }
-.gb-typing.done::after{
+.gb-typing.typing.done::after{
   animation: none;
   opacity: 0;
 }
 
-@keyframes gb-blink{ 50%{ opacity: 0; } }
+@keyframes gb-blink {
+  50% {
+    opacity: 0;
+  }
+}
 
-@media (max-width: 900px){
-  .gb-cards{ flex-direction: column; align-items: center; }
+
+/* =========================================================
+   TABLET
+========================================================= */
+@media (max-width: 900px) {
+  .gb-inner {
+    padding-top: 120px;
+  }
+
+  .gb-cards {
+    gap: 20px;
+  }
+
+  .gb-flip-card {
+    width: 220px;
+    height: 298px;
+    flex-basis: 220px;
+  }
+
+  .gb-front {
+    padding: 18px 16px 16px;
+  }
+
+  .gb-front h4 {
+    font-size: 21px;
+  }
+
+  .gb-front > p,
+  .gb-note {
+    font-size: 10px !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+@media (max-width: 700px) {
+  .gb-bg {
+    height: 68%;
+  }
+
+  .gb-inner {
+    padding: 100px 20px 80px;
+  }
+
+  .gb-title {
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
+
+  .gb-sub {
+    font-size: 15px;
+    margin-bottom: 36px;
+  }
+
+  .gb-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .gb-flip-card {
+    width: min(243px, 80vw);
+    height: auto;
+    aspect-ratio: 243 / 329;
+    flex-basis: auto;
+  }
+
+  .gb-typing {
+    margin-top: 20px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .gb-typing::after {
+    animation: none;
+  }
 }

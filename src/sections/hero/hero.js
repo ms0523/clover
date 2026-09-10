@@ -2,7 +2,7 @@ import "./hero.css";
 import heroHtml from "./hero.html?raw";
 import logoUrl from "../../assets/images/hero-wordmark.svg";
 import whiteLogoUrl from "../../assets/images/hero-wordmark-white.svg";
-import ribbonUrl from "../../assets/images/hero-ribbon.svg";
+import ribbonUrl from "../../assets/images/ribbon-red.svg";
 import { lerp, wait, easeFastMiddle } from "../../utils/animate.js";
 
 // Renders the hero section into `mountEl` and wires up the tear animation.
