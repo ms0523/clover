@@ -132,7 +132,11 @@
   position: absolute; inset: 0;
   background: var(--red);
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 0% 0%);
+  cursor: grab;
+  touch-action: none;
 }
+.paper.is-dragging{ cursor: grabbing; }
+
 /* white logo sitting on the closed paper, positioned identically to
    .hero-logo underneath — since it's a child of .paper, it gets the exact
    same clip-path wedge cut as the tear animation progresses, so it tears
@@ -146,7 +150,7 @@
 
 /* guide line: fades out together with the tear progress */
 .track{
-  position: absolute; left: 0; right: 0; top: 50%;
+  position: absolute; left: 0; right: 0; top: 58%;
   transform: translateY(-50%);
   height: 0; pointer-events: none;
   z-index: 5;
@@ -166,31 +170,52 @@
   );
 }
 
+.scissors{
+  position: absolute; top: 57.5%; z-index: 7;
+  left: var(--cut-pct, 0%);
+  transform: translate(-6%, -50%);
+  width: 80px; height: 60px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+  user-select: none;
+  pointer-events: none;   /* 드래그는 여전히 .paper가 담당 */
+  will-change: left, opacity;
+  transition: opacity .08s ease;
+}
+.scissors img{
+  width: 100%; height: 100%; display: block;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
 .open-label{
-  position: absolute; top: 50%; right: 3.5vw;
-  transform: translateY(-140%);
+  position: absolute; top: 55%; right: 3.5vw;
+  transform: translateY(0);
   color: #fff;
   font-size: 14px; letter-spacing: .02em;
   opacity: var(--label-op, 1);
   transition: opacity .25s ease;
   z-index: 6;
   pointer-events: none;
+  opacity: var(--label-op, 1);
 }
 
-/* white silhouette scissors, facing right along the cut direction */
-.scissors{
-  position: absolute; top: 50%; z-index: 7;
-  left: var(--cut-pct, 0%);
-  transform: translate(-15%,-50%);
-  width: 46px; height: 28px;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
-  user-select: none;
-  will-change: left, opacity;
-  transition: opacity .08s ease;
+/* 개봉 유도 문구 — 점선 왼쪽 아래 */
+.drag-hint{
+  position: absolute;
+  left: 5.5%;
+  top: 60%;
+  max-width: none;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  opacity: var(--hint-op, 1);
+  transition: opacity .3s ease;
+  z-index: 6;
+  pointer-events: none;
 }
-.scissors svg{ width: 100%; height: 100%; display: block; }
-
-@media (max-width: 900px){
+@media (max-width: 1200px){
   .hero-copy{
     left: 10%; top: 48%; width: 80%;
     font-size: clamp(16px, 3vw, 24px);
