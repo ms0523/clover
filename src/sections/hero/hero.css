@@ -15,7 +15,7 @@
 
 .hero-cta-group{
   position: absolute;
-  left: 50%; top: 68%;
+  left: 50%; top: 70%;
   transform: translateX(-50%);
   transition: transform .18s ease;
 }
@@ -34,7 +34,7 @@
    were too small and didn't line up cleanly with the solid segment. */
 .hero-side-line{
   position: absolute;
-  top: 23.4%; /* anchored at the dot itself, not the very top */
+  top: var(--line-top, 23.4%);
   width: 0;
   z-index: 1;
 }
@@ -42,25 +42,21 @@
 .hero-side-line--right{ left: 94.4%; }
 
 .hero-side-line::before{
-  /* dashed segment, dot up toward the very top of the frame */
   content: "";
   position: absolute;
   left: -1px; bottom: 100%;
   width: 2px;
-  height: 220px; /* stretches up close to the top edge */
+  height: 20vw;   /* 220px → 15.3vw (1440px 기준 환산값) */
   background-image: repeating-linear-gradient(
     to top, var(--red) 0 10px, transparent 10px 17px
   );
 }
 .hero-side-line::after{
-  /* solid segment, dot down toward the very bottom, fading out. Same 2px
-     width and left:-1px as the dashed segment above, so both halves sit
-     on the exact same vertical axis instead of drifting by a pixel. */
   content: "";
   position: absolute;
-  left: -1px; top: 0;
+  left: -1px; top: -20px;
   width: 2px;
-  height: 680px; /* stretches down close to the bottom edge */
+  height: 28vw;   /* 680px → 47.2vw */
   background: linear-gradient(to bottom, var(--red) 0%, var(--red) 75%, rgba(178,21,40,0) 100%);
 }
 
@@ -69,8 +65,8 @@
    right where the lines actually meet, not offset to one side. */
 .hero-side-line .dot{
   position: absolute;
-  left: -4px; top: -4px;
-  width: 8px; height: 8px;
+  left: -5px; top: -40px;
+  width: 10px; height: 10px;
   background: var(--red);
 }
 
@@ -79,7 +75,7 @@
    the viewport width), right side mirrors from x=94.4% to x=100%. */
 .hero-side-line .tick{
   position: absolute;
-  top: -1px;
+  top: -35px;
   height: 2px;
   background-image: repeating-linear-gradient(
     to right, var(--red) 0 10px, transparent 10px 17px
@@ -90,42 +86,130 @@
 
 .hero-logo{
   position: absolute;
-  left: 9.86%; top: 7.23%; width: 80.3%; height: auto;
+  left: 50%; top: 7.23%;
+  transform: translateX(-50%);
+  width: 80.3%;
+  max-width: 1156px;
+  height: auto;
   display: block;
 }
 
 .hero-copy{
   position: absolute;
-  left: 50%; top: 83.2%; margin: 0;
+  left: 50%; top: 50%; margin: 0;
   transform: translateX(-50%);
   text-align: center;
-  font-size: 30px; line-height: 1.42; font-weight: 400; letter-spacing: -0.045em;
+  font-size: 22px; line-height: 1.6; font-weight: 400; letter-spacing: -0.045em;
   color: var(--text);
   white-space: nowrap;
 }
 .hero-copy .accent{ color: var(--red); font-weight: 700; }
 
-.hero-cta{
+
+.hero-cta-group {
+  position: absolute;
+  left: 50%;
+  top: 80%;
+  transform: translateX(-50%);
+
+  /* 리본이 버튼 위로 나올 수 있도록 */
+  overflow: visible;
+}
+
+
+/* ========================================
+   CTA BUTTON - DEFAULT
+======================================== */
+
+.hero-cta {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 200px;
+  height: 50px;
+
+  box-sizing: border-box;
+
+  border: 2px solid var(--red);
+  border-radius: 8px;
+
+  background: #fff;
+  color: var(--red);
+
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+
+/* ========================================
+   RIBBON - 기본적으로 숨김
+======================================== */
+
+.hero-cta-ribbon {
+  position: absolute;
+
+  left: 50%;
+  bottom: calc(100% + 2px);
+
+  width: 108px;
+  height: auto;
+
   display: block;
-  width: 250px; height: 67px;
-  border: 0; border-radius: 10px;
+
+  transform: translate(-50%, 10px);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s ease;
+
+  z-index: 2;
+}
+
+
+/* ========================================
+   HOVER
+======================================== */
+
+/* 리본 나타남 */
+.hero-cta-group:hover .hero-cta-ribbon {
+  opacity: 1;
+
+  transform: translate(-50%, 0);
+}
+
+
+/* 버튼은 hover해도 흰색 */
+.hero-cta-group:hover .hero-cta {
+  background: #fff;
+  color: var(--red);
+  border-color: var(--red);
+}
+
+
+/* ========================================
+   PRESSED
+======================================== */
+
+.hero-cta-group:active .hero-cta {
   background: var(--red);
   color: #fff;
-  font-size: 20px; line-height: 32px; font-weight: 700;
-  cursor: pointer;
-  transition: background .18s ease;
+  border-color: var(--red);
 }
-.hero-cta-group:hover .hero-cta{ background: #a91616; }
 
-.hero-dots{
-  position: absolute; left: 7.08%; bottom: 7.85%;
-  display: flex; flex-direction: column; gap: 22px;
-}
-.hero-dots span{
-  display: block; width: 28px; height: 4px; border-radius: 3px;
-  background: #d5d5d5;
-}
-.hero-dots span:first-child{ width: 37px; background: var(--red); }
 
 /* the red "paper" layer with the wedge-shaped bite pushed in from the left */
 .paper{
@@ -137,20 +221,21 @@
 }
 .paper.is-dragging{ cursor: grabbing; }
 
-/* white logo sitting on the closed paper, positioned identically to
-   .hero-logo underneath — since it's a child of .paper, it gets the exact
-   same clip-path wedge cut as the tear animation progresses, so it tears
-   away in perfect sync and hands off to the red logo beneath it at
-   exactly the same spot rather than a mismatched crossfade. */
+
 .paper-logo{
   position: absolute;
-  left: 9.86%; top: 7.23%; width: 80.3%; height: auto;
+  left: 50%; top: 7.23%;      /* .hero-logo와 동일하게 */
+  transform: translateX(-50%);
+  width: 80.3%;
+  max-width: 1156px;          /* .hero-logo와 동일하게 */
+  height: auto;
   display: block;
 }
 
 /* guide line: fades out together with the tear progress */
 .track{
-  position: absolute; left: 0; right: 0; top: 58%;
+  position: absolute; left: 0; right: 0;
+  top: 58%;   /* var(--line-top, 58%) → 58%로 되돌림 */
   transform: translateY(-50%);
   height: 0; pointer-events: none;
   z-index: 5;
@@ -171,13 +256,13 @@
 }
 
 .scissors{
-  position: absolute; top: 57.5%; z-index: 7;
-  left: var(--cut-pct, 0%);
-  transform: translate(-6%, -50%);
+  position: absolute; top: 57.5%; z-index: 7; 
+  left: var(--cut-pct, -15%);
+  transform: translate(-60%, -50%);
   width: 80px; height: 60px;
   filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
   user-select: none;
-  pointer-events: none;   /* 드래그는 여전히 .paper가 담당 */
+  pointer-events: none;  
   will-change: left, opacity;
   transition: opacity .08s ease;
 }
@@ -203,7 +288,7 @@
 .drag-hint{
   position: absolute;
   left: 5.5%;
-  top: 60%;
+  top: 60%;   /* 원래 값 */
   max-width: none;
   color: #fff;
   font-size: 13px;
@@ -215,14 +300,184 @@
   z-index: 6;
   pointer-events: none;
 }
-@media (max-width: 1200px){
-  .hero-copy{
-    left: 10%; top: 48%; width: 80%;
-    font-size: clamp(16px, 3vw, 24px);
-    white-space: normal; text-align: right;
-    transform: none;
-  }
-  .hero-logo{ left: 15%; top: 29%; width: 70%; }
-  .hero-cta-group{ top: 63%; }
-  .hero-cta{ width: 210px; height: 56px; font-size: 17px; }
+.section-nav {
+  position: fixed;
+
+  right: 20px;
+  top: 60%;
+
+  transform: translateY(-50%);
+
+  z-index: 50;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.25s ease;
+}
+
+
+/* 보이기 */
+.section-nav.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* =========================================
+   기본 상태
+========================================= */
+
+.section-nav-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 20px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+
+.section-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  width: 100%;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+
+/* 기본 dash */
+.section-nav-dash {
+  display: block;
+
+  width: 28px;
+  height: 4px;
+
+  border-radius: 3px;
+
+  background-color: #d5d5d5;
+
+  flex-shrink: 0;
+
+  transition:
+    width 0.25s ease,
+    background-color 0.25s ease;
+}
+
+
+/* 현재 페이지 dash */
+.section-nav-item.is-active .section-nav-dash {
+  width: 37px;
+
+  background-color: #c91b2b;
+}
+
+
+/* 기본 상태에서는 텍스트 숨김 */
+.section-nav-label {
+  display: none;
+}
+
+
+/* =========================================
+   HOVER 상태
+   작은 연회색 패널
+========================================= */
+
+.section-nav.is-expanded {
+  width: 120px;
+
+  padding: 48px 0;
+  
+  opacity: 95%;
+
+  box-sizing: border-box;
+
+  background: #eeeeee;
+
+  border-radius: 20px;
+}
+
+
+/* hover 상태 리스트 */
+.section-nav.is-expanded .section-nav-list {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 18px;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* hover 상태 버튼 */
+.section-nav.is-expanded .section-nav-item {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+}
+
+
+/* hover에서는 dash 제거 */
+.section-nav.is-expanded .section-nav-dash {
+  display: none;
+}
+
+
+/* hover에서는 텍스트 표시 */
+.section-nav.is-expanded .section-nav-label {
+  display: block;
+
+  max-width: none;
+
+  overflow: visible;
+
+  opacity: 1;
+
+  white-space: nowrap;
+
+  font-size: 16px;
+  line-height: 1.2;
+
+  font-weight: 400;
+
+  color: #b8b8b8;
+
+  text-align: center;
+
+  transition:
+    color 0.2s ease,
+    font-weight 0.2s ease;
+}
+
+
+/* 현재 선택된 메뉴 */
+.section-nav.is-expanded
+.section-nav-item.is-active
+.section-nav-label {
+  color: #c91b2b;
+
+  font-weight: 500;
 }
