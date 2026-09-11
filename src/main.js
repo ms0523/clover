@@ -2,6 +2,7 @@ import "./styles/fonts.css";
 import "./styles/base.css";
 
 import { mountHero } from "./sections/hero/hero.js";
+import { mountCloverStart } from "./sections/clover-start/clover-start.js";
 import { mountPainPoint1 } from "./sections/pain-point-1/pain-point-1.js";
 import { mountPainPoints } from "./sections/pain-points/pain-points.js";
 import { mountClovervalue } from "./sections/clover-value/clover-value.js";
@@ -17,6 +18,7 @@ import { observeReveals } from "./utils/reveal.js";
 const app = document.querySelector("#app");
 
 mountHero(app);
+mountCloverStart(app);
 mountPainPoint1(app);
 mountPainPoints(app);
 mountClovervalue(app); // STEP 04

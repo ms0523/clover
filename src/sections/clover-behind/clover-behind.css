@@ -238,7 +238,7 @@
   position: absolute;
   left: 24px;
   top: 43px;
-  color: var(--thoughtful-red);
+  color: var(--red);
   font-size: 32px;
   line-height: 44.8px;
   font-family: 'Baskervville', serif;
@@ -253,7 +253,7 @@
   left: 26px;
   top: 98px;
   width: 240px;
-  color: var(--thoughtful-red);
+  color: var(--red);
   font-size: 12px;
   text-align: left;
   line-height: 20px;
@@ -267,7 +267,7 @@
   left: 0;
   bottom: 128px;
   width: 100%;
-  color: var(--thoughtful-red);
+  color: var(--red);
   font-size: 12px;
   line-height: 22px;
   text-align: center;
@@ -280,7 +280,7 @@
   left: 27px;
   width: 238px;
   height: 0;
-  border-top: 0.5px solid var(--thoughtful-red);
+  border-top: 0.5px solid var(--red);
 }
 
 .gb-back-divider--top {
@@ -307,7 +307,7 @@
   position: absolute;
   left: 49px;
   top: 332px;
-  color: var(--thoughtful-red);
+  color: var(--red);
   font-size: 13px;
   line-height: 15.6px;
   font-family: 'Baskervville', serif;
