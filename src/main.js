@@ -3,7 +3,6 @@ import "./styles/base.css";
 
 import { mountHero } from "./sections/hero/hero.js";
 import { mountPainPoint1 } from "./sections/pain-point-1/pain-point-1.js";
-import { mountPainPoints } from "./sections/pain-points/pain-points.js";
 import { mountClovervalue } from "./sections/clover-value/clover-value.js";
 import { mountIntro } from "./sections/intro/intro.js";
 import { mountCloverAi } from "./sections/clover-ai/clover-ai.js";
@@ -18,7 +17,6 @@ const app = document.querySelector("#app");
 
 mountHero(app);
 mountPainPoint1(app);
-mountPainPoints(app);
 mountClovervalue(app); // STEP 04
 mountIntro(app); // includes the clue-board phone sequence
 mountCloverAi(app); // STEP 02
