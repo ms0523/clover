@@ -190,31 +190,35 @@
    Coupon top
 --------------------------------------------------------- */
 .coupon-top-section{
-  padding: 28px 14px 28px;
+  padding: 20px 14px 18px;
+  border-radius: 16px 16px 0 0;
 }
 
 
 /* ---------------------------------------------------------
    Coupon bottom
 --------------------------------------------------------- */
-.coupon-bottom{
+.coupon-bottom {
   position: relative;
 
   background: #f5f4f4;
 
-  padding: 24px 14px 28px;
+  padding: 24px 14px 20px;
+
   margin-top: 0;
 
   border-radius: 0 0 16px 16px;
 
   transform: translateY(0) rotate(0deg);
+
   transform-origin: 50% 0;
 
   transition:
-    transform 0.7s cubic-bezier(.22, 1, .36, 1),
-    opacity 0.5s ease;
+    transform 0.35s cubic-bezier(.22, 1, .36, 1),
+    opacity 0.3s ease;
 
   opacity: 1;
+
   overflow: visible;
 }
 
@@ -252,33 +256,22 @@
 }
 
 
-/* 뜯길 때 */
-.coupon-card.torn .coupon-bottom{
+/* =========================================
+   Coupon Hover
+========================================= */
+
+.coupon-card:hover .coupon-bottom {
   transform:
     translateY(35px)
     rotate(5deg);
-
-  transform-origin: 50% 0;
-}
-/* ---------------------------------------------------------
-   쿠폰 뜯김
-   → 아래쪽 조각 + 리버스 라운딩이 같이 움직임
---------------------------------------------------------- */
-
-.coupon-card.torn .coupon-bottom{
-  transform:
-    translateY(35px)
-    rotate(5deg);
-
-  transform-origin: 50% 0;
 }
 /* ---------------------------------------------------------
    Coupon top content
 --------------------------------------------------------- */
 .coupon-card-top{
   text-align: center;
-  font-size: clamp(14px, 1.4vw, 12px);
-  font-weight: 700;
+  font-size: clamp(12px, 1.4vw, 12px);
+  font-weight: 600;
   color: #312f30;
 
   padding: 4px 0;
@@ -289,12 +282,12 @@
   margin-bottom: 14px;
 }
 
-.coupon-card h4{
-  margin: 0 0 10px;
+.coupon-card h4 {
+  margin: 32px 0 16px;
 
   text-align: center;
 
-  font-size: clamp(22px, 1.4vw, 20px);
+  font-size: clamp(24px, 1.4vw, 20px);
   font-weight: 800;
 
   color: #0a0406;
@@ -303,7 +296,7 @@
 }
 
 .coupon-card p{
-  margin: 0 0 18px;
+  margin: 0 0 35px;
 
   text-align: center;
 
@@ -319,7 +312,7 @@
 .coupon-edit-btn{
   display: block;
 
-  margin: 0 auto 16px;
+  margin: 0 auto 0px;
 
   width: fit-content;
 
@@ -394,7 +387,7 @@
 
   font-size: clamp(10px, 1.4vw, 10px);
 
-  margin-bottom: 10px;
+  margin-bottom: 3px;
 
   gap: 6px;
 }
@@ -420,7 +413,7 @@
   width: 100%;
   height: 50px;
 
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 
   object-fit: contain;
 }
