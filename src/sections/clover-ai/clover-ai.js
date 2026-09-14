@@ -70,6 +70,7 @@ export function mountCloverAi(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".clover-ai");
+  section.id = "clover-ai";
   const network = section.querySelector("[data-network]");
   const phone = section.querySelector("[data-phone]");
 

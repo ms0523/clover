@@ -577,6 +577,8 @@ export function mountPainPoint1(mountEl){
   const flow=mountEl.querySelector(".pain-point-flow:last-of-type");
   if(!flow) return;
 
+  flow.id = "pain-point-1";
+
   const firstSection=flow.querySelector(".pain-point-1");
   const detailSection=flow.querySelector(".pain-points");
 

@@ -473,6 +473,7 @@ export function mountIntro(mountEl) {
   const section =
     mountEl.querySelector(".intro");
 
+  section.id = "intro";
 
   const copy =
     section.querySelector("[data-copy]");

@@ -37,6 +37,7 @@ export function mountCloverReceive(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".receive-band");
+  section.id = "clover-receive";
   const stage = section.querySelector(".receive-stage");
 
   const faces = [

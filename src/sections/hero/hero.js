@@ -3,7 +3,6 @@ import heroHtml from "./hero.html?raw";
 import logoUrl from "../../assets/images/hero-wordmark.svg";
 import whiteLogoUrl from "../../assets/images/hero-wordmark-white.svg";
 import ribbonUrl from "../../assets/images/ribbon-red.svg";
-import scissorsUrl from "../../assets/images/scissors.svg";
 import { lerp, wait, easeFastMiddle } from "../../utils/animate.js";
 
 export function mountHero(mountEl) {
@@ -13,13 +12,12 @@ export function mountHero(mountEl) {
       .replace("__LOGO_URL__", logoUrl)
       .replace("__WHITE_LOGO_URL__", whiteLogoUrl)
       .replace("__RIBBON_URL__", ribbonUrl)
-      .replace("__SCISSORS_URL__", scissorsUrl)
   );
 
   const stage = mountEl.querySelector(".hero-stage");
+  stage.id = "hero"; 
   const paper = stage.querySelector(".paper");
   const track = stage.querySelector(".track");
-  const scissors = stage.querySelector(".scissors");
   const openLabel = stage.querySelector(".open-label");
   const dragHint = stage.querySelector(".drag-hint");
   const cta = stage.querySelector(".hero-cta");
@@ -40,15 +38,25 @@ export function mountHero(mountEl) {
   }
   window.addEventListener("resize", syncLineTop);
 
+  // 개봉 전까지 페이지 스크롤 잠금 — 다음 섹션들이 미리 보이지 않도록
+  function lockScroll() {
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+  }
+  function unlockScroll() {
+    document.documentElement.style.overflow = "";
+    document.body.style.overflow = "";
+  }
+  lockScroll();
+
   let progress = 0;
   let rafId = null;
   let dragging = false;
   let opened = false;
-  let nudgeActive = true;
 
   const REACH = 62;
   const OPEN_TARGET = 1;
-  const OPEN_THRESHOLD = 0.92;
+  const OPEN_THRESHOLD = 0.6; // 이 지점까지 찢으면 나머지는 자동으로 완전히 열림
   const INITIAL_PROGRESS = 0.25;
 
   function render(p) {
@@ -63,11 +71,10 @@ export function mountHero(mountEl) {
 
     const cutPct = Math.min(100, Math.max(0, tipX));
     track.style.setProperty("--cut-pct", cutPct + "%");
-    scissors.style.setProperty("--cut-pct", cutPct + "%");
 
     openLabel.style.setProperty("--label-op", progress > 0.88 ? 0 : 1);
     dragHint.style.setProperty("--hint-op", progress > INITIAL_PROGRESS + 0.02 ? 0 : 1);
-    scissors.style.opacity = cutPct >= 100 ? 0 : 1;
+
     track.style.opacity = Math.max(0, 1 - progress / OPEN_TARGET);
   }
 
@@ -90,57 +97,44 @@ export function mountHero(mountEl) {
     });
   }
 
-  async function nudgeLoop() {
-    while (nudgeActive && !dragging && !opened) {
-      await glideTo(INITIAL_PROGRESS + 0.05, 800);
-      if (!nudgeActive || dragging || opened) break;
-      await glideTo(INITIAL_PROGRESS, 700);
-      if (!nudgeActive || dragging || opened) break;
-      await wait(1500);
-    }
-  }
-
-  function stopNudge() {
-    nudgeActive = false;
-    cancelAnimationFrame(rafId);
-  }
-
   function progressFromClientX(clientX) {
     const rect = stage.getBoundingClientRect();
     const xPct = ((clientX - rect.left) / rect.width) * 100;
     return Math.min(1, Math.max(0, xPct / 100));
   }
 
+  function completeOpen() {
+    if (opened) return;
+    opened = true;
+    dragging = false;
+    paper.classList.remove("is-dragging");
+    glideTo(OPEN_TARGET, 320).then(() => {
+      unlockScroll();
+      window.dispatchEvent(new CustomEvent("hero:opened"));
+    });
+  }
+
   function onPointerDown(e) {
     if (opened) return;
-    stopNudge();
     dragging = true;
     paper.classList.add("is-dragging");
     paper.setPointerCapture?.(e.pointerId);
     render(progressFromClientX(e.clientX));
+    if (progress >= OPEN_THRESHOLD) completeOpen();
   }
 
   function onPointerMove(e) {
     if (!dragging) return;
     render(progressFromClientX(e.clientX));
+    // 임계값을 넘는 순간 손을 떼지 않아도 자동으로 끝까지 열림
+    if (progress >= OPEN_THRESHOLD) completeOpen();
   }
 
   function finishDrag() {
     if (!dragging) return;
     dragging = false;
     paper.classList.remove("is-dragging");
-
-    if (progress >= OPEN_THRESHOLD) {
-      opened = true;
-      glideTo(OPEN_TARGET, 320).then(() => {
-        window.dispatchEvent(new CustomEvent("hero:opened"));
-      });
-    } else {
-      glideTo(INITIAL_PROGRESS, 260).then(() => {
-        nudgeActive = true;
-        nudgeLoop();
-      });
-    }
+    glideTo(INITIAL_PROGRESS, 260);
   }
 
   paper.addEventListener("pointerdown", onPointerDown);
@@ -150,26 +144,18 @@ export function mountHero(mountEl) {
 
   cta.addEventListener("click", (e) => e.stopPropagation());
 
-  async function intro() {
-    render(INITIAL_PROGRESS);
-    await wait(400);
-    nudgeLoop();
-  }
-
-  intro();
+  render(INITIAL_PROGRESS);
 
   return {
     replay: () => {
       window.dispatchEvent(new CustomEvent("hero:closed"));
       opened = false;
-      stopNudge();
-      return glideTo(INITIAL_PROGRESS, 500).then(() => {
-        nudgeActive = true;
-        intro();
-      });
+      lockScroll();
+      return glideTo(INITIAL_PROGRESS, 500);
     },
   };
 }
+
 export function mountSectionNav(sections) {
   const nav = document.createElement("nav");
   nav.className = "section-nav";
@@ -232,12 +218,9 @@ export function mountSectionNav(sections) {
     nav.classList.remove("is-visible");
   });
 
-  const targets = sections
-    .map(({ id }) => document.getElementById(id))
-    .filter(Boolean);
+  const targets = sections.map(({ id }) => document.getElementById(id));
+// filter(Boolean) 제거 — 못 찾은 섹션도 자리(인덱스)는 유지
 
-  /* 현재 페이지 감지 */
-// 현재 페이지에 해당하는 네비게이터를 표시
 function updateActiveSection() {
   const viewportCenter = window.scrollY + window.innerHeight / 2;
 
@@ -245,26 +228,19 @@ function updateActiveSection() {
   let closestDistance = Infinity;
 
   targets.forEach((section, index) => {
+    if (!section) return; // 못 찾은 섹션은 계산에서만 건너뜀, 인덱스는 그대로
+
     const sectionTop = section.offsetTop;
     const sectionBottom = sectionTop + section.offsetHeight;
 
-    // 화면 중앙이 section 안에 있으면 바로 active
-    if (
-      viewportCenter >= sectionTop &&
-      viewportCenter < sectionBottom
-    ) {
+    if (viewportCenter >= sectionTop && viewportCenter < sectionBottom) {
       activeIndex = index;
       closestDistance = 0;
       return;
     }
 
-    // section 중앙과 화면 중앙의 거리
-    const sectionCenter =
-      sectionTop + section.offsetHeight / 2;
-
-    const distance = Math.abs(
-      viewportCenter - sectionCenter
-    );
+    const sectionCenter = sectionTop + section.offsetHeight / 2;
+    const distance = Math.abs(viewportCenter - sectionCenter);
 
     if (distance < closestDistance) {
       closestDistance = distance;
@@ -273,36 +249,34 @@ function updateActiveSection() {
   });
 
   items.forEach((item, index) => {
-    item.el.classList.toggle(
-      "is-active",
-      index === activeIndex
-    );
+    item.el.classList.toggle("is-active", index === activeIndex);
   });
 }
 
-// 최초 실행
-updateActiveSection();
+  // 최초 실행
+  updateActiveSection();
 
-// 스크롤할 때 변경
-let ticking = false;
+  // 스크롤할 때 변경
+  let ticking = false;
 
-window.addEventListener(
-  "scroll",
-  () => {
-    if (ticking) return;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
 
-    window.requestAnimationFrame(() => {
-      updateActiveSection();
-      ticking = false;
-    });
+      window.requestAnimationFrame(() => {
+        updateActiveSection();
+        ticking = false;
+      });
 
-    ticking = true;
-  },
-  { passive: true }
-);
+      ticking = true;
+    },
+    { passive: true }
+  );
+
   return {
     destroy: () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", updateActiveSection);
       nav.remove();
     }
   };

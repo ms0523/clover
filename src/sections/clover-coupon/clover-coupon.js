@@ -17,6 +17,7 @@ export function mountCloverCoupon(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".clover-coupon");
+  section.id = "clover-coupon";
 
   const cards = [...section.querySelectorAll("[data-card]")];
   const phone = section.querySelector(".coupon-phone");

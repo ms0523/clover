@@ -21,6 +21,7 @@ export function mountCloverMessage(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".message-band");
+  section.id = "clover-message";   
   const track = section.querySelector("[data-marquee-track]");
 
   // build the sequence once, then duplicate it so the animation (which
