@@ -17,7 +17,7 @@
 }
 .bg-zone--intro{
   top: 0; height: 100vh;
-  
+
 }
 .bg-zone--board{
   top: 100vh; height: calc(100% - 100vh);
@@ -55,7 +55,8 @@
 
 .intro-heading{
   margin: 0;
-  font-size: clamp(28px, 4.4vw, 64px);
+  /* 64px까지 커지던 걸 46px 선에서 멈추도록 낮춤 (28px, 4.4vw, 64px) → (22px, 3.2vw, 46px) */
+  font-size: clamp(22px, 3.2vw, 46px);
   font-weight: 800;
   line-height: 1.4;
   white-space: nowrap;
@@ -139,17 +140,23 @@
 --------------------------------------------------------- */
 .phone{
   position: absolute;
-  left: 5%; top: 114vh;
+  left: 5%; top: 108vh;
   width: 340px;
-  aspect-ratio: 285 / 593; /* matches the mockup image's own proportions */
+
+  /* clover-ai/gift처럼 하단을 잘라내는 방식은 여기서는 취소 —
+     --phone-visible로 박스를 줄이고 overflow:hidden으로 자르던 부분을
+     걷어내고, 원본 비율(285/593) 그대로 전체 화면이 다 보이게 되돌림 */
+  aspect-ratio: 285 / 593;
   z-index: 2;
 }
 .phone-bg{
   position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
+  top: 0; left: 0;
+  width: 100%;
+  aspect-ratio: 285 / 593; /* 원본 전체 비율 그대로 — 부모보다 커서 하단이 자연스럽게 넘침 */
   display: block;
   pointer-events: none;
+  z-index: 2; /* 항상 .phone-screen 위에 — 노치/베젤이 화면 배경 이미지를 덮도록 함 */
 }
 
 /* the usable screen area within the frame image — measured directly off
@@ -157,61 +164,48 @@
    differently-cropped phone image. */
 .phone-screen{
   position: absolute;
-  left: 3.5%; top: 1.5%;
-  width: 93%; height: 97%;
+  left: 3.5%;
+  top: 1.5%;
+  width: 93%;
+  height: 97%;
   border-radius: 30px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  z-index: 1; /* .phone-bg보다 아래 */
 }
 
-.phone-statusbar{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 40px 16px 2px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #18181b;
-  background: #fff;
-  position: relative;
-  margin-bottom: 10px;
-  z-index: -1;
-}
+/* 상태바/헤더는 새 배경 이미지 안에 이미 그려져 있어서 더 이상 필요 없음 */
+.phone-statusbar{ display: none; }
 .phone-icons{ display: flex; align-items: center; gap: 4px; }
 .phone-icons svg{ display: block; fill: #18181b; }
 .icon-signal{ width: 14px; height: 9px; }
 .icon-wifi{ width: 13px; height: 9px; }
 .icon-battery{ width: 19px; height: 9px; color: #18181b; }
 
-.phone-header{
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 14px 16px 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #18181b;
-  border-bottom: 1px solid #f0f0f0;
-  background: #fff;
-  position: relative;
-  z-index: -1;
-}
+.phone-header{ display: none; }
 .phone-header .back{ color: #a1a1aa; font-size: 16px; }
 
 .phone-board{
   position: relative;
-  flex: 1;
+  flex: 1; /* statusbar/header/input이 다 display:none이라 이제 화면 전체를 차지함 */
   padding: 12px;
   overflow: hidden;
+
+  /* 새 배경 이미지 안에서 "빈 보드" 영역이 시작/끝나는 지점(화면 전체 기준 %).
+     이미지에 맞춰 대략 잡은 값이라, 노트가 보드 흰 영역보다 위/아래로
+     삐져나오면 이 두 숫자만 조정하면 전체 노트가 같이 따라 움직임 */
+  --board-top: 15%;
+  --board-bottom: 87%;
+  --board-span: calc(var(--board-bottom) - var(--board-top));
 }
-.phone-board-dots{
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  opacity: .5;
-  pointer-events: none;
+.phone-board-dots{ display: none; } /* 점무늬도 새 이미지에 포함되어 있어서 숨김 */
+
+.phone-screen{
+  background-image: url("../../assets/images/intro-phone-screen.svg");
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
 }
 
 .note{
@@ -227,9 +221,15 @@
 }
 .note.landed{ opacity: 1; transform: scale(1); }
 
+/* 아래 네 노트(포스트잇 2개 + 사진 2개)의 top/height는 전부
+   "원래 phone-board 비율" 값 그대로 두고, calc()로 --board-top/--board-span
+   구간 안에 다시 매핑한 것 — 서로 간의 배치(간격)는 원래 디자인 그대로 유지됨 */
+
 .note-blue{
-  left: 4.2%; top: 5.7%;
-  width: 41.1%; height: 17.8%;
+  left: 4.2%;
+  top: calc(var(--board-top) + var(--board-span) * 0.057);
+  width: 41.1%;
+  height: calc(var(--board-span) * 0.178);
   background: #e2e8f0;
   display: flex;
   align-items: center;
@@ -242,24 +242,30 @@
 }
 
 .note-photo2{
-  left: 45.2%; top: 18.7%;
-  width: 49%; height: 33.4%;
+  left: 45.2%;
+  top: calc(var(--board-top) + var(--board-span) * 0.187);
+  width: 49%;
+  height: calc(var(--board-span) * 0.334);
   margin: 0;
   transform: scale(.5) rotate(4deg);
 }
 .note-photo2.landed{ transform: scale(1) rotate(4deg); }
 .note-photo2 img{ width: 100%; height: 100%; object-fit: cover; display: block; }
 .note-photo1{
-  left: 2.7%; top: 46%;
-  width: 45.6%; height: 30.3%;
+  left: 2.7%;
+  top: calc(var(--board-top) + var(--board-span) * 0.46);
+  width: 45.6%;
+  height: calc(var(--board-span) * 0.303);
   margin: 0;
   transform: scale(.5) rotate(-5deg);
 }
 .note-photo1.landed{ transform: scale(1) rotate(-5deg); }
 .note-photo1 img{ width: 100%; height: 100%; object-fit: cover; display: block; }
 .note-pink{
-  left: 51.7%; top: 68%;
-  width: 41.1%; height: 17.8%;
+  left: 51.7%;
+  top: calc(var(--board-top) + var(--board-span) * 0.68);
+  width: 41.1%;
+  height: calc(var(--board-span) * 0.178);
   background: #fecdd3;
   display: flex;
   align-items: center;
@@ -272,7 +278,7 @@
 }
 
 .phone-input{
-  display: flex;
+  display: none; /* 새 배경 이미지 안에 입력창이 이미 그려져 있어서 숨김 */
   align-items: center;
   gap: 8px;
   margin: 0 10px 30px;
@@ -346,6 +352,23 @@
   font-size: clamp(20px, 1.1vw, 24px);
   line-height: 1.6;
   white-space: nowrap;
+}
+
+/* STEP 01 / 타이틀 / 설명 등장 모션 — clover-ai(.step2-*), clover-gift(.gift-*)와
+   동일한 페이드업 방식(opacity+translateY, 같은 easing) + 같은 stagger(120ms)
+   간격. .step1-copy가 뷰포트에 들어오면 intro.js에서 순서대로 .show를 붙여줌 */
+.step1-label,
+.step1-copy h3,
+.step1-desc{
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .4s ease, transform .4s cubic-bezier(.16,1,.3,1);
+}
+.step1-label.show,
+.step1-copy h3.show,
+.step1-desc.show{
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (max-width: 900px){

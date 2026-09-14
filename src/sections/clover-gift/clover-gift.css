@@ -1,19 +1,38 @@
 .clover-gift {
   position: relative;
-  min-height: 100vh;
+
+  /* min-height:100vh → height:100vh
+     "최소 화면"이 아니라 "정확히 화면 하나"로 고정해서, 콘텐츠가 짧든
+     길든 항상 정확히 100vh가 됨 */
+  height: 100vh;
+
   display: flex;
-  align-items: center;
+  /* center → flex-end
+     안쪽 디자인(.gift-inner) 전체를 섹션 "바닥"에 딱 붙임 → 휴대폰이
+     디자인 박스 밖으로 삐져나오는 부분이 화면 배율과 무관하게 항상
+     화면 맨 아래에서 잘리게 됨 */
+  align-items: flex-end;
+  justify-content: center;
+
   overflow: hidden;
   background: #fffefc;
-  padding: 48px 0;
+  padding: 0; /* 바닥에 딱 붙이려면 세로 패딩이 있으면 안 됨 */
 }
 
 .gift-inner {
   position: relative;
+  flex: none; /* flex 자동 늘어남/줄어듦 방지 — width/max-width/aspect-ratio 그대로 사용 */
   width: 100%;
   max-width: 1440px;
-  margin: 0 auto;
-  aspect-ratio: 1440 / 982;
+
+  /* 1440/982(원본 디자인 캔버스 전체)가 아니라, "핸드폰이 잘리는 지점"이
+     정확히 이 박스의 100%(바닥)이 되도록 역산한 값.
+     이렇게 하면 이 박스 안의 모든 %값(점 8%, 폰 18%, 카피 30%, 카드 52% 등)이
+     전부 같은 기준으로 다시 계산돼서, 폰뿐 아니라 다른 요소들도 함께
+     비율에 맞게 이동함 — 그리고 이 박스가 .clover-gift 바닥에 붙어있으니
+     결과적으로 "핸드폰 잘린 면 = 화면 바닥"이 됨.
+     계산: 폰 높이(26% 폭 × 265/575 비율) × 80%(보이는 비율) ÷ (1 - 18%(폰 top)) */
+  aspect-ratio: 1440 / 792.56;
 }
 
 
@@ -66,20 +85,26 @@
 --------------------------------------------------------- */
 
 .gift-phone {
-    position: absolute;
+  position: absolute;
 
-   left: 5%;
+  /* left/top은 원래 디자인 값 그대로 — 점/카피/카드와의 배치 관계가
+     깨지지 않도록 위치는 건드리지 않음 */
+  left: 5%;
   top: 18%;
   width: 26%;
   min-width: 280px;
 
-  aspect-ratio: 265 / 575;
+  /* 265/575(원본 전체 비율)가 아니라 그 80%만 담는 박스로 줄임.
+     안쪽 .gift-phone-bg/.gift-phone-screen은 원본 전체 크기로 그리고,
+     이 박스의 overflow:hidden(아래)이 삐져나온 하단 20%를 잘라줌.
+     즉 휴대폰 "위치"는 그대로 두고 "보이는 높이"만 줄이는 방식 */
+  aspect-ratio: 265 / 460; /* 575 * 0.8 */
 
   z-index: 2;
 
   opacity: 0;
   transform: scale(0.82);
-  overflow: hidden;
+  overflow: hidden; /* 원래도 있던 속성 — 이제 실제로 크롭 역할을 함 */
 }
 
 
@@ -109,23 +134,19 @@
 }
 
 
+/* 이제 진짜 overflow로 잘라내므로 같은 색 박스로 덮던 방식은 꺼둠.
+   (HTML에서 이 div를 아예 지워도 되지만, 파일을 못 받아서 우선
+   display:none으로 안전하게 무력화해뒀습니다) */
 .gift-bottom-mask {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -10px;
-  height: 180px;
-
-  background: #fffefc;
-  z-index: 10;
-  pointer-events: none;
+  display: none;
 }
 
 .gift-phone-bg {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 265 / 575; /* 부모(.gift-phone)보다 큰 원본 전체 비율 → 자연스럽게 하단이 넘침 */
   display: block;
   pointer-events: none;
 }
@@ -133,9 +154,11 @@
 .gift-phone-screen {
   position: absolute;
   left: 5%;
-  top: 7%;
+  /* 부모 박스가 80% 높이로 줄어든 만큼(÷0.8) 값을 올려서, 원본 프레임
+     기준으로는 원래와 같은 자리(7%, 88.8%)에 그대로 있는 것처럼 보이게 함 */
+  top: 8.75%;   /* 7% / 0.8 */
   width: 92%;
-  height: 88.8%;
+  height: 111%; /* 88.8% / 0.8 */
   border-radius: 26px;
   overflow: hidden;
   z-index: -1;
@@ -343,6 +366,13 @@
 --------------------------------------------------------- */
 
 @media (max-width: 900px) {
+
+  .clover-gift {
+    height: auto;
+    min-height: 100vh;
+    align-items: center;
+    padding: 48px 0;
+  }
 
   .gift-inner {
     aspect-ratio: auto;
