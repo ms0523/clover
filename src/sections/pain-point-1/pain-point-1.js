@@ -9,11 +9,11 @@ import tumblerUrl from "../../assets/images/pain-point-1-tumbler.png";
 
 
 /* =========================================================
-   01. PAIN POINT 1
+   01. PAIN POINT 1 — 말풍선 5세트, 원래대로 자동 순차 등장
    ========================================================= */
 
 function initPainPoint1(section){
-  if(!section || section.dataset.painPoint1Ready === "true") return;
+  if(!section || section.dataset.painPoint1Ready === "true") return () => {};
   section.dataset.painPoint1Ready="true";
 
   const pairs=[1,2,3,4,5].map((pairNumber)=>[
@@ -84,11 +84,109 @@ function initPainPoint1(section){
   );
 
   observer.observe(section);
+
+  /* =======================================================
+     말풍선 5세트를 다 보여줄 때까지 아래로 스크롤 잠금
+     ------------------------------------------------------
+     등장 자체는 위의 타이머로 계속 자동 진행되고, 여기서는
+     section.dataset.sequenceDone이 "true"가 되기 전까지 섹션이
+     화면 중앙 부근에 있을 때 "아래로" 향하는 스크롤만
+     preventDefault로 막습니다. 위로 스크롤하는 건 항상 허용하고,
+     시퀀스가 끝나면 즉시 풀어줍니다.
+  ======================================================= */
+
+  if(reducedMotion){
+    return ()=>{
+      timers.forEach((t)=>window.clearTimeout(t));
+      observer.disconnect();
+    };
+  }
+
+  const isInControlZone=()=>{
+    if(!section.isConnected) return false;
+
+    const rect=section.getBoundingClientRect();
+    const vh=window.innerHeight || document.documentElement.clientHeight;
+
+    // 뷰포트 중앙 라인이 섹션 안에 걸쳐 있을 때만 관여합니다.
+    return rect.top <= vh*.5 && rect.bottom >= vh*.5;
+  };
+
+  const sequenceFinished=()=>section.dataset.sequenceDone === "true";
+
+  const blockIfScrollingDown=(event, deltaY)=>{
+    if(sequenceFinished()) return; // 다 보여줬으면 그냥 통과
+    if(deltaY <= 0) return;        // 위로 스크롤은 막지 않음
+    if(!isInControlZone()) return; // 화면 중앙에 안 걸쳐 있으면 손대지 않음
+
+    event.preventDefault();
+  };
+
+  const onWheel=(event)=>{
+    blockIfScrollingDown(event, event.deltaY);
+  };
+
+  let touchY=null;
+
+  const onTouchStart=(event)=>{
+    if(!event.touches || event.touches.length !== 1) return;
+    touchY=event.touches[0].clientY;
+  };
+
+  const onTouchMove=(event)=>{
+    if(touchY==null || !event.touches || event.touches.length !== 1) return;
+
+    const nextY=event.touches[0].clientY;
+    const deltaY=touchY-nextY; // 손가락이 위로(화면은 아래로) 움직이면 양수
+
+    blockIfScrollingDown(event, deltaY);
+
+    touchY=nextY;
+  };
+
+  const onTouchEnd=()=>{
+    touchY=null;
+  };
+
+  const onKeyDown=(event)=>{
+    if(sequenceFinished()) return;
+    if(!isInControlZone()) return;
+
+    const target=event.target;
+    if(target && /INPUT|TEXTAREA|SELECT|BUTTON/.test(target.tagName)) return;
+
+    if(
+      event.key === "ArrowDown" ||
+      event.key === "PageDown" ||
+      event.key === " "
+    ){
+      event.preventDefault();
+    }
+  };
+
+  window.addEventListener("wheel", onWheel, {passive:false, capture:true});
+  window.addEventListener("touchstart", onTouchStart, {passive:true, capture:true});
+  window.addEventListener("touchmove", onTouchMove, {passive:false, capture:true});
+  window.addEventListener("touchend", onTouchEnd, {passive:true, capture:true});
+  window.addEventListener("keydown", onKeyDown, {capture:true});
+
+  return ()=>{
+    timers.forEach((t)=>window.clearTimeout(t));
+    observer.disconnect();
+
+    window.removeEventListener("wheel", onWheel, {capture:true});
+    window.removeEventListener("touchstart", onTouchStart, {capture:true});
+    window.removeEventListener("touchmove", onTouchMove, {capture:true});
+    window.removeEventListener("touchend", onTouchEnd, {capture:true});
+    window.removeEventListener("keydown", onKeyDown, {capture:true});
+  };
 }
 
 
 /* =========================================================
-   02. PAIN POINTS
+   02. PAIN POINTS — 취향 → 가격 → 마음 전달
+   휠 제스처 하나당 스텝(0/1/2) 하나만 전환되도록 함.
+   (기존 SCROLL_BUDGET 누적 방식 → 스텝 인덱스 점프 방식으로 교체)
    ========================================================= */
 
 
@@ -109,14 +207,17 @@ function initPainPoints(section) {
 
   const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
-  // 전체 스크롤 체감 속도는 유지하면서, 실제 화면은 목표 진행도를 부드럽게 따라갑니다.
-  const SCROLL_BUDGET = 4200;
-  const MAX_WHEEL_DELTA = 180;
-  const FOLLOW_SPEED = 14; // 카드/문장 전환 속도 (기존 6.2 → 더 빠르게)
-  const STATEMENT_DURATION = 450; 
+  const FOLLOW_SPEED = 14; // 카드/문장 전환 속도
+  const STATEMENT_DURATION = 450;
   const FINAL_FOCUS_PROGRESS = 0.74; // "마음 전달" 포인트가 완전히 강조되는 지점 (focusWeights와 동일)
 
-  let targetProgress = clamp(Number(section.dataset.progress || 0), 0, 1);
+  // 0=취향, 1=가격, 2=마음 전달. focusWeights(p)가 각 지점에서 정확히
+  // 해당 포인트에 완전히 집중되도록 만드는 progress 값입니다.
+  const STEP_PROGRESS = [0, FINAL_FOCUS_PROGRESS / 2, FINAL_FOCUS_PROGRESS];
+  const LAST_STEP = STEP_PROGRESS.length - 1;
+
+  let step = 0;
+  let targetProgress = STEP_PROGRESS[0];
   let visualProgress = targetProgress;
   let statementVisual = 0;
   let touchY = null;
@@ -131,6 +232,22 @@ function initPainPoints(section) {
   // 섹션이 화면에 정확히 자리잡기 전까지는 휠 가로채기(카드 전환)를 켜지 않습니다.
   let settled = false;
   let snapTriggered = false;
+
+  /* ---- 휠 제스처를 하나의 스텝 전환으로 묶기 ---- */
+  const WHEEL_END_DELAY = 180;   // 휠 이벤트가 멈추고 이 시간 뒤 새 제스처로 인식
+  const STEP_COOLDOWN_MS = 900;  // 스텝 전환 후 최소 대기 시간(트랙패드 연속 입력 방지)
+
+  let wheelEndTimer = null;
+  let wheelGestureLocked = false;
+  let stepCooldownUntil = 0;
+
+  const startNewWheelGesture = () => { wheelGestureLocked = false; };
+
+  const markWheelGesture = () => {
+    wheelGestureLocked = true;
+    if (wheelEndTimer) clearTimeout(wheelEndTimer);
+    wheelEndTimer = setTimeout(startNewWheelGesture, WHEEL_END_DELAY);
+  };
 
   const focusWeights = (p) => {
     // 앞 74%에서 취향 → 가격 → 마음 전달을 서로 겹치듯 전환합니다.
@@ -183,7 +300,7 @@ function initPainPoints(section) {
     const dt = Math.min((now - lastFrame) / 1000, 0.05);
     lastFrame = now;
 
-    // 카드/문장 전환은 기존 감쇠를 유지합니다.
+    // 카드/문장 전환은 기존 감쇠를 유지합니다 — 목표 스텝으로 부드럽게 이징.
     const follow = 1 - Math.exp(-FOLLOW_SPEED * dt);
     visualProgress += (targetProgress - visualProgress) * follow;
 
@@ -192,7 +309,7 @@ function initPainPoints(section) {
     }
 
     // "마음 전달" 포인트 강조가 화면에 실제로 도달하는 순간, 스크롤을 더 안 해도
-    // 자동으로 결론 문장 등장을 시작합니다. (휠 이벤트가 더 없어도 매 프레임 체크)
+    // 자동으로 결론 문장 등장을 시작합니다.
     if (!cardsDone && visualProgress >= FINAL_FOCUS_PROGRESS) {
       cardsDone = true;
       statementStartTime = now;
@@ -222,6 +339,12 @@ function initPainPoints(section) {
     rafId = requestAnimationFrame(animate);
   };
 
+  const goToStep = (nextStep) => {
+    step = clamp(nextStep, 0, LAST_STEP);
+    targetProgress = STEP_PROGRESS[step];
+    requestAnimation();
+  };
+
   const isSectionInControlZone = () => {
     if (!settled) return false;
     if (!section.isConnected) return false;
@@ -241,8 +364,7 @@ function initPainPoints(section) {
   const consumeDelta = (delta) => {
     if (!delta) return false;
 
-    const limitedDelta = clamp(delta, -MAX_WHEEL_DELTA, MAX_WHEEL_DELTA);
-    const direction = Math.sign(limitedDelta);
+    const direction = Math.sign(delta);
 
     // 결론 문장이 자동으로 다 나타날 때까지는 아래로의 스크롤을 붙잡아둡니다.
     if (direction > 0 && cardsDone && !statementReleaseReady) return true;
@@ -250,10 +372,25 @@ function initPainPoints(section) {
     // 문장까지 다 보여줬다면 다음 섹션으로 자연스럽게 넘어가도록 풀어줍니다.
     if (direction > 0 && statementReleaseReady) return false;
 
-    if (direction < 0 && targetProgress <= 0.001 && visualProgress <= 0.008) return false;
+    // 첫 포인트(취향)에서 위로 스크롤하면 이전 섹션으로 자연스럽게 놓아줍니다.
+    if (direction < 0 && step === 0) return false;
 
-    targetProgress = clamp(targetProgress + limitedDelta / SCROLL_BUDGET, 0, 1);
-    requestAnimation();
+    // 같은 휠 제스처 안에서는 스텝 하나만 전환 (한 번에 여러 단계 넘어가지 않도록)
+    if (wheelGestureLocked) {
+      markWheelGesture();
+      return true;
+    }
+
+    const now = performance.now();
+    if (now < stepCooldownUntil) {
+      markWheelGesture();
+      return true;
+    }
+
+    markWheelGesture();
+    stepCooldownUntil = now + STEP_COOLDOWN_MS;
+
+    goToStep(step + direction);
     return true;
   };
 
@@ -340,6 +477,7 @@ function initPainPoints(section) {
 
   return () => {
     if (rafId) cancelAnimationFrame(rafId);
+    if (wheelEndTimer) clearTimeout(wheelEndTimer);
     snapObserver.disconnect();
     window.removeEventListener("wheel", onWheel, { capture: true });
     window.removeEventListener("touchstart", onTouchStart, { capture: true });
@@ -632,7 +770,7 @@ export function mountPainPoint1(mountEl){
   const firstSection=flow.querySelector(".pain-point-1");
   const detailSection=flow.querySelector(".pain-points");
 
-  initPainPoint1(firstSection);
+  const cleanupPainPoint1=initPainPoint1(firstSection);
 
   const cleanupSharedGlove=initSharedGloveTransition(
     flow,
@@ -643,6 +781,7 @@ export function mountPainPoint1(mountEl){
   const cleanupPainPoints=initPainPoints(detailSection);
 
   window.__cloverPainPointsCleanup=()=>{
+    cleanupPainPoint1();
     cleanupSharedGlove();
     cleanupPainPoints();
   };

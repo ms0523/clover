@@ -1,14 +1,24 @@
 .clover-ai {
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* 섹션 박스 밖으로 나가는 건 전부 잘림 */
   background: #FFFEFC;
   padding: 0;
   margin: 0;
+
+  /* 섹션을 화면 높이에 딱 고정 — base.css의 min-height:100vh보다
+     우선 적용되어(명시적 height) 항상 정확히 한 화면 크기가 됨 */
+  height: 100vh;
+
+  /* 안쪽 디자인 전체를 섹션 "바닥"에 딱 붙임 → 디자인 하단(핸드폰이
+     잘리는 지점)이 화면 비율과 무관하게 항상 화면 맨 아래와 일치함 */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .clover-ai-bg {
   position: absolute;
-  top: 0; left: 0;
+  top: 0; left: 0; /* 배경 이미지는 섹션 상단에 고정 */
   width: 100%;
   height: auto;
   z-index: 0;
@@ -18,9 +28,9 @@
 .clover-ai-inner {
   position: relative;
   z-index: 1;
+  flex: none; /* flex 자동 늘어남/줄어듦 방지 — width/max-width/aspect-ratio 그대로 사용 */
   width: 100%;
   max-width: 1440px;
-  margin: 0 auto;
   aspect-ratio: 1440 / 982;
 }
 
@@ -55,8 +65,8 @@
 
 /* STEP 02 위치 */
 .step2-label {
-  left: 48.68%;
-  top: 55.29%;
+  left: 47.18%;
+  top: 60.29%;
   margin: 0;
   color: #B21528;
   font-weight: 700;
@@ -67,8 +77,8 @@
 
 /* AI 클로버니 로고 뱃지 위치 */
 .step2-heading-badge {
-  left: 20.49%;
-  top: 59.98%;
+  left: 18.99%;
+  top: 64.98%;
   width: 12.71%;
   height: auto;
   object-fit: contain;
@@ -76,8 +86,8 @@
 
 /* 메인 타이틀 위치 */
 .step2-heading-text {
-  left: 33.82%;
-  top: 62.63%;
+  left: 32.32%;
+  top: 67.63%;
   margin: 0;
   font-size: clamp(20px, 2.22vw, 32px);
   font-weight: 700;
@@ -89,8 +99,8 @@
 
 /* 설명 문단 영역 위치 */
 .step2-desc {
-  left: 27.57%;
-  top: 68.64%;
+  left: 26.07%;
+  top: 73.64%;
   margin: 0;
   text-align: right;
   color: #6A6869;
@@ -126,14 +136,14 @@
 
 .pin-node.revealed { opacity: 1; }
 
-#pin-1 { left: 51.46%; top: 12.75%; opacity: 1; }
-#pin-2 { left: 43.45%; top: 20.58%; opacity: 0.58; }
-#pin-3 { left: 55.55%; top: 32.57%; opacity: 0.21; }
+#pin-1 { left: 51.46%; top: 17.75%; opacity: 1; }
+#pin-2 { left: 43.45%; top: 25.58%; opacity: 0.58; }
+#pin-3 { left: 55.55%; top: 37.17%; opacity: 0.21; }
 
 /* 동적 연결선 (Line) */
 .net-line {
   position: absolute;
-  height: 2px;
+  height: 2.2px;
   background: #B21528;
   transform-origin: left center;
   transform: scaleX(0);
@@ -143,8 +153,8 @@
 .net-line.drawn { transform: scaleX(1); }
 
 .line-step-1 { opacity: 1.00; filter: none; }
-.line-step-2 { opacity: 0.40; filter: blur(1.0px); }
-.line-step-3 { opacity: 0.16; filter: blur(1.0px); }
+.line-step-2 { opacity: 0.45; filter: blur(1.0px); }
+.line-step-3 { opacity: 0.25; filter: blur(1.0px); }
 
 /* 키워드 공통 */
 .kw {
@@ -162,27 +172,27 @@
 
 /* 회색 키워드 개별 위치 및 스타일 */
 .kw-retro {
-  left: 35.14%; top: 19.20%;
+  left: 35.14%; top: 24.20%;
   font-size: clamp(16px, 1.99vw, 28.73px); color: #B8B7B7;
   opacity: 0.59; filter: blur(2.8px);
 }
 .kw-portability {
-  left: 58.19%; top: 12.26%;
+  left: 58.19%; top: 17.26%;
   font-size: clamp(18px, 2.09vw, 30.08px); color: #B8B7B7;
   letter-spacing: 1px; filter: blur(3.2px);
 }
 .kw-kitchen {
-  left: 67.57%; top: 19.91%;
+  left: 67.57%; top: 25.31%;
   font-size: clamp(16px, 2.05vw, 29.48px); color: #B8B7B7;
   letter-spacing: 1px; filter: blur(3.2px);
 }
 .kw-calmcolor {
-  left: 33.33%; top: 37.47%;
+  left: 33.33%; top: 42.47%;
   font-size: clamp(16px, 2.02vw, 29.1px); color: #878586;
   opacity: 0.59; filter: blur(2.8px);
 }
 .kw-practicality {
-  left: 62.82%; top: 27.40%;
+  left: 65.82%; top: 32.80%;
   font-size: clamp(16px, 2.05vw, 29.48px); color: #B8B7B7;
   letter-spacing: 1.5px; filter: blur(3.2px);
 }
@@ -204,7 +214,7 @@
 
 /* 빨간색 키워드 위치 및 revealed 스타일 (중복 제거 통합) */
 .kw-reading {
-  left: 50.85%; top: 15.43%;
+  left: 50.85%; top: 20.43%;
   font-size: clamp(24px, 3.05vw, 43.89px);
   letter-spacing: 1px;
 }
@@ -214,7 +224,7 @@
 }
 
 .kw-vintage {
-  left: 38.01%; top: 25.17%;
+  left: 38.01%; top: 30.17%;
   font-size: clamp(18px, 2.22vw, 31.95px);
   letter-spacing: 1px;
 }
@@ -224,7 +234,7 @@
 }
 
 .kw-cooking {
-  left: 58.61%; top: 22.13%;
+  left: 58.61%; top: 27.53%;
   font-size: clamp(20px, 2.40vw, 34.61px);
   letter-spacing: 1px;
 }
@@ -234,7 +244,7 @@
 }
 
 .kw-ivory {
-  left: 46.08%; top: 34.39%;
+  left: 46.08%; top: 39.39%;
   font-size: clamp(20px, 2.55vw, 36.65px);
 }
 .kw-ivory.revealed {
@@ -245,28 +255,29 @@
 /* ---------------------------------------------------------
    Phone Mockup ("뿅" Pop-up)
 --------------------------------------------------------- */
+
+/* 별도 마스크 wrap 없이, 휴대폰을 원래 크기 그대로 두고 위치(top)만
+   조정해서 디자인 박스(.clover-ai-inner) 아래로 일부러 삐져나가게 함.
+   .clover-ai-inner의 바닥이 이제 항상 화면 바닥과 같은 위치이기 때문에
+   (위 .clover-ai flex 설정), 삐져나온 부분은 .clover-ai의 overflow:hidden에
+   의해 화면 배율과 무관하게 항상 같은 비율로 잘림.
+   top 값을 늘리면 더 많이 잘리고(휴대폰이 아래로 더 밀려나서), 줄이면
+   덜 잘립니다 — 실제로 보면서 미세 조정하시면 됩니다. */
 .ai-phone {
   position: absolute;
-  left: 66.66%; /* 960px / 1440px */
-  top: 22.91%;  /* 225px / 982px */
-  width: 21%;
+  left: 64.01%; /* (904.58 / 1440) * 100 */
+  top: 36.52%;  /* 원래 30.98% → 하단 20%가 화면 밖으로 나가도록 값 조정 */
+  width: 25.928%;
   min-width: 220px;
-  aspect-ratio: 285 / 593;
-  z-index: 2;
+  aspect-ratio: 373.36 / 779.2; /* 원본 전체 비율 그대로 유지 */
+  z-index: 2; /* wrap을 없애면서 빠졌던 값 복원 — .net-line(1)보다 위로 와서 선이 폰 위로 겹쳐 보이지 않게 함 */
   opacity: 0;
   transform: scale(0.3) rotate(-12deg) translateY(30px);
   transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  pointer-events: none;
 }
 
 .ai-phone.enter {
-  opacity: 1;
-  transform: scale(1) rotate(0deg) translateY(0);
-  pointer-events: auto;
-}
-
-.ai-phone.enter .ai-phone-glow {
-  animation: phone-glow-pulse 0.8s ease-out forwards;
+  animation: phone-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .ai-phone-bg {
@@ -277,13 +288,24 @@
 
 .ai-phone-screen {
   position: absolute;
-  left: 4.9%; top: 2.6%;
-  width: 91%; height: 94.8%;
-  border-radius: 26px; overflow: hidden; z-index: -1;
+  /* 프레임 테두리 안쪽으로 맞추기 위한 여백 비율 조정 */
+  left: 3.8%;
+  top: 2.8%;
+  width: 92%;
+  height: 100%;
+  border-radius: 39px; /* 목업 프레임 둥글기에 맞게 곡률 증가 */
+  overflow: hidden;
+  z-index: -1;
+  background-color: #ffffff; /* 화면 여백 빈곳 방지 */
 }
 
 .ai-phone-fill {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%;
+  height: 100%;
+  /* 잘리지 않고 전체 화면이 프레임 안에 쏙 들어가도록 contain 변경 */
+  object-fit: contain;
+  object-position: top center; /* 상단 노치/다이나믹 아일랜드 영역 기준으로 정렬 */
+  display: block;
 }
 
 .ai-phone-glow {
@@ -294,8 +316,69 @@
   pointer-events: none; opacity: 0; z-index: 3;
 }
 
-@keyframes phone-glow-pulse {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.4); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.0); }
+/* 휴대폰 중앙 기준으로 정렬하되, 폭을 더 키우고 그림자로 입체감을 줘서
+   휴대폰 위에 붕 떠 있는 카드처럼 보이게 함 */
+.ai-chat-card {
+  position: absolute;
+  left: 50%;
+  top: 40%; /* 카드가 커진 만큼 살짝 위로 재조정 */
+  width: 115%; /* 휴대폰보다 훨씬 크게 — 좌우로 튀어나오며 입체감 강조 */
+  max-width: none; /* base.css의 전역 img{max-width:100%}를 덮어씀 — 이게 없으면 width를 키워도 100%에서 clamp됨 */
+  aspect-ratio: 364 / 180;
+  z-index: 4; /* .ai-phone-glow(3)보다 위, 프레임 위에 표시 */
+
+  /* 이미지 투명 배경을 따라 그림자가 붙도록 box-shadow 대신 drop-shadow 사용 */
+  filter: drop-shadow(0 22px 34px rgba(28, 18, 16, 0.32))
+          drop-shadow(0 6px 12px rgba(28, 18, 16, 0.18));
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ai-chat-card.enter {
+  animation: chat-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes phone-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  75% {
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 가로 중앙정렬(translateX(-50%))을 유지하는 채팅 카드 전용 등장 모션
+   (기울임 없이, 휴대폰과 같은 타이밍/이징으로 통통 튀어오르는 느낌만) */
+@keyframes chat-pop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.78);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.1);
+  }
+
+  75% {
+    transform: translateX(-50%) scale(1.02);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
 }
