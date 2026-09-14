@@ -13,6 +13,7 @@ import { mountCloverCoupon } from "./sections/clover-coupon/clover-coupon.js";
 import { mountCloverBehind } from "./sections/clover-behind/clover-behind.js";
 import { mountCloverReceive } from "./sections/clover-receive/clover-receive.js";
 import { mountCloverMessage } from "./sections/clover-message/clover-message.js";
+import { mountFooter } from "./sections/footer/footer.js";
 import { observeReveals } from "./utils/reveal.js";
 
 const app = document.querySelector("#app");
@@ -28,6 +29,7 @@ mountCloverCoupon(app);
 mountCloverBehind(app);
 mountCloverReceive(app);
 mountCloverMessage(app);
+mountFooter(app);
 
 mountSectionNav([
   { id: "hero",            label: "홈" },
