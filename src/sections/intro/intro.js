@@ -8,7 +8,6 @@ import picnicUrl from "../../assets/images/intro-image-2.png";
 import pinkUrl from "../../assets/images/pink-sticky.png";
 
 const MAIN_SEGMENTS = [
-  { text: "먼저, ", cls: "ink" },
   { text: "선물받을 사람", cls: "accent" },
   { text: "을 ", cls: "ink" },
   { text: "\n", cls: "br" },
@@ -702,4 +701,67 @@ export function mountIntro(mountEl) {
   ======================================================= */
 
   setupSnapToNext(section);
+
+
+  /* =======================================================
+     4. STEP 01 타이틀 / 설명 등장 모션
+     ======================================================================
+     clover-ai(.step2-*)·clover-gift(.gift-*)와 동일한 패턴: 컨테이너가
+     뷰포트에 들어오면 라벨 → (120ms 후) 타이틀 → (다시 120ms 후) 설명
+     순서로 .show를 붙여 페이드업시키고, 한 번 실행되면 더 이상 관찰하지
+     않음. 실제 트랜지션(opacity/translateY)은 intro.css에서 처리.
+  ======================================================= */
+
+  const step1Copy =
+    section.querySelector(".step1-copy");
+
+  if (step1Copy) {
+
+    const step1Label =
+      step1Copy.querySelector(".step1-label");
+
+    const step1Heading =
+      step1Copy.querySelector("h3");
+
+    const step1Desc =
+      step1Copy.querySelector(".step1-desc");
+
+    const step1IO =
+      new IntersectionObserver(
+        (entries) => {
+
+          entries.forEach((entry) => {
+
+            if (!entry.isIntersecting) {
+              return;
+            }
+
+            if (step1Label) {
+              step1Label.classList.add("show");
+            }
+
+            setTimeout(() => {
+              if (step1Heading) {
+                step1Heading.classList.add("show");
+              }
+            }, 120);
+
+            setTimeout(() => {
+              if (step1Desc) {
+                step1Desc.classList.add("show");
+              }
+            }, 240);
+
+            step1IO.unobserve(entry.target);
+
+          });
+
+        },
+        {
+          threshold: 0.3,
+        }
+      );
+
+    step1IO.observe(step1Copy);
+  }
 }
