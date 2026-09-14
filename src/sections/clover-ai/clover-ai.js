@@ -4,6 +4,7 @@ import bgUrl from "../../assets/images/clover-ai-bg.png";
 import badgeUrl from "../../assets/images/clobunny-badge.png";
 import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
 import phoneScreenUrl from "../../assets/images/clover-ai-phone-screen.svg";
+import chatUrl from "../../assets/images/clover-ai-chat.svg";
 
 const GAP = 15; // 핀(30px) 중심점 기준 연결선 단부 간격
 
@@ -46,12 +47,12 @@ function connect(fromEl, toEl, container, stepClass) {
   const line = document.createElement("div");
   line.className = `net-line ${stepClass}`;
   line.style.left = `${x1}px`;
-  line.style.top = `${y1}px`; // y1 미사용 변수 경고 수정
+  line.style.top = `${y1}px`;
   line.style.width = `${length}px`;
   line.style.transform = `rotate(${angle}deg) scaleX(0)`;
   container.appendChild(line);
 
-  void line.offsetWidth; // DOM 강제 리플로우
+  void line.offsetWidth;
   requestAnimationFrame(() => {
     line.style.transform = `rotate(${angle}deg) scaleX(1)`;
     line.classList.add("drawn");
@@ -65,14 +66,15 @@ export function mountCloverAi(mountEl) {
     .replaceAll("__BG_URL__", bgUrl)
     .replaceAll("__BADGE_URL__", badgeUrl)
     .replaceAll("__PHONE_FRAME_URL__", phoneFrameUrl)
-    .replaceAll("__PHONE_SCREEN_URL__", phoneScreenUrl);
+    .replaceAll("__PHONE_SCREEN_URL__", phoneScreenUrl)
+    .replaceAll("__CHAT_URL__", chatUrl);
 
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".clover-ai");
-  section.id = "clover-ai";
   const network = section.querySelector("[data-network]");
   const phone = section.querySelector("[data-phone]");
+  const chat = section.querySelector("[data-chat]");
 
   const allSharp = [...section.querySelectorAll(".kw-red")];
   const pin1 = section.querySelector("#pin-1");
@@ -98,6 +100,7 @@ export function mountCloverAi(mountEl) {
 
     // 3. 휴대폰 뿅 등장 ("enter")
     phone.classList.add("enter");
+    if (chat) chat.classList.add("enter");
 
     // 휴대폰 애니메이션 완료 대기
     await wait(800);

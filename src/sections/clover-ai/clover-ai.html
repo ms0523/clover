@@ -34,13 +34,17 @@
       <span class="kw kw-red kw-ivory" data-kw>아이보리</span>
     </div>
 
-    <!-- 휴대폰 영역 -->
+    <!-- 휴대폰 영역: 별도 마스크 없이, 디자인 박스 밖으로 자연스럽게
+         삐져나가게 두고 .clover-ai의 overflow:hidden이 화면 바닥에서
+         잘라내게 함 (자세한 원리는 clover-ai.css 주석 참고) -->
     <div class="ai-phone" data-phone>
       <img class="ai-phone-bg" src="__PHONE_FRAME_URL__" alt="휴대폰 프레임">
       <div class="ai-phone-screen">
         <img class="ai-phone-fill" src="__PHONE_SCREEN_URL__" alt="휴대폰 화면">
       </div>
       <div class="ai-phone-glow"></div>
+      <!-- 휴대폰과 폭이 같아 자동으로 가로 중앙정렬되고, 같은 등장 모션을 공유함 -->
+      <img class="ai-chat-card" data-chat src="__CHAT_URL__" alt="AI 클로버니 요약 카드">
     </div>
   </div>
 </section>

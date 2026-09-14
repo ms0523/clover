@@ -16,25 +16,51 @@ function smoothstep(v){
   return t*t*(3-2*t);
 }
 
+function easeOutCubic(t){
+  const c=clamp01(t);
+  return 1-Math.pow(1-c,3);
+}
+
 function initCloverValue(section){
-  if(!section || section.dataset.valueReady==="true") return;
+  if(!section || section.dataset.valueReady==="true") return () => {};
   section.dataset.valueReady="true";
   section.id = "clover-value";
-  
+
   const track=section.querySelector(".clover-value__track");
   const cards=[...section.querySelectorAll("[data-value-card]")];
-  if(!track || cards.length!==3) return;
+  if(!track || cards.length!==3) return () => {};
 
-  let targetProgress=0;
-  let visualProgress=0;
-  let rafId=0;
-  let lastTime=performance.now();
+  const prefersReduced=window.matchMedia?.(
+    "(prefers-reduced-motion: reduce)"
+  )?.matches;
 
-  const readProgress=()=>{
-    const rect=track.getBoundingClientRect();
-    const distance=Math.max(track.offsetHeight-window.innerHeight,1);
-    targetProgress=clamp01(-rect.top/distance);
-  };
+  /* =======================================================
+     카드1 → 카드2 → 카드3, 휠 제스처 하나당 스텝 하나만 전환
+     ------------------------------------------------------
+     CSS transition에만 맡겼더니 브라우저의 "동작 줄이기"
+     (prefers-reduced-motion) 설정이 켜져 있으면 transition이
+     통째로 씹혀서 스텝이 순간이동해버리는 문제가 있었습니다.
+     그래서 다시 JS가 직접 매 프레임 보간하는 방식으로 되돌리되,
+     이번엔 고정 지속시간(480ms) + easeOutCubic 로 한 스텝을
+     깔끔하게 한 번만 그려주는 방식입니다. (계속 값이 바뀌는
+     스크롤-추종형이 아니라 "목표값까지 480ms 동안 한 번" 애니메이션
+     이라서 예전처럼 뚝뚝 끊기지 않습니다)
+  ======================================================= */
+
+  // 0=카드1 풀사이즈, 1=카드2 풀사이즈(중간 평평한 구간), 2=카드3 풀사이즈
+  const STEP_PROGRESS=[0, .48, 1];
+  const LAST_STEP=STEP_PROGRESS.length-1;
+  const ANIM_MS=480;
+
+  let step=0;
+  let visualProgress=STEP_PROGRESS[0];
+  let targetProgress=STEP_PROGRESS[0];
+  let animFrom=STEP_PROGRESS[0];
+  let animStart=0;
+  let rafId=null;
+
+  let settled=false;
+  let snapTriggered=false;
 
   const apply=(p)=>{
     const t12=smoothstep((p-.18)/.20);
@@ -87,40 +113,199 @@ function initCloverValue(section){
     });
   };
 
-  const animate=(now)=>{
-    const dt=Math.min(now-lastTime,50);
-    lastTime=now;
-
-    const follow=1-Math.exp(-dt/90);
-    visualProgress+=(targetProgress-visualProgress)*follow;
-
-    if(Math.abs(targetProgress-visualProgress)<0.0001){
-      visualProgress=targetProgress;
+  const stopAnim=()=>{
+    if(rafId!=null){
+      cancelAnimationFrame(rafId);
+      rafId=null;
     }
+  };
 
+  const tick=(now)=>{
+    const t=clamp01((now-animStart)/ANIM_MS);
+    visualProgress=animFrom+(targetProgress-animFrom)*easeOutCubic(t);
     apply(visualProgress);
 
-    if(Math.abs(targetProgress-visualProgress)>0.0001){
-      rafId=requestAnimationFrame(animate);
-    }else{
-      rafId=0;
+    if(t<1){
+      rafId=requestAnimationFrame(tick);
+    } else {
+      rafId=null;
     }
   };
 
-  const requestUpdate=()=>{
-    readProgress();
-    if(!rafId){
-      lastTime=performance.now();
-      rafId=requestAnimationFrame(animate);
+  const animateTo=(nextProgress)=>{
+    if(prefersReduced){
+      visualProgress=nextProgress;
+      targetProgress=nextProgress;
+      apply(nextProgress);
+      return;
     }
+
+    targetProgress=nextProgress;
+    animFrom=visualProgress;
+    animStart=performance.now();
+    stopAnim();
+    rafId=requestAnimationFrame(tick);
   };
 
-  readProgress();
-  visualProgress=targetProgress;
+  const goToStep=(nextStep)=>{
+    step=clamp(nextStep,0,LAST_STEP);
+    animateTo(STEP_PROGRESS[step]);
+  };
+
+  /* ---- 휠 제스처를 하나의 스텝 전환으로 묶기 ---- */
+  const WHEEL_END_DELAY=180;   // 휠 이벤트가 멈추고 이 시간 뒤 새 제스처로 인식
+  const STEP_COOLDOWN_MS=550;  // 스텝 전환 후 최소 대기 시간(트랙패드 연속 입력 방지, 애니메이션(480ms)보다 살짝 넉넉하게)
+
+  let wheelEndTimer=null;
+  let wheelGestureLocked=false;
+  let stepCooldownUntil=0;
+
+  const startNewWheelGesture=()=>{ wheelGestureLocked=false; };
+
+  const markWheelGesture=()=>{
+    wheelGestureLocked=true;
+    if(wheelEndTimer) clearTimeout(wheelEndTimer);
+    wheelEndTimer=setTimeout(startNewWheelGesture, WHEEL_END_DELAY);
+  };
+
+  const isSectionInControlZone=()=>{
+    if(!settled) return false;
+    if(!section.isConnected) return false;
+
+    const rect=section.getBoundingClientRect();
+    const vh=window.innerHeight || document.documentElement.clientHeight;
+    const visible=Math.max(0,Math.min(rect.bottom,vh)-Math.max(rect.top,0));
+    const ratio=visible/Math.max(1,Math.min(vh,rect.height));
+    const spansCenter=rect.top<=vh*.42 && rect.bottom>=vh*.58;
+
+    return ratio>=.55 && spansCenter;
+  };
+
+  const consumeDelta=(delta)=>{
+    if(!delta) return false;
+
+    const direction=Math.sign(delta);
+
+    // 마지막 카드까지 다 봤으면 다음 섹션으로 자연스럽게 넘어가도록 놓아줌
+    if(direction>0 && step===LAST_STEP) return false;
+
+    // 첫 카드에서 위로 스크롤하면 이전 섹션 쪽으로 자연스럽게 놓아줌
+    if(direction<0 && step===0) return false;
+
+    // 같은 휠 제스처 안에서는 스텝 하나만 전환
+    if(wheelGestureLocked){
+      markWheelGesture();
+      return true;
+    }
+
+    const now=performance.now();
+    if(now<stepCooldownUntil){
+      markWheelGesture();
+      return true;
+    }
+
+    markWheelGesture();
+    stepCooldownUntil=now+STEP_COOLDOWN_MS;
+
+    goToStep(step+direction);
+    return true;
+  };
+
+  const onWheel=(event)=>{
+    if(!isSectionInControlZone()) return;
+
+    let delta=event.deltaY;
+    if(event.deltaMode===1) delta*=16;
+    if(event.deltaMode===2) delta*=window.innerHeight;
+
+    if(consumeDelta(delta)) event.preventDefault();
+  };
+
+  let touchY=null;
+
+  const onTouchStart=(event)=>{
+    if(!event.touches || event.touches.length!==1) return;
+    touchY=event.touches[0].clientY;
+  };
+
+  const onTouchMove=(event)=>{
+    if(touchY==null || !event.touches || event.touches.length!==1) return;
+    if(!isSectionInControlZone()){
+      touchY=event.touches[0].clientY;
+      return;
+    }
+
+    const nextY=event.touches[0].clientY;
+    const delta=(touchY-nextY)*2.15;
+    touchY=nextY;
+
+    if(consumeDelta(delta)) event.preventDefault();
+  };
+
+  const onTouchEnd=()=>{
+    touchY=null;
+  };
+
+  const onKeyDown=(event)=>{
+    if(!isSectionInControlZone()) return;
+    const target=event.target;
+    if(target && /INPUT|TEXTAREA|SELECT|BUTTON/.test(target.tagName)) return;
+
+    let delta=0;
+    if(event.key==="ArrowDown"||event.key==="PageDown"||event.key===" ") delta=150;
+    if(event.key==="ArrowUp"||event.key==="PageUp") delta=-150;
+    if(!delta) return;
+
+    if(consumeDelta(delta)) event.preventDefault();
+  };
+
+  const onResize=()=>apply(visualProgress);
+
+  // 섹션이 자연 스크롤로 화면에 들어오면, 정확한 위치로 한 번 스냅시킨
+  // 뒤에만 휠 가로채기(카드 전환)를 켭니다.
+  const snapObserver=new IntersectionObserver(
+    ([entry])=>{
+      if(!entry.isIntersecting) return;
+      if(snapTriggered) return;
+      snapTriggered=true;
+
+      section.scrollIntoView({
+        behavior: prefersReduced ? "auto" : "smooth",
+        block: "start"
+      });
+
+      window.setTimeout(()=>{
+        settled=true;
+      }, prefersReduced ? 0 : 650);
+
+      snapObserver.disconnect();
+    },
+    { threshold: 0.15 }
+  );
+
+  snapObserver.observe(section);
+
+  window.addEventListener("wheel", onWheel, {passive:false, capture:true});
+  window.addEventListener("touchstart", onTouchStart, {passive:true, capture:true});
+  window.addEventListener("touchmove", onTouchMove, {passive:false, capture:true});
+  window.addEventListener("touchend", onTouchEnd, {passive:true, capture:true});
+  window.addEventListener("keydown", onKeyDown, {capture:true});
+  window.addEventListener("resize", onResize);
+
   apply(visualProgress);
 
-  window.addEventListener("scroll",requestUpdate,{passive:true});
-  window.addEventListener("resize",requestUpdate);
+  return ()=>{
+    if(wheelEndTimer) clearTimeout(wheelEndTimer);
+    stopAnim();
+    snapObserver.disconnect();
+
+    window.removeEventListener("wheel", onWheel, {capture:true});
+    window.removeEventListener("touchstart", onTouchStart, {capture:true});
+    window.removeEventListener("touchmove", onTouchMove, {capture:true});
+    window.removeEventListener("touchend", onTouchEnd, {capture:true});
+    window.removeEventListener("keydown", onKeyDown, {capture:true});
+    window.removeEventListener("resize", onResize);
+  };
 }
 
 export function mountClovervalue(mountEl){

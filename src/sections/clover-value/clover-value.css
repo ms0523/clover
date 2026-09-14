@@ -102,6 +102,12 @@
   color:#fff;
   isolation:isolate;
   will-change:flex-basis;
+
+  /* 보간(부드럽게 넘어가는 것)은 CSS transition이 아니라 JS의
+     requestAnimationFrame이 매 프레임 값을 직접 씁니다. CSS
+     transition에만 맡기면 브라우저/OS의 "동작 줄이기"
+     (prefers-reduced-motion) 설정이 켜져 있을 때 transition이
+     통째로 무시되어 스텝이 순간이동해버리기 때문입니다. */
 }
 
 .value-card__image{
@@ -339,6 +345,9 @@
 @media(prefers-reduced-motion:reduce){
   .value-card,
   .value-card__image,
+  .value-card__shade,
+  .value-card__top,
+  .value-card__category,
   .value-card__bottom{
     will-change:auto;
   }
