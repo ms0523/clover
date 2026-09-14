@@ -39,6 +39,7 @@ export function mountCloverStart(mountEl){
 function initCloverStart(section){
   if(!section) return;
   section.dataset.cloverStartReady="true";
+  section.id = "clover-start";
 
   const world=section.querySelector("[data-clover-start-world]");
   const center=section.querySelector("[data-clover-start-center]");

@@ -27,11 +27,7 @@
   width: 118px; height: auto;
 }
 
-/* dashed above the dot, solid fading-out gradient below it. Both segments
-   and the horizontal ticks use repeating-linear-gradient instead of
-   border-style:dashed, so the dash length (10px) and gap (7px) are both
-   explicit and consistent — a native dashed border's auto-sized dashes
-   were too small and didn't line up cleanly with the solid segment. */
+
 .hero-side-line{
   position: absolute;
   top: var(--line-top, 23.4%);
@@ -70,9 +66,6 @@
   background: var(--red);
 }
 
-/* horizontal tick reaching all the way out to the frame's actual edge —
-   left side ticks from x=5.5% to x=0 (so its length is exactly 5.5% of
-   the viewport width), right side mirrors from x=94.4% to x=100%. */
 .hero-side-line .tick{
   position: absolute;
   top: -35px;
@@ -216,10 +209,12 @@
   position: absolute; inset: 0;
   background: var(--red);
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 0% 0%);
-  cursor: grab;
+  cursor: url("../../assets/icons/scissors.svg") 12 45, grab;
   touch-action: none;
 }
-.paper.is-dragging{ cursor: grabbing; }
+.paper.is-dragging{
+  cursor: url("../../assets/icons/scissors.svg") 12 45, grabbing;
+}
 
 
 .paper-logo{
@@ -255,23 +250,6 @@
   );
 }
 
-.scissors{
-  position: absolute; top: 57.5%; z-index: 7; 
-  left: var(--cut-pct, -15%);
-  transform: translate(-60%, -50%);
-  width: 80px; height: 60px;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
-  user-select: none;
-  pointer-events: none;  
-  will-change: left, opacity;
-  transition: opacity .08s ease;
-}
-.scissors img{
-  width: 100%; height: 100%; display: block;
-  -webkit-user-drag: none;
-  pointer-events: none;
-}
-
 .open-label{
   position: absolute; top: 55%; right: 3.5vw;
   transform: translateY(0);
@@ -291,9 +269,9 @@
   top: 60%;   /* 원래 값 */
   max-width: none;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.02em;
   opacity: var(--hint-op, 1);
   transition: opacity .3s ease;
@@ -401,7 +379,7 @@
   width: 120px;
 
   padding: 48px 0;
-  
+
   opacity: 95%;
 
   box-sizing: border-box;

@@ -19,7 +19,8 @@ function smoothstep(v){
 function initCloverValue(section){
   if(!section || section.dataset.valueReady==="true") return;
   section.dataset.valueReady="true";
-
+  section.id = "clover-value";
+  
   const track=section.querySelector(".clover-value__track");
   const cards=[...section.querySelectorAll("[data-value-card]")];
   if(!track || cards.length!==3) return;

@@ -42,6 +42,7 @@ export function mountCloverBehind(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".gb-band");
+  section.id = "clover-behind";
   const cards = [...section.querySelectorAll("[data-card]")];
   const inners = cards.map((c) => c.querySelector(".gb-card-inner"));
   const typingEl = section.querySelector("[data-typing]");

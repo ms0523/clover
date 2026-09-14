@@ -36,6 +36,7 @@ export function mountCloverGift(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".clover-gift");
+  section.id = "clover-gift"; 
   const dots = [...section.querySelectorAll(".dot")];
   const phone = section.querySelector("[data-phone]");
   const cardsViewport = section.querySelector(".gift-cards-viewport");
