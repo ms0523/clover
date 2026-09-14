@@ -1,0 +1,434 @@
+/* =========================================================
+   CLOVER START
+   Figma composition + reference-video scroll interaction
+   ========================================================= */
+
+.clover-start,
+.clover-start *{
+  box-sizing:border-box;
+}
+
+.clover-start{
+  --paper:#FFFEFC;
+  --ink:#0A0406;
+
+  position:relative;
+  width:100%;
+  margin-top:clamp(110px,10vw,170px);
+  height:calc(100vh + 1700px);
+  min-height:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"NanumSquareOTF","NanumSquare","Nanum Gothic",
+    "Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+
+.clover-start__sticky{
+  position:sticky;
+  top:0;
+  width:100%;
+  height:100vh;
+  min-height:640px;
+  overflow:hidden;
+  background:var(--paper);
+}
+
+.clover-start__world{
+  position:absolute;
+  z-index:1;
+  top:0;
+  left:50%;
+  width:min(1440px,100%);
+  height:1542px;
+  transform:translate3d(-50%,0,0);
+  will-change:transform;
+}
+
+.clover-start__media{
+  position:absolute;
+  margin:0;
+  overflow:hidden;
+  border-radius:14px;
+  background:#F2F2F2;
+  transform:translateZ(0);
+  will-change:transform,opacity;
+}
+
+.clover-start__media img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+
+/* Figma 배치 기준 ------------------------------------------------ */
+
+.clover-start__media--memory{
+  top:38px;
+  left:13.4%;
+  width:141px;
+  height:184px;
+}
+
+.clover-start__media--memory img{
+  width:272%;
+  height:278%;
+  max-width:none;
+  object-fit:cover;
+  transform:translate(-46%,-40%);
+}
+
+.clover-start__media--couple{
+  top:68px;
+  left:74.2%;
+  width:170px;
+  height:221px;
+  background:var(--paper);
+}
+
+.clover-start__media--couple img{
+  width:155%;
+  height:158%;
+  max-width:none;
+  transform:translate(-18%,-1%);
+}
+
+.clover-start__media--logo{
+  top:376px;
+  left:4.9%;
+  width:228px;
+  height:176px;
+  background:var(--paper);
+}
+
+.clover-start__media--logo img{
+  object-fit:contain;
+}
+
+.clover-start__media--phone{
+  top:426px;
+  right:4.3%;
+  width:200px;
+  height:260px;
+}
+
+.clover-start__media--phone img{
+  object-fit:cover;
+}
+
+.clover-start__media--service{
+  top:722px;
+  left:16%;
+  width:211px;
+  height:265px;
+  background:var(--paper);
+}
+
+.clover-start__media--service img{
+  object-fit:cover;
+}
+
+.clover-start__media--friends{
+  top:1044px;
+  right:30px;
+  width:221px;
+  height:170px;
+  background:var(--paper);
+}
+
+.clover-start__media--friends img{
+  object-fit:cover;
+}
+
+.clover-start__media--gift{
+  top:1240px;
+  left:4.7%;
+  width:284px;
+  height:226px;
+  background:var(--paper);
+}
+
+.clover-start__media--gift img{
+  object-fit:cover;
+}
+
+.clover-start__media--character{
+  top:1301px;
+  right:7.9%;
+  width:225px;
+  height:173px;
+  background:var(--paper);
+}
+
+.clover-start__media--character img{
+  object-fit:cover;
+}
+
+
+/* 고정 중심 메시지 ------------------------------------------------ */
+
+.clover-start__center{
+  position:absolute;
+  z-index:8;
+  top:50%;
+  left:50%;
+  width:min(520px,calc(100% - 40px));
+  transform:translate3d(-50%,-50%,0);
+  text-align:center;
+  pointer-events:none;
+  will-change:transform,clip-path;
+  clip-path:inset(0 0 0% 0);
+}
+
+.clover-start__title{
+  margin:0;
+  font-size:clamp(38px,3.75vw,54px);
+  line-height:1.26;
+  font-weight:800;
+  letter-spacing:-1.7px;
+  color:var(--ink);
+}
+
+.clover-start__title-line{
+  display:block;
+}
+
+.clover-start__title-line--secondary{
+  opacity:0;
+  transform:translate3d(0,18px,0);
+  filter:blur(3px);
+  will-change:opacity,transform,filter;
+}
+
+.clover-start__scroll-mark{
+  position:absolute;
+  z-index:9;
+  left:50%;
+  bottom:26px;
+  width:44px;
+  height:28px;
+  margin:0;
+  transform:translateX(-50%);
+  pointer-events:auto;
+  cursor:pointer;
+  border:0;
+  padding:0;
+  background:transparent;
+  appearance:none;
+  -webkit-appearance:none;
+  will-change:opacity,transform;
+}
+
+.clover-start__scroll-mark img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+
+/* Tablet ---------------------------------------------------------- */
+
+@media(max-width:1100px){
+  .clover-start{
+    margin-top:clamp(90px,9vw,130px);
+    height:calc(100vh + 1500px);
+    min-height:0;
+  }
+
+  .clover-start__world{
+    width:100%;
+    height:1350px;
+  }
+
+  .clover-start__media--memory{
+    left:5%;
+    width:124px;
+    height:162px;
+  }
+
+  .clover-start__media--couple{
+    left:auto;
+    right:8%;
+    width:150px;
+    height:195px;
+  }
+
+  .clover-start__media--logo{
+    left:3%;
+    width:185px;
+    height:143px;
+  }
+
+  .clover-start__media--phone{
+    right:3%;
+    width:168px;
+    height:218px;
+  }
+
+  .clover-start__media--service{
+    left:10%;
+    width:175px;
+    height:220px;
+  }
+
+  .clover-start__media--friends{
+    right:28px;
+    width:184px;
+    height:142px;
+  }
+
+  .clover-start__media--gift{
+    left:3%;
+    width:220px;
+    height:175px;
+  }
+
+  .clover-start__media--character{
+    right:5%;
+    width:190px;
+    height:146px;
+  }
+}
+
+
+/* Mobile ---------------------------------------------------------- */
+
+@media(max-width:700px){
+  .clover-start{
+    margin-top:72px;
+    height:calc(100vh + 1320px);
+    min-height:0;
+  }
+
+  .clover-start__sticky{
+    min-height:560px;
+  }
+
+  .clover-start__world{
+    height:1250px;
+  }
+
+  .clover-start__title{
+    font-size:clamp(30px,9.2vw,42px);
+    letter-spacing:-1.2px;
+  }
+
+  .clover-start__scroll-mark{
+    bottom:20px;
+    width:38px;
+    height:24px;
+    margin:0;
+  }
+
+  .clover-start__media{
+    border-radius:10px;
+  }
+
+  .clover-start__media--memory{
+    top:26px;
+    left:-5%;
+    width:102px;
+    height:132px;
+  }
+
+  .clover-start__media--couple{
+    top:72px;
+    right:-3%;
+    width:118px;
+    height:153px;
+  }
+
+  .clover-start__media--logo{
+    top:330px;
+    left:-8%;
+    width:150px;
+    height:116px;
+  }
+
+  .clover-start__media--phone{
+    top:430px;
+    right:-5%;
+    width:132px;
+    height:172px;
+  }
+
+  .clover-start__media--service{
+    top:700px;
+    left:-1%;
+    width:142px;
+    height:178px;
+  }
+
+  .clover-start__media--friends{
+    top:880px;
+    right:12px;
+    width:150px;
+    height:116px;
+  }
+
+  .clover-start__media--gift{
+    top:1040px;
+    left:-8%;
+    width:172px;
+    height:137px;
+  }
+
+  .clover-start__media--character{
+    top:1110px;
+    right:-4%;
+    width:150px;
+    height:115px;
+  }
+}
+
+
+@media(prefers-reduced-motion:reduce){
+  .clover-start{
+    height:auto;
+    min-height:900px;
+  }
+
+  .clover-start__sticky{
+    position:relative;
+    height:900px;
+  }
+
+  .clover-start__world,
+  .clover-start__center,
+  .clover-start__media{
+    transform:none !important;
+    opacity:1 !important;
+  }
+}
+
+
+@media(prefers-reduced-motion:reduce){
+  .clover-start__title-line--secondary{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+  }
+}
+
+
+.clover-start__scroll-mark:focus-visible{
+  outline:2px solid currentColor;
+  outline-offset:8px;
+  border-radius:4px;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .clover-start__scroll-mark:hover img{
+    transform:translateY(3px);
+  }
+
+  .clover-start__scroll-mark img{
+    transition:transform .2s ease;
+  }
+}

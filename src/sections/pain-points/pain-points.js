@@ -1,5 +1,6 @@
 import "./pain-points.css";
 import painPointsHtml from "./pain-points.html?raw";
+import gloveUrl from "../../assets/images/pain-point-1-glove.png";
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const mix = (a, b, t) => a + (b - a) * t;
@@ -20,7 +21,7 @@ function initPainPoints(section) {
   const SCROLL_BUDGET = 4200;
   const MAX_WHEEL_DELTA = 150;
   const FOLLOW_SPEED = 6.2; // 카드/문장 전환의 기존 부드러움은 유지합니다.
-  const STATEMENT_FOLLOW_SPEED = 1.5; // 결론 문장은 약 2초에 걸쳐 천천히 따라옵니다.
+  const STATEMENT_FOLLOW_SPEED = 2.25; // 결론 문장은 기존보다 조금 빠르게 따라옵니다.
 
   let targetProgress = clamp(Number(section.dataset.progress || 0), 0, 1);
   let visualProgress = targetProgress;
@@ -88,7 +89,7 @@ function initPainPoints(section) {
       visualProgress = targetProgress;
     }
 
-    // 결론 문장만 한 단계 더 느리게 따라오게 해서 약 2초 정도의 부드러운 페이드/상승을 만듭니다.
+    // 결론 문장은 카드/문장보다 부드럽게 따라오되, 이전 버전보다 조금 빠르게 마무리됩니다.
     const statementTarget = easeInOutCubic(
       clamp((visualProgress - 0.755) / 0.205, 0, 1)
     );
@@ -222,7 +223,8 @@ export function mountPainPoints(mountEl) {
     .querySelectorAll(".pain-points, .gift-pain")
     .forEach((node) => node.remove());
 
-  mountEl.insertAdjacentHTML("beforeend", painPointsHtml);
+  const html = painPointsHtml.replace("__GLOVE__", gloveUrl);
+  mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".pain-points:last-of-type");
   window.__cloverPainPointsCleanup = initPainPoints(section);

@@ -23,7 +23,7 @@
 
 .gift-dots {
   position: absolute;
-  left: 20%;
+  left: 17.5%;
   top: 8%;
   display: flex;
   flex-direction: column;
@@ -68,11 +68,10 @@
 .gift-phone {
     position: absolute;
 
-  left: 10%;
-  top: 15%;
-
-  width: 21%;
-  min-width: 220px;
+   left: 5%;
+  top: 18%;
+  width: 26%;
+  min-width: 280px;
 
   aspect-ratio: 265 / 575;
 
@@ -80,6 +79,7 @@
 
   opacity: 0;
   transform: scale(0.82);
+  overflow: hidden;
 }
 
 
@@ -109,7 +109,17 @@
 }
 
 
+.gift-bottom-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 180px;
 
+  background: #fffefc;
+  z-index: 10;
+  pointer-events: none;
+}
 
 .gift-phone-bg {
   position: absolute;
@@ -122,7 +132,7 @@
 
 .gift-phone-screen {
   position: absolute;
-  left: 4%;
+  left: 5%;
   top: 7%;
   width: 92%;
   height: 88.8%;
@@ -165,10 +175,10 @@
 
   /* 휴대폰 오른쪽에서 시작 */
   left: 25%;
-  top: 57.5%;
+  top: 52%;
 
   width: 80%;
-  height: 140px;
+  height: 1600px;
 
   overflow: hidden;
 
@@ -202,12 +212,12 @@
   top: 0;
   left: 0;
 
-  height: 104px;
+  height: 120px;
 
   display: flex;
   align-items: flex-start;
 
-  gap: 15px;
+  gap: 20px;
 
   width: max-content;
 
@@ -216,12 +226,12 @@
 }
 
 .gc-card {
-  width: 264px;
-  height: 125px;
+  width: 310px;
+  height: 160px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px;
+  gap: 15px;
+  padding: 20px;
   background: #fffefc;
   border: 1px solid #e9e8e8;
   border-radius: 10px;
@@ -229,8 +239,8 @@
 }
 
 .gc-card img {
-  width: 94px;
-  height: 94px;
+  width: 120px;
+  height: 120px;
 
   border-radius: 4px;
 
@@ -241,19 +251,19 @@
 .gc-card-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
 
   min-width: 0;
 }
 
 .gc-card-name {
-  font-weight: 700;
-  font-size: 13px;
+  font-weight: 500;
+  font-size: 18px;
   color: #000;
 }
 
 .gc-card-desc {
-  font-size: 10px;
+  font-size: 12px;
   color: #000;
 
   white-space: nowrap;
@@ -263,20 +273,20 @@
 
 .gc-card-price {
   font-weight: 700;
-  font-size: 10px;
+  font-size: 14px;
   color: var(--red);
 }
 
 .gc-card-btn {
   align-self: flex-start;
 
-  margin-top: 2px;
-  padding: 5px 11px;
+  margin-top: 4px;
+  padding: 10px 18px;
 
   background: var(--red);
   color: #fffefc;
 
-  font-size: 10px;
+  font-size: 14px;
 
   border-radius: 3px;
 }
@@ -290,8 +300,8 @@
 .gift-copy {
   position: absolute;
 
-  left: 40.8%;
-  top: 34.8%;
+  left: 36%;
+  top: 30%;
 
   width: 44%;
   min-width: 280px;
