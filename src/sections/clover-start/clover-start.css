@@ -1,6 +1,5 @@
 /* =========================================================
    CLOVER START
-   Figma composition + reference-video scroll interaction
    ========================================================= */
 
 .clover-start,
@@ -179,7 +178,8 @@
   transform:translate3d(-50%,-50%,0);
   text-align:center;
   pointer-events:none;
-  will-change:transform,clip-path;
+  opacity:0;
+  will-change:transform,opacity,clip-path,filter;
   clip-path:inset(0 0 0% 0);
 }
 
@@ -201,34 +201,6 @@
   transform:translate3d(0,18px,0);
   filter:blur(3px);
   will-change:opacity,transform,filter;
-}
-
-.clover-start__scroll-mark{
-  position:absolute;
-  z-index:9;
-  left:50%;
-  bottom:26px;
-  width:44px;
-  height:28px;
-  margin:0;
-  transform:translateX(-50%);
-  pointer-events:auto;
-  cursor:pointer;
-  border:0;
-  padding:0;
-  background:transparent;
-  appearance:none;
-  -webkit-appearance:none;
-  will-change:opacity,transform;
-}
-
-.clover-start__scroll-mark img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  user-select:none;
-  -webkit-user-drag:none;
 }
 
 
@@ -319,13 +291,6 @@
     letter-spacing:-1.2px;
   }
 
-  .clover-start__scroll-mark{
-    bottom:20px;
-    width:38px;
-    height:24px;
-    margin:0;
-  }
-
   .clover-start__media{
     border-radius:10px;
   }
@@ -404,6 +369,7 @@
   .clover-start__media{
     transform:none !important;
     opacity:1 !important;
+    filter:none !important;
   }
 }
 
@@ -413,22 +379,5 @@
     opacity:1 !important;
     transform:none !important;
     filter:none !important;
-  }
-}
-
-
-.clover-start__scroll-mark:focus-visible{
-  outline:2px solid currentColor;
-  outline-offset:8px;
-  border-radius:4px;
-}
-
-@media (hover:hover) and (pointer:fine){
-  .clover-start__scroll-mark:hover img{
-    transform:translateY(3px);
-  }
-
-  .clover-start__scroll-mark img{
-    transition:transform .2s ease;
   }
 }

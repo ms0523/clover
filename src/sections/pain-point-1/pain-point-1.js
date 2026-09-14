@@ -28,6 +28,10 @@ function initPainPoint1(section){
     el.classList.remove("is-pair-visible");
   });
 
+  const reducedMotion=window.matchMedia?.(
+    "(prefers-reduced-motion: reduce)"
+  )?.matches;
+
   let sequenceStarted=false;
   const timers=[];
 
@@ -39,8 +43,6 @@ function initPainPoint1(section){
       el.classList.add("is-pair-visible");
     });
 
-    // 마지막 핸드크림 세트까지 모두 나온 뒤에만
-    // 장갑 shared transition을 허용합니다.
     if(index === pairs.length-1){
       const doneTimer=window.setTimeout(()=>{
         section.dataset.sequenceDone="true";
@@ -54,6 +56,11 @@ function initPainPoint1(section){
     sequenceStarted=true;
 
     section.classList.add("is-visible");
+
+    if(reducedMotion){
+      pairs.forEach((_,index)=>revealPair(index));
+      return;
+    }
 
     // 타이틀 → 책 → 선풍기 → 장갑 → 텀블러 → 핸드크림
     const firstDelay=360;
@@ -69,10 +76,9 @@ function initPainPoint1(section){
 
   const observer=new IntersectionObserver(
     ([entry])=>{
-      if(entry.isIntersecting){
-        startSequence();
-        observer.disconnect();
-      }
+      if(!entry.isIntersecting) return;
+      startSequence();
+      observer.disconnect();
     },
     {threshold:.20}
   );
@@ -101,18 +107,30 @@ function initPainPoints(section) {
 
   if (points.length !== 3 || cardParts.length !== 3 || !statement) return () => {};
 
+  const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
   // 전체 스크롤 체감 속도는 유지하면서, 실제 화면은 목표 진행도를 부드럽게 따라갑니다.
   const SCROLL_BUDGET = 4200;
-  const MAX_WHEEL_DELTA = 150;
-  const FOLLOW_SPEED = 6.2; // 카드/문장 전환의 기존 부드러움은 유지합니다.
-  const STATEMENT_FOLLOW_SPEED = 2.25; // 결론 문장은 기존보다 조금 빠르게 따라옵니다.
+  const MAX_WHEEL_DELTA = 180;
+  const FOLLOW_SPEED = 14; // 카드/문장 전환 속도 (기존 6.2 → 더 빠르게)
+  const STATEMENT_DURATION = 450; 
+  const FINAL_FOCUS_PROGRESS = 0.74; // "마음 전달" 포인트가 완전히 강조되는 지점 (focusWeights와 동일)
 
   let targetProgress = clamp(Number(section.dataset.progress || 0), 0, 1);
   let visualProgress = targetProgress;
-  let statementVisual = easeInOutCubic(clamp((visualProgress - 0.755) / 0.205, 0, 1));
+  let statementVisual = 0;
   let touchY = null;
   let rafId = 0;
   let lastFrame = performance.now();
+
+  // 3개 포인트를 다 돈 뒤에만 한 번 켜집니다.
+  let cardsDone = false;
+  let statementStartTime = 0;
+  let statementReleaseReady = false;
+
+  // 섹션이 화면에 정확히 자리잡기 전까지는 휠 가로채기(카드 전환)를 켜지 않습니다.
+  let settled = false;
+  let snapTriggered = false;
 
   const focusWeights = (p) => {
     // 앞 74%에서 취향 → 가격 → 마음 전달을 서로 겹치듯 전환합니다.
@@ -155,7 +173,7 @@ function initPainPoints(section) {
       part.style.transform = `translate3d(0, ${mix(7, 0, w).toFixed(2)}px, 0) scale(${mix(0.982, 1, w).toFixed(4)})`;
     });
 
-    // 결론 문장은 별도 감쇠값으로 천천히 올라오며 등장합니다.
+    // 결론 문장: 카드 3개를 다 돈 뒤, 스크롤과 무관하게 자동으로 나타납니다.
     const statementAmount = clamp(statementValue, 0, 1);
     statement.style.opacity = statementAmount.toFixed(4);
     statement.style.transform = `translate3d(0, ${mix(30, 0, statementAmount).toFixed(2)}px, 0)`;
@@ -173,23 +191,25 @@ function initPainPoints(section) {
       visualProgress = targetProgress;
     }
 
-    // 결론 문장은 카드/문장보다 부드럽게 따라오되, 이전 버전보다 조금 빠르게 마무리됩니다.
-    const statementTarget = easeInOutCubic(
-      clamp((visualProgress - 0.755) / 0.205, 0, 1)
-    );
-    const statementFollow = 1 - Math.exp(-STATEMENT_FOLLOW_SPEED * dt);
-    statementVisual += (statementTarget - statementVisual) * statementFollow;
+    // "마음 전달" 포인트 강조가 화면에 실제로 도달하는 순간, 스크롤을 더 안 해도
+    // 자동으로 결론 문장 등장을 시작합니다. (휠 이벤트가 더 없어도 매 프레임 체크)
+    if (!cardsDone && visualProgress >= FINAL_FOCUS_PROGRESS) {
+      cardsDone = true;
+      statementStartTime = now;
+    }
 
-    if (Math.abs(statementTarget - statementVisual) < 0.00015) {
-      statementVisual = statementTarget;
+    if (cardsDone) {
+      const t = clamp((now - statementStartTime) / STATEMENT_DURATION, 0, 1);
+      statementVisual = easeInOutCubic(t);
+      if (t >= 1) statementReleaseReady = true;
     }
 
     render(visualProgress, statementVisual);
 
     const progressMoving = Math.abs(targetProgress - visualProgress) >= 0.00015;
-    const statementMoving = Math.abs(statementTarget - statementVisual) >= 0.00015;
+    const statementAnimating = cardsDone && !statementReleaseReady;
 
-    if (progressMoving || statementMoving) {
+    if (progressMoving || statementAnimating) {
       rafId = requestAnimationFrame(animate);
     } else {
       rafId = 0;
@@ -203,6 +223,7 @@ function initPainPoints(section) {
   };
 
   const isSectionInControlZone = () => {
+    if (!settled) return false;
     if (!section.isConnected) return false;
 
     const flow = section.closest("[data-pain-point-flow]");
@@ -223,8 +244,12 @@ function initPainPoints(section) {
     const limitedDelta = clamp(delta, -MAX_WHEEL_DELTA, MAX_WHEEL_DELTA);
     const direction = Math.sign(limitedDelta);
 
-    // 끝에 도착했더라도 화면 모션이 아직 따라오는 중이면 다음 페이지로 바로 넘기지 않습니다.
-    if (direction > 0 && targetProgress >= 0.999 && visualProgress >= 0.992) return false;
+    // 결론 문장이 자동으로 다 나타날 때까지는 아래로의 스크롤을 붙잡아둡니다.
+    if (direction > 0 && cardsDone && !statementReleaseReady) return true;
+
+    // 문장까지 다 보여줬다면 다음 섹션으로 자연스럽게 넘어가도록 풀어줍니다.
+    if (direction > 0 && statementReleaseReady) return false;
+
     if (direction < 0 && targetProgress <= 0.001 && visualProgress <= 0.008) return false;
 
     targetProgress = clamp(targetProgress + limitedDelta / SCROLL_BUDGET, 0, 1);
@@ -280,6 +305,30 @@ function initPainPoints(section) {
 
   const onResize = () => render(visualProgress, statementVisual);
 
+  // 섹션이 자연 스크롤로 화면에 들어오면, 정확한 위치(섹션 상단 = 뷰포트 상단)로
+  // 한 번 스냅시킨 뒤에만 휠 가로채기(카드 전환)를 켭니다.
+  const snapObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) return;
+      if (snapTriggered) return;
+      snapTriggered = true;
+
+      section.scrollIntoView({
+        behavior: prefersReduced ? "auto" : "smooth",
+        block: "start"
+      });
+
+      window.setTimeout(() => {
+        settled = true;
+      }, prefersReduced ? 0 : 650);
+
+      snapObserver.disconnect();
+    },
+    { threshold: 0.15 }
+  );
+
+  snapObserver.observe(section);
+
   window.addEventListener("wheel", onWheel, { passive: false, capture: true });
   window.addEventListener("touchstart", onTouchStart, { passive: true, capture: true });
   window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
@@ -291,6 +340,7 @@ function initPainPoints(section) {
 
   return () => {
     if (rafId) cancelAnimationFrame(rafId);
+    snapObserver.disconnect();
     window.removeEventListener("wheel", onWheel, { capture: true });
     window.removeEventListener("touchstart", onTouchStart, { capture: true });
     window.removeEventListener("touchmove", onTouchMove, { capture: true });
