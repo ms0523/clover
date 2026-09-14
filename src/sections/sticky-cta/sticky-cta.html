@@ -1,0 +1,64 @@
+<!--
+  하단 고정 CTA 바 — hero, footer를 제외한 모든 섹션 위에 계속 떠 있는 바.
+  스크롤 중엔 숨고 스크롤이 멈추면 다시 올라오는 동작은 sticky-cta.js가 처리합니다.
+
+  사용 순서:
+  1) scene.js/footer.js와 동일한 패턴 — 이 폴더를
+     src/sections/sticky-cta/ (또는 src/components/sticky-cta/) 에 그대로 넣기
+  2) __SYMBOL_URL__ 자리에 들어갈 심볼 이미지를
+     src/assets/images/sticky-cta-symbol.svg 로 저장 (다른 경로를 쓰면
+     sticky-cta.js 상단의 import 경로만 바꿔주면 됩니다)
+  3) main.js에서 mountStickyCta(document.body) 호출 (mountFooter 다음 줄 추천)
+
+  상태는 .sticky-cta-bar의 data-cta-open 값으로 구분합니다:
+    "off"  → 기본 상태 (심볼 + 안내 문구 + 베타 신청하기 버튼)
+    "on"   → 이메일 입력 상태 (베타 신청하기를 누르면 전환)
+    "done" → 전송 완료 상태 (이메일 제출 후 잠깐 보여주고 다시 off로 복귀)
+  세 상태 블록을 전부 마크업에 넣어두고 CSS가 data-cta-open 값에 맞는 것만
+  보여주는 방식이라, JS는 값만 바꾸면 됩니다.
+-->
+<div class="sticky-cta" data-sticky-cta hidden>
+  <div class="sticky-cta-bar" data-cta-open="off">
+    <img class="sticky-cta-symbol" src="__SYMBOL_URL__" alt="">
+
+    <!-- 기본 상태 -->
+    <div class="sticky-cta-panel sticky-cta-panel--idle">
+      <div class="sticky-cta-copy">
+        <p class="sticky-cta-title">CLOVER가 곧 선물 고민을 함께할게요.</p>
+        <p class="sticky-cta-desc">이메일을 남기고 베타 오픈 소식을 먼저 받아보세요.</p>
+      </div>
+      <button type="button" class="sticky-cta-btn" data-cta-toggle>
+        베타 신청하기
+      </button>
+    </div>
+
+    <!-- 이메일 입력 상태 -->
+    <form class="sticky-cta-panel sticky-cta-panel--form" data-cta-form novalidate>
+      <input
+        class="sticky-cta-email"
+        type="email"
+        name="email"
+        inputmode="email"
+        autocomplete="email"
+        placeholder="이메일 주소를 입력해주세요"
+        required
+        data-cta-email
+      >
+      <button type="submit" class="sticky-cta-send" data-cta-send>
+        메일로 보내기
+      </button>
+      <button type="button" class="sticky-cta-close" data-cta-close aria-label="닫기">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </form>
+
+    <!-- 전송 완료 상태 -->
+    <div class="sticky-cta-panel sticky-cta-panel--done">
+      <p class="sticky-cta-done-text" data-cta-done-text>
+        신청이 완료됐어요. 베타 오픈 소식을 가장 먼저 보내드릴게요!
+      </p>
+    </div>
+  </div>
+</div>

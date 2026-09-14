@@ -15,6 +15,7 @@ import { mountCloverReceive } from "./sections/clover-receive/clover-receive.js"
 import { mountCloverMessage } from "./sections/clover-message/clover-message.js";
 import { mountFooter } from "./sections/footer/footer.js";
 import { observeReveals } from "./utils/reveal.js";
+import { mountStickyCta } from "./sections/sticky-cta/sticky-cta.js";
 
 const app = document.querySelector("#app");
 
@@ -30,6 +31,7 @@ mountCloverBehind(app);
 mountCloverReceive(app);
 mountCloverMessage(app);
 mountFooter(app);
+mountStickyCta(app);
 
 mountSectionNav([
   { id: "hero",            label: "홈" },
@@ -43,6 +45,7 @@ mountSectionNav([
   { id: "clover-behind",   label: "비하인드" },
   { id: "clover-receive",  label: "선물 받기" },
   { id: "clover-message",  label: "진심 전달" },
+  
 ]);
 
 observeReveals();
