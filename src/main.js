@@ -1,7 +1,8 @@
 import "./styles/fonts.css";
 import "./styles/base.css";
 
-import { mountHero, mountSectionNav } from "./sections/hero/hero.js";
+import { mountHero } from "./sections/hero/hero.js";
+import { mountSectionNav } from "./sections/section-nav/section-nav.js";
 import { mountCloverStart } from "./sections/clover-start/clover-start.js";
 import { mountPainPoint1 } from "./sections/pain-point-1/pain-point-1.js";
 import { mountClovervalue } from "./sections/clover-value/clover-value.js";
@@ -30,16 +31,16 @@ mountCloverMessage(app);
 
 mountSectionNav([
   { id: "hero",            label: "홈" },
-  { id: "clover-start",    label: "시작하기" },
-  { id: "pain-point-1",    label: "고민" },
-  { id: "clover-value",    label: "가치" },
-  { id: "intro",           label: "STEP01" },
-  { id: "clover-ai",       label: "STEP02" },
-  { id: "clover-gift",     label: "STEP03" },
+  { id: "clover-start",    label: "선물의 시작" },
+  { id: "pain-point-1",    label: "선물 고민" },
+  { id: "clover-value",    label: "다른 기준" },
+  { id: "intro",           label: "질문 하나" },
+  { id: "clover-ai",       label: "AI 추천" },
+  { id: "clover-gift",     label: "맞춤 선물" },
   { id: "clover-coupon",   label: "마음 쿠폰" },
   { id: "clover-behind",   label: "비하인드" },
   { id: "clover-receive",  label: "선물 받기" },
-  { id: "clover-message",  label: "메시지" },
+  { id: "clover-message",  label: "진심 전달" },
 ]);
 
 observeReveals();
