@@ -346,6 +346,27 @@
 }
 
 
+/* ---------- 짧은 뷰포트(화면 배율 100% 등) 대응 ---------- */
+
+@media (max-height:800px) and (min-width:821px){
+  .pain-point-1__stage{
+    --notebook-size:clamp(96px,12vh,159px);
+    --glove-size:clamp(136px,17.1vh,227px);
+    --handcream-size:clamp(108px,13.5vh,179px);
+    --fan-size:clamp(96px,12.1vh,160px);
+    --tumbler-size:clamp(136px,17.1vh,227px);
+
+    --notebook-gap:clamp(28px,3.9vh,52px);
+    --glove-gap:clamp(30px,4.1vh,55px);
+    --handcream-gap:clamp(30px,4.2vh,56px);
+    --fan-gap:clamp(26px,3.8vh,50px);
+    --tumbler-gap:clamp(26px,3.8vh,50px);
+
+    height:clamp(560px,74vh,982px);
+  }
+}
+
+
 /* ---------- Mobile: 5개의 세트를 세로로 분리해 절대 겹치지 않게 ---------- */
 
 @media(max-width:760px){

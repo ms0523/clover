@@ -9,7 +9,6 @@ import giftUrl from "../../assets/images/clover-start-gift.png";
 import serviceUrl from "../../assets/images/clover-start-service.png";
 import logoUrl from "../../assets/images/clover-start-logo.png";
 import characterUrl from "../../assets/images/clover-start-character.png";
-import chevronUrl from "../../assets/images/clover-start-chevron.png";
 
 
 export function mountCloverStart(mountEl){
@@ -23,8 +22,7 @@ export function mountCloverStart(mountEl){
     .replaceAll("__GIFT__",giftUrl)
     .replaceAll("__SERVICE__",serviceUrl)
     .replaceAll("__LOGO__",logoUrl)
-    .replaceAll("__CHARACTER__",characterUrl)
-    .replaceAll("__CHEVRON__",chevronUrl);
+    .replaceAll("__CHARACTER__",characterUrl);
 
   mountEl.insertAdjacentHTML("beforeend",html);
 
@@ -44,7 +42,6 @@ function initCloverStart(section){
   const world=section.querySelector("[data-clover-start-world]");
   const center=section.querySelector("[data-clover-start-center]");
   const secondary=section.querySelector("[data-start-secondary]");
-  const arrow=section.querySelector("[data-start-arrow]");
   const service=section.querySelector(".clover-start__media--service");
   const media=[...section.querySelectorAll("[data-start-media]")];
 
@@ -63,8 +60,6 @@ function initCloverStart(section){
       block:"start"
     });
   };
-
-  arrow?.addEventListener("click",goToNextSection);
 
   const reduceMotion=window.matchMedia?.(
     "(prefers-reduced-motion: reduce)"
@@ -88,14 +83,88 @@ function initCloverStart(section){
     return clamp01((-rect.top)/scrollable);
   };
 
+  // ---------------------------------------------------------------
+  // ① 스크롤 감도 조절
+  // 섹션이 sticky로 고정돼 있는 동안만 휠/터치를 가로채서 일부만 반영
+  // → 한 번 스크롤할 때 올라오는 양 자체가 줄어듭니다.
+  // ---------------------------------------------------------------
+  const SCROLL_DAMPING=0.75;
+
+  const isPinned=()=>{
+    const rect=section.getBoundingClientRect();
+    return rect.top<=0 && rect.bottom>=window.innerHeight;
+  };
+
+  const onWheel=(event)=>{
+    if(!isPinned()) return;
+    event.preventDefault();
+    window.scrollBy(0,event.deltaY*SCROLL_DAMPING);
+  };
+
+  let touchStartY=0;
+
+  const onTouchStart=(event)=>{
+    touchStartY=event.touches[0].clientY;
+  };
+
+  const onTouchMove=(event)=>{
+    if(!isPinned()){
+      touchStartY=event.touches[0].clientY;
+      return;
+    }
+
+    const currentY=event.touches[0].clientY;
+    const delta=touchStartY-currentY;
+    touchStartY=currentY;
+
+    event.preventDefault();
+    window.scrollBy(0,delta*SCROLL_DAMPING);
+  };
+
+  window.addEventListener("wheel",onWheel,{passive:false});
+  window.addEventListener("touchstart",onTouchStart,{passive:true});
+  window.addEventListener("touchmove",onTouchMove,{passive:false});
+  // ---------------------------------------------------------------
+
+  // ---------------------------------------------------------------
+  // ② 퇴장 스냅
+  // 진행률이 97%를 넘으면 pain-point-1 시작 위치로 정확히 한 번 스냅
+  // ---------------------------------------------------------------
+  const SNAP_THRESHOLD=0.97;
+  let hasSnapped=false;
+  let prevProgress=null; // 새로고침 등으로 이미 이 지점을 지나친 채 로드된 경우를 구분하기 위함
+
+  const maybeSnapToNext=(p)=>{
+    if(prevProgress===null){
+      prevProgress=p;
+      return;
+    }
+
+    const crossedForward=prevProgress<SNAP_THRESHOLD && p>=SNAP_THRESHOLD;
+
+    if(crossedForward && !hasSnapped){
+      hasSnapped=true;
+      goToNextSection();
+    }else if(p<0.5){
+      hasSnapped=false;
+    }
+
+    prevProgress=p;
+  };
+  // ---------------------------------------------------------------
+
+  // ---------------------------------------------------------------
+  // ③ 타이틀 등장(enter)
+  // 페이지에 막 들어왔을 땐(progress 0) 타이틀이 완전히 숨어 있다가,
+  // 스크롤이 시작되어 섹션에 진입하는 초반 구간(0 ~ ENTER_END)에서만
+  // 서서히 나타납니다. 이후 섹션이 빠질 때(exit)는 기존 로직 그대로 사라짐.
+  // ---------------------------------------------------------------
+  const ENTER_END=.1;
+  // ---------------------------------------------------------------
+
   const render=(p)=>{
     const viewportHeight=window.innerHeight || 800;
 
-    /*
-      내부 이미지 이동속도를 실제 페이지 스크롤과 거의 1:1로 맞춥니다.
-      그래서 sticky가 끝나고 다음 섹션으로 넘어갈 때
-      갑자기 빨라졌다가 돌아오는 느낌을 줄입니다.
-    */
     const scrollRange=Math.max(1,section.offsetHeight-viewportHeight);
     const worldTravel=scrollRange*.94;
 
@@ -103,10 +172,6 @@ function initCloverStart(section){
     world.style.transform=
       `translate3d(-50%,${worldY.toFixed(2)}px,0)`;
 
-    /*
-      각 이미지마다 아주 미세하게 다른 속도를 줘
-      완전히 같은 판이 움직이는 느낌을 줄입니다.
-    */
     media.forEach((item,index)=>{
       const direction=index%2===0 ? 1 : -1;
       const driftX=direction*Math.sin(p*Math.PI)*6;
@@ -116,12 +181,6 @@ function initCloverStart(section){
         `translate3d(${driftX.toFixed(2)}px,${driftY.toFixed(2)}px,0)`;
     });
 
-    /*
-      두 번째 문장 reveal:
-      전체 section progress가 아니라 service 이미지의 실제 Y 위치를 기준으로 합니다.
-      service가 화면 아래쪽에서 위로 지나가기 시작할 때 reveal이 시작되고,
-      중앙 부근에 도달하면 "상품에서 사람으로"가 완전히 보입니다.
-    */
     if(secondary){
       const serviceTop=service
         ? service.offsetTop + worldY
@@ -144,37 +203,27 @@ function initCloverStart(section){
       secondary.style.filter=`blur(${secondaryBlur.toFixed(2)}px)`;
     }
 
-    /*
-      마지막 구간:
-      opacity로 사라지는 대신, 아래쪽부터 잘려 올라오면서
-      다음 섹션 안으로 "묻히는" 느낌으로 사라집니다.
-    */
-    // 카드가 거의 모두 위로 빠진 뒤부터 퇴장 시작.
-    // smoothstep으로 확 가속하지 않고 linear하게 진행해
-    // 문장과 다음 섹션의 속도가 따로 노는 느낌을 줄입니다.
+    const enter=smoothstep(clamp01(p/ENTER_END));
     const exit=clamp01((p-.75)/.15);
+
     const titleScale=lerp(1,.992,exit);
-    const titleY=lerp(0,28,exit);
+    const enterY=lerp(18,0,enter);
+    const exitY=lerp(0,28,exit);
+    const titleY=enterY+exitY;
+    const titleBlur=lerp(3,0,enter);
     const cover=exit*100;
 
-    center.style.opacity=(1-exit).toFixed(3);
+    center.style.opacity=(enter*(1-exit)).toFixed(3);
     center.style.clipPath=`inset(0 0 ${cover.toFixed(2)}% 0)`;
+    center.style.filter=`blur(${titleBlur.toFixed(2)}px)`;
     center.style.transform=
       `translate3d(-50%,calc(-50% + ${titleY.toFixed(2)}px),0) scale(${titleScale.toFixed(4)})`;
-
-    // 화살표는 화면 하단에 고정하고 마지막에만 같은 속도로 천천히 사라짐
-    if(arrow){
-      arrow.style.opacity=(1-exit).toFixed(3);
-      arrow.style.transform=
-        `translateX(-50%) translateY(${lerp(0,10,exit).toFixed(2)}px)`;
-    }
   };
 
   const animate=(now)=>{
     const dt=Math.min((now-lastFrame)/1000,.05);
     lastFrame=now;
 
-    // 휠에 딱 붙지 않고 부드럽게 따라오는 damping
     const follow=1-Math.exp(-10.5*dt);
     smoothProgress+=(targetProgress-smoothProgress)*follow;
 
@@ -193,6 +242,7 @@ function initCloverStart(section){
 
   const requestRender=()=>{
     targetProgress=getProgress();
+    maybeSnapToNext(targetProgress);
 
     if(!rafId){
       lastFrame=performance.now();
