@@ -1,0 +1,233 @@
+/* ===========================================================
+   Sticky Beta CTA
+   - hero / footer를 제외한 모든 섹션 위에 계속 떠 있는 하단 고정 바.
+   - 표시/숨김은 JS가 .sticky-cta에 .is-hidden 클래스를 붙였다 뗐다 하는
+     방식으로 처리하고(스크롤 중 숨김 ↔ 멈추면 표시 ↔ hero/footer 구간에서는
+     항상 숨김), 여기서는 그 클래스에 대한 트랜지션만 정의합니다.
+   - "베타 신청하기 → 이메일 입력 → 전송 완료" 세 상태는 .sticky-cta-bar의
+     data-cta-open 값("off" | "on" | "done")에 따라 .sticky-cta-panel 중
+     하나만 보이도록 전환합니다.
+=========================================================== */
+
+.sticky-cta {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40; /* section-nav보다는 아래, 다른 오버레이보다는 위 — 프로젝트 다른 z-index와 맞춰 조정 */
+  display: flex;
+  justify-content: center;
+  padding: 0 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none; /* 바 바깥 영역(좌우 여백)은 클릭을 막지 않음 */
+}
+
+/* 실제 클릭 가능한 바 안쪽에서만 pointer-events 복원 */
+.sticky-cta-bar {
+  pointer-events: auto;
+}
+
+/* ---------- 표시 / 숨김 (스크롤 중 ↔ 스크롤 멈춤 반복, hero/footer 구간) ---------- */
+.sticky-cta-bar {
+  width: 100%;
+  max-width: 640px;
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
+}
+
+.sticky-cta.is-hidden .sticky-cta-bar {
+  transform: translateY(calc(100% + 24px));
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta-bar { transition: opacity 0.2s ease; }
+  .sticky-cta.is-hidden .sticky-cta-bar { transform: none; }
+}
+
+/* ---------- 바 본체 ---------- */
+.sticky-cta-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 20px;
+  background: rgba(233, 232, 232, 0.30);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px -12px rgba(28, 18, 16, 0.28);
+}
+
+.sticky-cta-symbol {
+  width: 20px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* ---------- 상태 패널 공통: data-cta-open 값에 맞는 패널만 노출 ---------- */
+.sticky-cta-panel {
+  display: none;
+  flex: 1;
+  align-items: center;
+  gap: 20px;
+}
+
+.sticky-cta-bar[data-cta-open="off"] .sticky-cta-panel--idle,
+.sticky-cta-bar[data-cta-open="on"] .sticky-cta-panel--form,
+.sticky-cta-bar[data-cta-open="done"] .sticky-cta-panel--done {
+  display: flex;
+}
+
+/* ---------- 기본 상태: 안내 문구 + 베타 신청하기 ---------- */
+.sticky-cta-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sticky-cta-title {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.55);
+  font-family: "NanumSquareOTF", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sticky-cta-desc {
+  margin: 0;
+  color: #6A6869;
+  font-family: "NanumSquareOTF", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sticky-cta-btn {
+  appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 46px;
+  padding: 8px 16px;
+  background: rgba(177.51, 21.04, 39.60, 0.10);
+  border: none;
+  border-radius: 12px;
+  color: var(--red, #B21528);
+  font-family: "NanumSquareOTF", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.sticky-cta-btn:hover,
+.sticky-cta-btn:focus-visible {
+  background: rgba(177.51, 21.04, 39.60, 0.18);
+}
+
+/* ---------- 이메일 입력 상태 ---------- */
+.sticky-cta-email {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(178, 21, 40, 0.25);
+  border-radius: 12px;
+  background: #FFFEFC;
+  color: #1c1210;
+  font-family: "NanumSquareOTF", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.sticky-cta-email::placeholder {
+  color: #9A9899;
+}
+
+.sticky-cta-email:focus-visible {
+  outline: none;
+  border-color: var(--red, #B21528);
+}
+
+.sticky-cta-send {
+  appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 46px;
+  padding: 8px 16px;
+  background: var(--red, #B21528);
+  border: none;
+  border-radius: 12px;
+  color: #FFFEFC;
+  font-family: "NanumSquareOTF", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.sticky-cta-send:hover,
+.sticky-cta-send:focus-visible {
+  background: var(--red-dark, #7f1414);
+}
+
+.sticky-cta-close {
+  appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6A6869;
+  transition: color 0.2s ease;
+}
+
+.sticky-cta-close:hover,
+.sticky-cta-close:focus-visible {
+  color: var(--red, #B21528);
+}
+
+/* ---------- 전송 완료 상태 ---------- */
+.sticky-cta-done-text {
+  margin: 0;
+  color: var(--red, #B21528);
+  font-family: "NanumSquareOTF", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ---------- 모바일: 문구를 줄이고 버튼/입력을 우선 노출 ---------- */
+@media (max-width: 560px) {
+  .sticky-cta {
+    padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .sticky-cta-bar {
+    gap: 12px;
+    padding: 10px 14px;
+  }
+
+  .sticky-cta-desc {
+    display: none; /* 좁은 화면에서는 타이틀 한 줄만 남김 */
+  }
+
+  .sticky-cta-btn,
+  .sticky-cta-send {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}
