@@ -12,12 +12,15 @@ html, body{
   padding: 0;
   color: var(--ink);
   font-family: "NanumSquareOTF","Nanum Gothic","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
 }
 
-/* section-by-section scroll snapping. "proximity" only snaps when you're
-   already close to a section edge, so it doesn't fight your scroll
-   momentum the way "mandatory" does — feels much smoother, especially on
-   a trackpad. scroll-behavior: smooth eases the final settle into place. */
+body {
+  overflow-x: clip;
+}
+
 html{
   scroll-behavior: smooth;
   scrollbar-gutter:stable;
