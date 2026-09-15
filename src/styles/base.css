@@ -12,19 +12,13 @@ html, body{
   padding: 0;
   color: var(--ink);
   font-family: "NanumSquareOTF","Nanum Gothic","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    height: auto !important;
-  min-height: 100% !important;
-  overflow-y: auto !important;
 }
 
-body {
-  overflow-x: clip;
-}
 
 html{
-  scroll-behavior: smooth;
+
   scrollbar-gutter:stable;
-  scroll-snap-type: y proximity;
+
 }
 
 img, svg{ max-width: 100%; display: block; }
