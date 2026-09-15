@@ -4,9 +4,6 @@
   background: #FFFEFC;
   padding: 0;
   margin: 0;
-
-  /* 섹션을 화면 높이에 딱 고정 — base.css의 min-height:100vh보다
-     우선 적용되어(명시적 height) 항상 정확히 한 화면 크기가 됨 */
   height: 100vh;
 
   /* 안쪽 디자인 전체를 섹션 "바닥"에 딱 붙임 → 디자인 하단(핸드폰이
