@@ -2,26 +2,61 @@ import "./clover-gift.css";
 import cloverGiftHtml from "./clover-gift.html?raw";
 import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
 import phoneScreenUrl from "../../assets/images/clover-gift-screen.svg";
-import productUrl from "../../assets/images/clover-gift-product.png";
+
+/* =========================================================
+   상품 4종 설정
+   ========================================================================
+   전부 "메디테디" 하나로 반복되던 걸 상품별로 각각 이름/설명/가격/이미지를
+   따로 지정할 수 있게 배열로 뺐다. 실제 상품 이미지 4장을 assets/images에
+   넣고 아래 import 경로만 실제 파일명으로 바꿔서 쓰면 된다.
+   상품을 4개보다 늘리거나 줄이고 싶으면 이 배열에 추가/삭제만 하면 되고,
+   슬라이드는 아래 CARD_COUNT 로직이 알아서 이 배열을 순환하며 채운다.
+========================================================= */
+
+import product1Url from "../../assets/images/clover-gift-product-1.png";
+import product2Url from "../../assets/images/clover-gift-product-2.png";
+import product3Url from "../../assets/images/clover-gift-product-3.png";
+import product4Url from "../../assets/images/clover-gift-product-4.png";
+
+const PRODUCTS = [
+  {
+    name: "메디테디",
+    desc: "가벼운 레트로 타원 볼 접시",
+    price: "34,000원",
+    img: product1Url,
+  },
+  {
+    name: "알럽하우스",
+    desc: "워터드롭 머그컵 세트",
+    price: "26,900원",
+    img: product2Url,
+  },
+  {
+    name: "타블도트",
+    desc: "슬로우 3단 머그 세트",
+    price: "32,000원",
+    img: product3Url,
+  },
+  {
+    name: "빠다앤마가린",
+    desc: "홈브런치 식기 3p",
+    price: "33,400원",
+    img: product4Url,
+  },
+];
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const CARD = {
-  name: "메디테디",
-  desc: "가벼운 레트로 타원 볼 접시",
-  price: "34,000원",
-};
-
-function cardHtml() {
+function cardHtml(product) {
   return `
     <div class="gc-card">
-      <img src="${productUrl}" alt="">
+      <img src="${product.img}" alt="">
       <div class="gc-card-info">
-        <div class="gc-card-name">${CARD.name}</div>
-        <div class="gc-card-desc">${CARD.desc}</div>
-        <div class="gc-card-price">${CARD.price}</div>
+        <div class="gc-card-name">${product.name}</div>
+        <div class="gc-card-desc">${product.desc}</div>
+        <div class="gc-card-price">${product.price}</div>
         <span class="gc-card-btn">선물하기</span>
       </div>
     </div>
@@ -36,7 +71,7 @@ export function mountCloverGift(mountEl) {
   mountEl.insertAdjacentHTML("beforeend", html);
 
   const section = mountEl.querySelector(".clover-gift");
-  section.id = "clover-gift"; 
+  section.id = "clover-gift";
   const dots = [...section.querySelectorAll(".dot")];
   const phone = section.querySelector("[data-phone]");
   const cardsViewport = section.querySelector(".gift-cards-viewport");
@@ -46,11 +81,14 @@ export function mountCloverGift(mountEl) {
   // 카드 생성
   // ---------------------------------------------------------
 
-  const CARD_COUNT = 6;
+  // PRODUCTS(4개)를 2바퀴 돌려서 한 세트(8장)를 만든다. 상품 개수를
+  // 늘리거나 줄여도 이 로직은 그대로 PRODUCTS.length에 맞춰 순환한다.
+  const SET_REPEAT = 2;
+  const CARD_COUNT = PRODUCTS.length * SET_REPEAT;
 
   const cards = Array.from(
     { length: CARD_COUNT },
-    cardHtml
+    (_, i) => cardHtml(PRODUCTS[i % PRODUCTS.length])
   ).join("");
 
   // 똑같은 카드 세트를 2개 연결

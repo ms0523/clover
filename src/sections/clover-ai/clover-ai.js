@@ -5,6 +5,7 @@ import badgeUrl from "../../assets/images/clobunny-badge.png";
 import phoneFrameUrl from "../../assets/images/phone-mockup.svg";
 import phoneScreenUrl from "../../assets/images/clover-ai-phone-screen.svg";
 import chatUrl from "../../assets/images/clover-ai-chat.svg";
+import { setupSnapToNext } from "../scroll-snap.js";
 
 const GAP = 15; // 핀(30px) 중심점 기준 연결선 단부 간격
 
@@ -133,4 +134,16 @@ export function mountCloverAi(mountEl) {
     { threshold: 0.3 }
   );
   io.observe(section);
+
+  /* =======================================================
+     Clover AI → Clover Gift 부드러운 스냅
+     ======================================================================
+     step2(clover-ai) → step3(clover-gift) 전환. intro.js의
+     step1 → step2 스냅과 동일한 공용 유틸(scroll-snap.js)을 사용.
+     .clover-ai는 정확히 100vh라 스크롤 가능 구간이 사실상 없기 때문에,
+     섹션을 벗어나기 시작하는 즉시(threshold 도달) 다음 섹션 시작
+     지점까지 자연스럽게 이어서 스크롤된다.
+  ======================================================= */
+
+  setupSnapToNext(section);
 }
