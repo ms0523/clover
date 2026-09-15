@@ -1,6 +1,6 @@
 .message-band{
   position: relative;
-max-height: 100vh;
+  min-height: 100vh;
   background: #fffefc;
   padding: 100px 24px 0;
   overflow: hidden;
