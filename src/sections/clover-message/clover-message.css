@@ -24,14 +24,14 @@
   text-align: center;
 }
 
-/* .message-title{
+.message-title{
   position: relative; 
   top: 64px;
   margin: 0 0 32px;
   font-size: clamp(40px, 3.3vw, 48px);
   font-weight: 800;
   color: #000;
-} */
+} 
 
 .message-desc{
   position: relative; 
