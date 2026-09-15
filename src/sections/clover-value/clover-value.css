@@ -1,355 +1,480 @@
 /* CLOVER VALUE — PNG card scroll v3 */
 
 .clover-value,
-.clover-value *{
-  box-sizing:border-box;
+.clover-value * {
+  box-sizing: border-box;
 }
 
-.clover-value{
-  position:relative;
+.clover-value {
   height: 100vh;
-  width:100%;
-  background:#FFFEFC;
-  color:#0A0406;
-  font-family:"NanumSquareOTF","NanumSquare","Nanum Gothic",
-    "Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  position: relative;
+  width: 100%;
+  background: #FFFEFC;
+  color: #0A0406;
+  font-family: "NanumSquareOTF", "NanumSquare", "Nanum Gothic",
+    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
-.clover-value__track{
-  position:relative;
-  height:360vh;
-  min-height:2600px;
+.clover-value__track {
+  position: relative;
+  height: 360vh;
+  min-height: 2600px;
 }
 
-.clover-value__stage{
-  position:sticky;
-  top:0;
-  width:100%;
-  height:100vh;
-  min-height:720px;
-  overflow:hidden;
-  background:#FFFEFC;
+.clover-value__stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  min-height: 720px;
+  overflow: hidden;
+  background: #FFFEFC;
 }
 
-.clover-value__heading{
-  position:absolute;
-  z-index:5;
-  top:20.8%;
-  left:50%;
-  width:min(760px,calc(100% - 48px));
-  transform:translateX(-50%);
-  text-align:center;
+.clover-value__heading {
+  position: absolute;
+  z-index: 5;
+  top: 20.8%;
+  left: 50%;
+  width: min(760px, calc(100% - 48px));
+  transform: translateX(-50%);
+  text-align: center;
 }
 
-.clover-value__title{
-  margin:0;
-  color:#0A0406;
-  font-size:32px;
-  line-height:1.35;
-  font-weight:700;
-  letter-spacing:-0.8px;
-  white-space:nowrap;
+.clover-value__title {
+  margin: 0;
+  color: #0A0406;
+  font-size: 32px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  white-space: nowrap;
 }
 
-.clover-value__description{
-  margin:18px 0 0;
-  color:#878586;
-  font-size:20px;
-  line-height:1.5;
-  font-weight:400;
-  letter-spacing:-0.35px;
-  white-space:nowrap;
+.clover-value__description {
+  margin: 18px 0 0;
+  color: #878586;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: -0.35px;
+  white-space: nowrap;
 }
 
-.clover-value__red-band{
-  position:absolute;
-  z-index:1;
-  left:0;
-  top:56%;
-  width:100%;
-  height:57px;
-  background:#B21528;
+.clover-value__red-band {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 56%;
+  width: 100%;
+  height: 57px;
+  background: #B21528;
 }
 
-.clover-value__red-band::after{
-  content:"";
-  position:absolute;
-  left:0;
-  top:28px;
-  width:100%;
-  height:1px;
-  background:rgba(255,255,255,.38);
+.clover-value__red-band::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 28px;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, .38);
 }
 
-.clover-value__cards{
-  position:absolute;
-  z-index:3;
-  top:36.55%;
-  left:50%;
-  width:min(1069px,calc(100% - 80px));
-  aspect-ratio:1069 / 438;
-  display:flex;
-  overflow:hidden;
-  transform:translateX(-50%);
-  background:#2c211c;
+.clover-value__cards {
+  position: absolute;
+  z-index: 3;
+  top: 36.55%;
+  left: 50%;
+  width: min(1069px, calc(100% - 80px));
+  aspect-ratio: 1069 / 438;
+  display: flex;
+  overflow: hidden;
+  transform: translateX(-50%);
+  background: #2c211c;
 }
 
-.value-card{
-  --weight:0;
-  position:relative;
-  flex:0 0 20.8217%;
-  height:100%;
-  overflow:hidden;
-  color:#fff;
-  isolation:isolate;
-  will-change:flex-basis;
+.value-card {
+  --weight: 0;
 
-  /* 보간(부드럽게 넘어가는 것)은 CSS transition이 아니라 JS의
-     requestAnimationFrame이 매 프레임 값을 직접 씁니다. CSS
-     transition에만 맡기면 브라우저/OS의 "동작 줄이기"
-     (prefers-reduced-motion) 설정이 켜져 있을 때 transition이
-     통째로 무시되어 스텝이 순간이동해버리기 때문입니다. */
+  position: relative;
+  flex: 0 0 20.8217%;
+  height: 100%;
+  overflow: hidden;
+  color: #fff;
+  isolation: isolate;
+  will-change: flex-basis;
 }
 
-.value-card__image{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  user-select:none;
-  -webkit-user-drag:none;
-  pointer-events:none;
-  will-change:opacity,transform;
+.value-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  will-change: opacity, transform;
 }
 
-.value-card__image--blur{
-  opacity:var(--blur-opacity,0);
-  transform:none;
+.value-card__image--blur {
+  opacity: var(--blur-opacity, 0);
+  transform: none;
 }
 
-.value-card__image--sharp{
-  opacity:var(--sharp-opacity,1);
-  transform:none;
+.value-card__image--sharp {
+  opacity: var(--sharp-opacity, 1);
+  transform: none;
 }
 
-.value-card__shade{
-  position:absolute;
-  z-index:1;
-  inset:0;
+.value-card__shade {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+
   background:
     linear-gradient(
       to bottom,
-      rgba(0,0,0,.18) 0%,
-      rgba(0,0,0,.04) 42%,
-      rgba(0,0,0,.10) 62%,
-      rgba(0,0,0,.66) 100%
+      rgba(0, 0, 0, .18) 0%,
+      rgba(0, 0, 0, .04) 42%,
+      rgba(0, 0, 0, .10) 62%,
+      rgba(0, 0, 0, .66) 100%
     );
-  opacity:calc(.60 + (.40 * var(--weight)));
-  pointer-events:none;
+
+  opacity: calc(.60 + (.40 * var(--weight)));
+  pointer-events: none;
 }
 
-.value-card__top{
-  position:absolute;
-  z-index:2;
-  top:40px;
-  left:var(--text-left,40px);
-  right:var(--text-right,34px);
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  white-space:nowrap;
-  overflow:visible;
+.value-card__top {
+  position: absolute;
+  z-index: 2;
+  top: 40px;
+  left: var(--text-left, 40px);
+  right: var(--text-right, 34px);
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  white-space: nowrap;
+  overflow: visible;
 }
 
-.value-card__number{
-  font-size:20px;
-  line-height:1;
-  font-weight:400;
+.value-card__number {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 400;
 }
 
-.value-card__category{
-  font-size:var(--category-size,20px);
-  line-height:1.35;
-  font-weight:700;
-  letter-spacing:-0.25px;
-  white-space:nowrap;
+.value-card__category {
+  font-size: var(--category-size, 20px);
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.25px;
+  white-space: nowrap;
 }
 
-.value-card__dot{
-  display:inline-block;
-  margin:0 3px;
+.value-card__dot {
+  display: inline-block;
+  margin: 0 3px;
 }
 
-.value-card__bottom{
-  position:absolute;
-  z-index:2;
-  left:var(--text-left,40px);
-  right:var(--text-right,34px);
-  bottom:44px;
-  opacity:var(--detail-opacity,0);
-  transform:translate3d(0,var(--detail-y,12px),0);
-  will-change:opacity,transform;
-  pointer-events:none;
+.value-card__bottom {
+  position: absolute;
+  z-index: 2;
+  left: var(--text-left, 40px);
+  right: var(--text-right, 34px);
+  bottom: 44px;
+
+  opacity: var(--detail-opacity, 0);
+  transform: translate3d(0, var(--detail-y, 12px), 0);
+
+  will-change: opacity, transform;
+  pointer-events: none;
 }
 
-.value-card__headline{
-  margin:0 0 14px;
-  font-size:20px;
-  line-height:1.35;
-  font-weight:700;
-  white-space:nowrap;
+.value-card__headline {
+  margin: 0 0 14px;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.value-card__copy{
-  margin:0;
-  font-size:14px;
-  line-height:1.55;
-  font-weight:400;
-  white-space:nowrap;
+.value-card__copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
-/* first frame fallback */
-.value-card[data-value-card="0"]{
-  flex-basis:58.3567%;
-  --weight:1;
-  --text-left:40px;
-  --text-right:34px;
-  --category-size:20px;
-  --sharp-opacity:1;
-  --blur-opacity:0;
-  --detail-opacity:1;
-  --detail-y:0px;
+
+/* =========================================================
+   FIRST FRAME FALLBACK
+========================================================= */
+
+.value-card[data-value-card="0"] {
+  flex-basis: 58.3567%;
+  --weight: 1;
+  --text-left: 40px;
+  --text-right: 34px;
+  --category-size: 20px;
+  --sharp-opacity: 1;
+  --blur-opacity: 0;
+  --detail-opacity: 1;
+  --detail-y: 0px;
 }
 
 .value-card[data-value-card="1"],
-.value-card[data-value-card="2"]{
-  --text-left:25px;
-  --text-right:53px;
-  --category-size:16px;
-  --sharp-opacity:0;
-  --blur-opacity:1;
+.value-card[data-value-card="2"] {
+  --text-left: 25px;
+  --text-right: 53px;
+  --category-size: 16px;
+  --sharp-opacity: 0;
+  --blur-opacity: 1;
 }
 
-@media(max-width:1100px){
-  .clover-value__heading{
-    top:18%;
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .clover-value__heading {
+    top: 18%;
   }
 
-  .clover-value__title{
-    font-size:28px;
+  .clover-value__title {
+    font-size: 28px;
   }
 
-  .clover-value__description{
-    margin-top:14px;
-    font-size:17px;
+  .clover-value__description {
+    margin-top: 14px;
+    font-size: 17px;
   }
 
-  .clover-value__cards{
-    top:35%;
-    width:min(940px,calc(100% - 48px));
+  .clover-value__cards {
+    top: 35%;
+    width: min(940px, calc(100% - 48px));
   }
 
-  .clover-value__red-band{
-    top:54%;
+  .clover-value__red-band {
+    top: 54%;
   }
 
- .value-card__top{
-    top:26px;
-    gap:14px;
+  .value-card__top {
+    top: 26px;
+    gap: 14px;
   }
 
-  .value-card__number{
-    font-size:16px;
+  .value-card__number {
+    font-size: 16px;
   }
 
-  .value-card__bottom{
-    bottom:26px;
+  .value-card__bottom {
+    bottom: 26px;
   }
 
-  .value-card__headline{
-    font-size:17px;
-    margin-bottom:10px;
+  .value-card__headline {
+    font-size: 17px;
+    margin-bottom: 10px;
   }
 
-  .value-card__copy{
-    font-size:12px;
-  }
-}
-
-@media(max-width:760px){
-  .clover-value__track{
-    height:320vh;
-    min-height:2200px;
-  }
-
-  .clover-value__stage{
-    min-height:650px;
-  }
-
-  .clover-value__heading{
-    top:13%;
-    width:calc(100% - 32px);
-  }
-
-  .clover-value__title{
-    font-size:24px;
-    white-space:normal;
-  }
-
-  .clover-value__description{
-    max-width:520px;
-    margin:14px auto 0;
-    font-size:16px;
-    white-space:normal;
-  }
-
-  .clover-value__cards{
-    top:38%;
-    width:94vw;
-  }
-
-  .clover-value__red-band{
-    top:53%;
-    height:46px;
-  }
-
-  .clover-value__red-band::after{
-    top:23px;
-  }
-
- .value-card__top{
-    top:16px;
-    gap:10px;
-  }
-
-  .value-card__number{
-    font-size:13px;
-  }
-
-
-  .value-card__bottom{
-    bottom:18px;
-  }
-
-  .value-card__headline{
-    font-size:15px;
-    white-space:normal;
-  }
-
-  .value-card__copy{
-    display:none;
+  .value-card__copy {
+    font-size: 12px;
   }
 }
 
-@media(prefers-reduced-motion:reduce){
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .clover-value__track {
+    height: 320vh;
+    min-height: 2200px;
+  }
+
+  .clover-value__stage {
+    min-height: 650px;
+  }
+
+  .clover-value__heading {
+    top: 13%;
+    width: calc(100% - 32px);
+  }
+
+  .clover-value__title {
+    font-size: 24px;
+    white-space: normal;
+  }
+
+  .clover-value__description {
+    max-width: 520px;
+    margin: 14px auto 0;
+    font-size: 16px;
+    white-space: normal;
+  }
+
+  .clover-value__cards {
+    top: 38%;
+    width: 94vw;
+  }
+
+  .clover-value__red-band {
+    top: 53%;
+    height: 46px;
+  }
+
+  .clover-value__red-band::after {
+    top: 23px;
+  }
+
+  .value-card__top {
+    top: 16px;
+    gap: 10px;
+  }
+
+  .value-card__number {
+    font-size: 13px;
+  }
+
+  .value-card__bottom {
+    bottom: 18px;
+  }
+
+  .value-card__headline {
+    font-size: 15px;
+    white-space: normal;
+  }
+
+  .value-card__copy {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
   .value-card,
   .value-card__image,
   .value-card__shade,
   .value-card__top,
   .value-card__category,
-  .value-card__bottom{
-    will-change:auto;
+  .value-card__bottom {
+    will-change: auto;
   }
+
+}
+
+
+/* =========================================================
+   CLOVER VALUE
+   SECTION TRANSITION OVERLAY
+========================================================= */
+
+/*
+  JS에서 document.body에
+  .clover-value-transition 요소를 하나 만들어줍니다.
+
+  이전 섹션 위에서 시작해서
+  아래 → 위 방향으로 그라데이션이 쓸고 지나갑니다.
+*/
+
+.clover-value-transition {
+  position: fixed;
+  z-index: 9998;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform: translateY(100%);
+
+  background:
+    linear-gradient(
+      to top,
+      #77AAEE 0%,
+      #9FC5F4 35%,
+      #CFE4FF 62%,
+      rgba(255, 254, 252, 0) 100%
+    );
+}
+
+
+/* 전환 시작 */
+
+.clover-value-transition.is-active {
+  opacity: 1;
+
+  animation:
+    clover-value-gradient-in
+    1200ms
+    cubic-bezier(.22, 1, .36, 1)
+    forwards;
+}
+
+
+/* 아래에서 올라오면서 이전 섹션을 덮음 */
+
+@keyframes clover-value-gradient-in {
+
+  0% {
+    transform: translateY(100%);
+    opacity: 1;
+  }
+
+  35% {
+    transform: translateY(35%);
+    opacity: 1;
+  }
+
+  62% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  78% {
+    transform: translateY(-15%);
+    opacity: .92;
+  }
+
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+}
+
+
+/* 모바일에서는 조금 빠르게 */
+
+@media (max-width: 760px) {
+
+  .clover-value-transition.is-active {
+    animation-duration: 950ms;
+  }
+
+}
+
+
+/* 모션 최소화 */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .clover-value-transition {
+    display: none;
+  }
+
 }
