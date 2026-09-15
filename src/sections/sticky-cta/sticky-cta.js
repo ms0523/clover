@@ -60,7 +60,7 @@ export function mountStickyCta(mountEl = document.body, options = {}) {
     const inExcludedSection = heroVisible || footerVisible;
     // 이메일을 입력 중일 때는 스크롤 때문에 갑자기 사라지지 않도록 예외 처리
     const hideForScroll = isScrolling && !isFormOpen;
-    root.classList.toggle("is-hidden", inExcludedSection || hideForScroll);
+   root.classList.toggle("sticky-cta--hidden", inExcludedSection || hideForScroll);
   }
 
   // ---------------------------------------------------------
