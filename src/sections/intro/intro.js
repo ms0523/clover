@@ -6,6 +6,7 @@ import blueUrl from "../../assets/images/blue-sticky.png";
 import flowerUrl from "../../assets/images/intro-image-1.png";
 import picnicUrl from "../../assets/images/intro-image-2.png";
 import pinkUrl from "../../assets/images/pink-sticky.png";
+import { setupSnapToNext } from "../scroll-snap.js";
 
 const MAIN_SEGMENTS = [
   { text: "선물받을 사람", cls: "accent" },
@@ -426,71 +427,6 @@ function setupScrollFly(section, pairs, targetEl) {
 
 
 /* =========================================================
-   Intro → 다음 섹션(Clover AI) 부드러운 스냅
-   ========================================================================
-   clover-start.js의 "진행률 97% 지점에서 다음 섹션으로 스냅" 패턴을 그대로
-   가져온 것. intro는 sticky/pinned 섹션이 아니라 그냥 세로로 긴 일반
-   섹션이라, world 이동이나 스크롤 감도 조절 같은 건 필요 없고 "얼마나
-   스크롤했는지(progress)"만 계산해서 끝자락에서 한 번 scrollIntoView를
-   걸어주면 됨.
-========================================================= */
-
-function setupSnapToNext(section) {
-  const nextSection = section.nextElementSibling;
-
-  if (!nextSection) return;
-
-  // intro를 이 비율만큼 스크롤하면(기본 92%) 나머지 구간은 자동으로
-  // 부드럽게 이어서 다음 섹션(clover-ai) 시작 지점까지 스크롤합니다.
-  const SNAP_THRESHOLD = 0.92;
-
-  let hasSnapped = false;
-  let prevProgress = null; // 새로고침 등으로 이미 그 지점을 지나친 채 로드된 경우 방지
-
-  const getProgress = () => {
-    const rect = section.getBoundingClientRect();
-    const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
-
-    return clamp((-rect.top) / scrollable);
-  };
-
-  const goToNextSection = () => {
-    const prefersReduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
-    )?.matches;
-
-    nextSection.scrollIntoView({
-      behavior: prefersReduced ? "auto" : "smooth",
-      block: "start",
-    });
-  };
-
-  const onScroll = () => {
-    const p = getProgress();
-
-    // 최초 호출(페이지 로드 시점)은 기준값만 기록하고 강제 이동은 하지 않음
-    if (prevProgress === null) {
-      prevProgress = p;
-      return;
-    }
-
-    const crossedForward = prevProgress < SNAP_THRESHOLD && p >= SNAP_THRESHOLD;
-
-    if (crossedForward && !hasSnapped) {
-      hasSnapped = true;
-      goToNextSection();
-    } else if (p < 0.5) {
-      hasSnapped = false;
-    }
-
-    prevProgress = p;
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-}
-
-
-/* =========================================================
    Mount
 ========================================================= */
 
@@ -698,6 +634,10 @@ export function mountIntro(mountEl) {
 
   /* =======================================================
      3. Intro → Clover AI 부드러운 스냅
+     ======================================================================
+     step1(intro) → step2(clover-ai) 전환. 공용 유틸(scroll-snap.js)로
+     분리했고, clover-ai.js에서도 같은 함수로 step2 → step3(clover-gift)
+     전환을 붙여준다.
   ======================================================= */
 
   setupSnapToNext(section);
