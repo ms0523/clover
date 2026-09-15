@@ -387,6 +387,7 @@
   .photo-cluster{ width: 90%; margin: 0 auto 32px; }
   .phone{ margin: 0 auto 32px; }
   .step1-label{ font-size: 28px; line-height: 1.4; }
-  .step1-copy h3{ font-size: 22px; line-height: 1.4; white-space: normal; }
+  .step1-copy h3{ font-size: clamp(20px, 2.2vw, 32px);
+  font-weight: 800; line-height: 1.4; white-space: normal; }
   .step1-desc{ font-size: 16px; line-height: 1.6; white-space: normal; }
 }

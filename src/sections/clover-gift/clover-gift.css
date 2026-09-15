@@ -147,7 +147,7 @@
 
 .gift-phone-screen {
   position: absolute;
-  left: 5%;
+  left: 4%;
   /* 부모 박스가 80% 높이로 줄어든 만큼(÷0.8) 값을 올려서, 원본 프레임
      기준으로는 원래와 같은 자리(7%, 88.8%)에 그대로 있는 것처럼 보이게 함 */
   top: 8.75%;   /* 7% / 0.8 */
@@ -192,7 +192,7 @@
 
   /* 휴대폰 오른쪽에서 시작 */
   left: 25%;
-  top: var(--gift-cards-top);
+  top: 60%; /* STEP 02에서 카드가 올라오는 위치 — 폰 안 첫 번째 메디테디 줄과 맞추는 값 */
 
   width: 80%;
   /* 카드 한 줄(gc-card 높이 160px) + 여유값만큼만. 예전 1600px는
@@ -256,6 +256,7 @@
   border: 1px solid #e9e8e8;
   border-radius: 10px;
   box-sizing: border-box;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .gc-card img {

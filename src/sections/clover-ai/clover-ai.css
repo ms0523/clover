@@ -86,8 +86,8 @@
   left: 32.32%;
   top: 67.63%;
   margin: 0;
-  font-size: clamp(20px, 2.22vw, 32px);
-  font-weight: 700;
+  font-size: clamp(20px, 2.2vw, 32px);
+  font-weight: 800;
   color: #000000;
   line-height: 1.6;
   letter-spacing: -0.02em;
