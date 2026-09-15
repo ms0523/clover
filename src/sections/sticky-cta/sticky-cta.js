@@ -5,9 +5,9 @@ import stickyCtaHtml from "./sticky-cta.html?raw";
 // 저장하면 이 한 줄만으로 바로 적용됩니다. 파일명/경로를 바꿔도 됨.
 import symbolUrl from "../../assets/icons/sticky-cta-symbol.svg";
 
-// 스크롤이 멈췄다고 판단하기까지 기다리는 시간(ms). 짧으면 살짝만 멈춰도
-// 바로 다시 올라오고, 길면 완전히 멈춰야 올라옵니다.
-const SCROLL_STOP_DELAY = 150;
+// 방향을 뒤집기 위해 필요한 최소 스크롤 이동량(px). 너무 작으면 살짝만
+// 흔들려도 방향이 뒤집혀 바가 깜빡거리므로 약간의 여유를 둡니다.
+const SCROLL_DIRECTION_THRESHOLD = 4;
 
 // 이메일 전송 완료 문구를 보여준 뒤 기본 상태로 자동 복귀하는 시간(ms)
 const DONE_RESET_DELAY = 4000;
@@ -15,9 +15,9 @@ const DONE_RESET_DELAY = 4000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * hero / footer를 제외한 모든 섹션 위에 계속 떠 있는 하단 고정 CTA 바를
- * mount합니다. 스크롤 중엔 숨고, 스크롤이 멈추면 다시 올라오는 동작을
- * 반복하며, hero/footer 구간에서는 스크롤 상태와 무관하게 항상 숨깁니다.
+ * hero / footer를 제외한 모든 섹션 위에 계속 떠 있는 상단 고정 CTA 바를
+ * mount합니다. 아래로 스크롤하면 숨고, 위로 스크롤하면 다시 나타나며,
+ * hero/footer 구간에서는 스크롤 방향과 무관하게 항상 숨깁니다.
  *
  * @param {HTMLElement} mountEl - 보통 document.body. position:fixed라서
  *   어디에 붙여도 레이아웃엔 영향 없지만, 다른 section의 overflow:hidden
@@ -48,8 +48,8 @@ export function mountStickyCta(mountEl = document.body, options = {}) {
 
   let heroVisible = false;
   let footerVisible = false;
-  let isScrolling = false;
-  let scrollTimer = null;
+  let scrollDirection = "up"; // "up" | "down" — 초기값은 up(보이는 쪽)
+  let lastScrollY = window.scrollY;
 
   function setState(state) {
     bar.dataset.ctaOpen = state; // "off" | "on" | "done"
@@ -58,13 +58,13 @@ export function mountStickyCta(mountEl = document.body, options = {}) {
   function updateVisibility() {
     const isFormOpen = bar.dataset.ctaOpen === "on";
     const inExcludedSection = heroVisible || footerVisible;
-    // 이메일을 입력 중일 때는 스크롤 때문에 갑자기 사라지지 않도록 예외 처리
-    const hideForScroll = isScrolling && !isFormOpen;
-   root.classList.toggle("sticky-cta--hidden", inExcludedSection || hideForScroll);
+    // 이메일을 입력 중일 때는 아래로 스크롤해도 갑자기 사라지지 않도록 예외 처리
+    const hideForScroll = scrollDirection === "down" && !isFormOpen;
+    root.classList.toggle("sticky-cta--hidden", inExcludedSection || hideForScroll);
   }
 
   // ---------------------------------------------------------
-  // hero / footer 구간에서는 스크롤 상태와 무관하게 항상 숨김
+  // hero / footer 구간에서는 스크롤 방향과 무관하게 항상 숨김
   // ---------------------------------------------------------
   if (heroEl || footerEl) {
     const io = new IntersectionObserver(
@@ -82,20 +82,23 @@ export function mountStickyCta(mountEl = document.body, options = {}) {
   }
 
   // ---------------------------------------------------------
-  // 스크롤 중엔 숨기고, 멈추면 다시 보여줌 — 스크롤할 때마다 반복
+  // 아래로 스크롤하면 숨기고, 위로 스크롤하면 다시 보여줌
   // ---------------------------------------------------------
   window.addEventListener(
     "scroll",
     () => {
-      if (!isScrolling) {
-        isScrolling = true;
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY;
+
+      if (Math.abs(delta) < SCROLL_DIRECTION_THRESHOLD) return;
+
+      const nextDirection = delta > 0 ? "down" : "up";
+      lastScrollY = currentY;
+
+      if (nextDirection !== scrollDirection) {
+        scrollDirection = nextDirection;
         updateVisibility();
       }
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        isScrolling = false;
-        updateVisibility();
-      }, SCROLL_STOP_DELAY);
     },
     { passive: true }
   );

@@ -2,8 +2,8 @@
    Sticky Beta CTA
    - hero / footer를 제외한 모든 섹션 위에 계속 떠 있는 상단 고정 바.
    - 표시/숨김은 JS가 .sticky-cta에 .sticky-cta--hidden 클래스를 붙였다 뗐다 하는
-     방식으로 처리하고(스크롤 중 표시 ↔ 멈추면 숨김 ↔ hero/footer 구간에서는
-     항상 숨김), 여기서는 그 클래스에 대한 트랜지션만 정의합니다.
+     방식으로 처리하고(아래로 스크롤 → 숨김 / 위로 스크롤 → 등장 / hero·footer
+     구간에서는 항상 숨김), 여기서는 그 클래스에 대한 트랜지션만 정의합니다.
    - "베타 신청하기 → 이메일 입력 → 전송 완료" 세 상태는 .sticky-cta-bar의
      data-cta-open 값("off" | "on" | "done")에 따라 .sticky-cta-panel 중
      하나만 보이도록 전환합니다.
@@ -26,7 +26,7 @@
   pointer-events: auto;
 }
 
-/* ---------- 표시 / 숨김 (스크롤 중 ↔ 스크롤 멈춤 반복, hero/footer 구간) ---------- */
+/* ---------- 표시 / 숨김 (아래로 스크롤 ↔ 위로 스크롤, hero/footer 구간) ---------- */
 .sticky-cta-bar {
   width: 100%;
   max-width: 680px;
@@ -50,9 +50,11 @@
   align-items: center;
   gap: 24px;
   padding: 16px 24px;
-  background: rgba(233, 232, 232, 0.30);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  /* 완전 불투명한 단색으로 채우지 않고, 블러를 강하게 줘서 뒤 내용이
+     버튼 내부 텍스트를 방해하지 않을 정도로만 뭉개지게 함 */
+  background: rgba(233, 232, 232, 0.55);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
   border-radius: 14px;
   box-shadow: 0 12px 32px -12px rgba(28, 18, 16, 0.28);
 }
@@ -110,10 +112,6 @@
   text-overflow: ellipsis;
 }
 
-/* 배경을 반투명(rgba alpha)으로 두면 뒤에 다른 요소(이미지/텍스트 등)가
-   겹쳤을 때 그게 비쳐서 버튼이 잘 안 보이는 문제가 있었음 — 알파 없이
-   불투명한 단색(라이트 핑크)으로 고정. 원래 rgba(178,21,40,0.10 / 0.18)을
-   흰 배경 위에서 눈에 보이는 색 그대로 고정한 값 */
 .sticky-cta-btn {
   appearance: none;
   cursor: pointer;
